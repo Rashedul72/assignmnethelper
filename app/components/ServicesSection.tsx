@@ -34,7 +34,7 @@ export default function ServicesSection() {
               >
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0">
-                    <div className="w-14 h-14 rounded-xl bg-[#00C4FF]/10 flex items-center justify-center group-hover:bg-[#00C4FF]/20 transition-colors">
+                    <div className="w-14 h-14 rounded-xl bg-[#00C4FF]/10 flex items-center justify-center group-hover:bg-[#00C4FF]/20 transition-colors animate-float">
                       <Icon className="w-7 h-7 text-[#00C4FF]" />
                     </div>
                   </div>

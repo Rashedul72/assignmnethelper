@@ -15,15 +15,15 @@ export default function HeroSection() {
         <div className="text-center">
           {/* Trust Badges */}
           <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 animate-fade-in">
               <Shield className="w-4 h-4 text-[#00C4FF]" />
               <span className="text-sm font-medium">100% Confidential</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 animate-fade-in delay-100">
               <Clock className="w-4 h-4 text-[#00C4FF]" />
               <span className="text-sm font-medium">24/7 Support</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 animate-fade-in delay-200">
               <Award className="w-4 h-4 text-[#00C4FF]" />
               <span className="text-sm font-medium">Expert Writers</span>
             </div>
@@ -32,7 +32,7 @@ export default function HeroSection() {
           <div className="flex justify-center mb-8 animate-fade-in">
             <div className="relative">
               <div className="absolute inset-0 bg-[#00C4FF] blur-2xl opacity-30 rounded-full"></div>
-              <GraduationCap className="w-20 h-20 relative z-10 text-[#00C4FF]" />
+              <GraduationCap className="w-20 h-20 relative z-10 text-[#00C4FF] animate-float" />
             </div>
           </div>
 
@@ -48,11 +48,11 @@ export default function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up delay-200">
-            <button className="group bg-[#00C4FF] text-[#0A1A2F] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#00b3e6] transition-all duration-300 shadow-lg shadow-[#00C4FF]/30 hover:shadow-xl hover:shadow-[#00C4FF]/40 flex items-center gap-2">
+            <button className="btn-primary group animate-pulse-glow">
               Get Started Today
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
-            <button className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white/20 transition-all duration-300 border border-white/20">
+            <button className="btn-secondary">
               Learn More
             </button>
           </div>

@@ -13,11 +13,11 @@ export default function CTASection() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-          <button className="group bg-[#00C4FF] text-[#0A1A2F] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#00b3e6] transition-all duration-300 shadow-lg shadow-[#00C4FF]/30 hover:shadow-xl hover:shadow-[#00C4FF]/40 flex items-center gap-2">
+          <button className="btn-primary group">
             Get Started Now
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
-          <button className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white/20 transition-all duration-300 border border-white/20">
+          <button className="btn-secondary">
             View Pricing
           </button>
         </div>

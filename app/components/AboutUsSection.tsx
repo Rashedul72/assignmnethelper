@@ -14,7 +14,7 @@ export default function AboutUsSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="group bg-white p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#00C4FF]/30 text-center">
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 rounded-full bg-[#00C4FF]/10 flex items-center justify-center group-hover:bg-[#00C4FF]/20 transition-colors">
+              <div className="w-16 h-16 rounded-full bg-[#00C4FF]/10 flex items-center justify-center group-hover:bg-[#00C4FF]/20 transition-colors animate-float">
                 <Globe className="w-8 h-8 text-[#00C4FF]" />
               </div>
             </div>
@@ -26,7 +26,7 @@ export default function AboutUsSection() {
 
           <div className="group bg-white p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#00C4FF]/30 text-center">
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 rounded-full bg-[#00C4FF]/10 flex items-center justify-center group-hover:bg-[#00C4FF]/20 transition-colors">
+              <div className="w-16 h-16 rounded-full bg-[#00C4FF]/10 flex items-center justify-center group-hover:bg-[#00C4FF]/20 transition-colors animate-float">
                 <Users className="w-8 h-8 text-[#00C4FF]" />
               </div>
             </div>
@@ -37,7 +37,7 @@ export default function AboutUsSection() {
 
           <div className="group bg-white p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#00C4FF]/30 text-center">
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 rounded-full bg-[#00C4FF]/10 flex items-center justify-center group-hover:bg-[#00C4FF]/20 transition-colors">
+              <div className="w-16 h-16 rounded-full bg-[#00C4FF]/10 flex items-center justify-center group-hover:bg-[#00C4FF]/20 transition-colors animate-float">
                 <CheckCircle2 className="w-8 h-8 text-[#00C4FF]" />
               </div>
             </div>
@@ -48,7 +48,7 @@ export default function AboutUsSection() {
 
           <div className="group bg-white p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#00C4FF]/30 text-center">
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 rounded-full bg-[#00C4FF]/10 flex items-center justify-center group-hover:bg-[#00C4FF]/20 transition-colors">
+              <div className="w-16 h-16 rounded-full bg-[#00C4FF]/10 flex items-center justify-center group-hover:bg-[#00C4FF]/20 transition-colors animate-float">
                 <TrendingUp className="w-8 h-8 text-[#00C4FF]" />
               </div>
             </div>

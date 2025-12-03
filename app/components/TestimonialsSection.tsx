@@ -39,9 +39,9 @@ export default function TestimonialsSection() {
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 relative"
+              className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 relative overflow-hidden"
             >
-              <Quote className="w-8 h-8 text-[#00C4FF]/20 absolute top-6 right-6" />
+              <Quote className="w-8 h-8 text-[#00C4FF]/20 absolute top-6 right-6 animate-float" />
               
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
@@ -54,7 +54,7 @@ export default function TestimonialsSection() {
               </p>
 
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-[#00C4FF]/10 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-[#00C4FF]/10 flex items-center justify-center animate-float">
                   <span className="text-[#00C4FF] font-semibold">{testimonial.avatar}</span>
                 </div>
                 <div>
