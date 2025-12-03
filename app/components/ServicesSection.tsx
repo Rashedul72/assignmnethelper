@@ -69,8 +69,8 @@ export default function ServicesSection() {
           <div className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4">
             <CheckCircle className="w-6 h-6 text-[#00C4FF] flex-shrink-0" />
             <div>
-              <div className="font-semibold text-[#0A1A2F]">Money-Back Guarantee</div>
-              <div className="text-sm text-gray-600">100% Satisfaction</div>
+              <div className="font-semibold text-[#0A1A2F]">Free AI & Similarity Report</div>
+              <div className="text-sm text-gray-600">Turnitin AI and similarity report included on request</div>
             </div>
           </div>
         </div>

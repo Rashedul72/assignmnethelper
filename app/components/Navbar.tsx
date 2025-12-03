@@ -7,36 +7,36 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0A1A2F]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-2">
             <GraduationCap className="w-8 h-8 text-[#00C4FF] transition-transform duration-300 hover:rotate-6 hover:scale-110" />
-            <span className="text-xl font-bold text-[#0A1A2F]">Assignment Helper</span>
+            <span className="text-xl font-bold text-white">Assignment Helper</span>
           </div>
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#about" className="text-gray-700 hover:text-[#00C4FF] transition-colors font-medium">
+            <a href="#about" className="text-gray-200 hover:text-[#00C4FF] transition-colors font-medium">
               About
             </a>
-            <a href="#fields" className="text-gray-700 hover:text-[#00C4FF] transition-colors font-medium">
+            <a href="#fields" className="text-gray-200 hover:text-[#00C4FF] transition-colors font-medium">
               Fields
             </a>
-            <a href="#services" className="text-gray-700 hover:text-[#00C4FF] transition-colors font-medium">
+            <a href="#services" className="text-gray-200 hover:text-[#00C4FF] transition-colors font-medium">
               Services
             </a>
-            <a href="#testimonials" className="text-gray-700 hover:text-[#00C4FF] transition-colors font-medium">
+            <a href="#testimonials" className="text-gray-200 hover:text-[#00C4FF] transition-colors font-medium">
               Reviews
             </a>
-            <button className="bg-[#0A1A2F] text-white px-6 py-2 rounded-lg hover:bg-[#0d2340] transition-colors font-medium">
+            <button className="bg-[#00C4FF] text-[#0A1A2F] px-6 py-2 rounded-lg hover:bg-[#00b3e6] transition-colors font-medium">
               Get Started
             </button>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-gray-700"
+            className="md:hidden text-white"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
@@ -47,21 +47,21 @@ export default function Navbar() {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
+        <div className="md:hidden bg-[#0A1A2F] border-t border-black/40">
           <div className="px-4 pt-2 pb-4 space-y-3">
-            <a href="#about" className="block text-gray-700 hover:text-[#00C4FF] transition-colors py-2">
+            <a href="#about" className="block text-gray-200 hover:text-[#00C4FF] transition-colors py-2">
               About
             </a>
-            <a href="#fields" className="block text-gray-700 hover:text-[#00C4FF] transition-colors py-2">
+            <a href="#fields" className="block text-gray-200 hover:text-[#00C4FF] transition-colors py-2">
               Fields
             </a>
-            <a href="#services" className="block text-gray-700 hover:text-[#00C4FF] transition-colors py-2">
+            <a href="#services" className="block text-gray-200 hover:text-[#00C4FF] transition-colors py-2">
               Services
             </a>
-            <a href="#testimonials" className="block text-gray-700 hover:text-[#00C4FF] transition-colors py-2">
+            <a href="#testimonials" className="block text-gray-200 hover:text-[#00C4FF] transition-colors py-2">
               Reviews
             </a>
-            <button className="w-full bg-[#0A1A2F] text-white px-6 py-2 rounded-lg hover:bg-[#0d2340] transition-colors font-medium mt-2">
+            <button className="w-full bg-[#00C4FF] text-[#0A1A2F] px-6 py-2 rounded-lg hover:bg-[#00b3e6] transition-colors font-medium mt-2">
               Get Started
             </button>
           </div>
