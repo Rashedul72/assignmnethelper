@@ -1,4 +1,9 @@
+"use client";
+
 import { BookOpen, FileText, Presentation, PenTool, CheckCircle } from "lucide-react";
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
 
 const services = [
   { icon: FileText, name: "Assignments", desc: "High-quality assignment writing and completion" },
@@ -14,66 +19,114 @@ const services = [
 ];
 
 export default function ServicesSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+    },
+  };
+
   return (
     <section id="services" className="py-20 px-4 bg-gradient-to-b from-white to-gray-50 scroll-mt-20">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#0A1A2F]">What We Do</h2>
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#21616A]">What We Do</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Our comprehensive academic services designed to help you succeed
           </p>
-        </div>
+        </motion.div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div 
+          ref={ref}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+        >
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
-              <div 
+              <motion.div 
                 key={index}
-                className="group bg-white p-6 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#00C4FF]/30"
+                className="group bg-white p-6 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#2E9CA0]/30"
+                variants={itemVariants}
+                whileHover={{ scale: 1.02, y: -5 }}
               >
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0">
-                    <div className="w-14 h-14 rounded-xl bg-[#00C4FF]/10 flex items-center justify-center group-hover:bg-[#00C4FF]/20 transition-colors animate-float">
-                      <Icon className="w-7 h-7 text-[#00C4FF]" />
+                    <div className="w-14 h-14 rounded-xl bg-[#2E9CA0]/10 flex items-center justify-center group-hover:bg-[#2E9CA0]/20 transition-colors animate-float">
+                      <Icon className="w-7 h-7 text-[#2E9CA0]" />
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-lg mb-2 text-[#0A1A2F] group-hover:text-[#00C4FF] transition-colors">
+                    <h3 className="font-semibold text-lg mb-2 text-[#21616A] group-hover:text-[#2E9CA0] transition-colors">
                       {service.name}
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">{service.desc}</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Trust Features */}
-        <div className="mt-16 grid md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4">
-            <CheckCircle className="w-6 h-6 text-[#00C4FF] flex-shrink-0" />
+        <motion.div 
+          className="mt-16 grid md:grid-cols-3 gap-6"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          <motion.div 
+            className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4"
+            whileHover={{ scale: 1.05 }}
+          >
+            <CheckCircle className="w-6 h-6 text-[#2E9CA0] flex-shrink-0" />
             <div>
-              <div className="font-semibold text-[#0A1A2F]">Plagiarism-Free</div>
+              <div className="font-semibold text-[#21616A]">Plagiarism-Free</div>
               <div className="text-sm text-gray-600">100% Original Content</div>
             </div>
-          </div>
-          <div className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4">
-            <CheckCircle className="w-6 h-6 text-[#00C4FF] flex-shrink-0" />
+          </motion.div>
+          <motion.div 
+            className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4"
+            whileHover={{ scale: 1.05 }}
+          >
+            <CheckCircle className="w-6 h-6 text-[#2E9CA0] flex-shrink-0" />
             <div>
-              <div className="font-semibold text-[#0A1A2F]">On-Time Delivery</div>
+              <div className="font-semibold text-[#21616A]">On-Time Delivery</div>
               <div className="text-sm text-gray-600">Never Miss a Deadline</div>
             </div>
-          </div>
-          <div className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4">
-            <CheckCircle className="w-6 h-6 text-[#00C4FF] flex-shrink-0" />
+          </motion.div>
+          <motion.div 
+            className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4"
+            whileHover={{ scale: 1.05 }}
+          >
+            <CheckCircle className="w-6 h-6 text-[#2E9CA0] flex-shrink-0" />
             <div>
-              <div className="font-semibold text-[#0A1A2F]">Free AI & Similarity Report</div>
+              <div className="font-semibold text-[#21616A]">Free AI & Similarity Report</div>
               <div className="text-sm text-gray-600">Turnitin AI and similarity report included on request</div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
