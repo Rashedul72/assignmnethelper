@@ -12,7 +12,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-2">
             <GraduationCap className="w-8 h-8 text-[#2E9CA0] transition-transform duration-300 hover:rotate-6 hover:scale-110" />
-            <span className="text-xl font-bold text-white">Assignment Helper</span>
+            <span className="text-xl font-bold text-white">StudyBeee</span>
           </div>
           
           {/* Desktop Navigation */}
@@ -29,9 +29,7 @@ export default function Navbar() {
             <a href="#testimonials" className="text-gray-200 hover:text-[#2E9CA0] transition-colors font-medium">
               Reviews
             </a>
-            <button className="bg-[#2E9CA0] text-[#21616A] px-6 py-2 rounded-lg hover:bg-[#2599a0] transition-colors font-medium">
-              Get Started
-            </button>
+
           </div>
 
           {/* Mobile Menu Button */}
@@ -61,9 +59,7 @@ export default function Navbar() {
             <a href="#testimonials" className="block text-gray-200 hover:text-[#2E9CA0] transition-colors py-2">
               Reviews
             </a>
-            <button className="w-full bg-[#2E9CA0] text-[#21616A] px-6 py-2 rounded-lg hover:bg-[#2599a0] transition-colors font-medium mt-2">
-              Get Started
-            </button>
+
           </div>
         </div>
       )}

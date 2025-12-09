@@ -10,7 +10,7 @@ const testimonials = [
     name: "Sarah Johnson",
     field: "Computer Science",
     rating: 5,
-    text: "Assignment Helper saved me during my final year. Their quality is exceptional and they always deliver on time. Highly recommended!",
+    text: "StudyBeee saved me during my final year. Their quality is exceptional and they always deliver on time. Highly recommended!",
     avatar: "SJ"
   },
   {

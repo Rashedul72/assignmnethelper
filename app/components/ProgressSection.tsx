@@ -1,7 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Target, ShieldCheck, Trophy } from "lucide-react";
+import {
+  Target,
+  ShieldCheck,
+  Trophy,
+  ArrowRight,
+  CalendarCheck,
+  BadgeCheck,
+  DollarSign,
+  ClipboardCheck,
+  Repeat,
+  FileCheck,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
@@ -15,7 +26,7 @@ const progressData = [
   },
   {
     icon: ShieldCheck,
-    label: "Plagiarism-Free Work",
+    label: "AI & Plagiarism-Free Work",
     value: 100,
     description: "Every paper passes originality scans",
   },
@@ -25,6 +36,15 @@ const progressData = [
     value: 96,
     description: "Students who rated us 5 stars",
   },
+];
+
+const procedureSteps = [
+  { label: "Book your task", icon: CalendarCheck },
+  { label: "Get confirmation", icon: BadgeCheck },
+  { label: "Pay 30% advance", icon: DollarSign },
+  { label: "We complete the work", icon: ClipboardCheck },
+  { label: "Up to 3 revisions", icon: Repeat },
+  { label: "Final report (Turnitin) & full payment", icon: FileCheck },
 ];
 
 export default function ProgressSection() {
@@ -54,10 +74,6 @@ export default function ProgressSection() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut",
-      },
     },
   };
 
@@ -123,6 +139,51 @@ export default function ProgressSection() {
               </motion.div>
             );
           })}
+        </motion.div>
+
+        {/* Procedure of our work */}
+        <motion.div 
+          className="mt-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          <h3 className="text-2xl md:text-3xl font-bold text-[#21616A] text-center mb-6">
+            Procedure of Our Work
+          </h3>
+          <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 md:p-8 shadow-sm">
+            <motion.ol
+              className="relative flex flex-col md:flex-row md:items-center gap-5 md:gap-6 lg:gap-8"
+              initial="hidden"
+              animate={isInView ? "visible" : "hidden"}
+              variants={containerVariants}
+            >
+              <div className="hidden md:block absolute left-16 right-16 top-1/2 h-0.5 bg-linear-to-r from-[#2E9CA0]/25 via-[#21616A]/20 to-[#2E9CA0]/25 -translate-y-1/2 pointer-events-none" />
+              {procedureSteps.map((step, idx) => {
+                const Icon = step.icon;
+                return (
+                <div key={step.label} className="flex items-center md:flex-col gap-3 md:gap-2 z-10">
+                  <motion.li
+                    className="relative bg-white border border-gray-100 rounded-xl p-4 md:p-5 shadow-sm flex items-center md:flex-col text-center gap-3 md:gap-2"
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.05, y: -4 }}
+                  >
+                    <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#2E9CA0]/15 text-[#21616A] flex items-center justify-center font-semibold shrink-0 shadow-sm">
+                      {idx + 1}
+                    </div>
+                    <div className="text-sm text-gray-700 leading-snug">
+                      <Icon className="w-5 h-5 mx-auto mb-2 text-[#2E9CA0]" />
+                      {step.label}
+                    </div>
+                  </motion.li>
+                  {idx < procedureSteps.length - 1 && (
+                    <ArrowRight className="hidden md:block w-5 h-5 text-[#2E9CA0]" />
+                  )}
+                </div>
+                );
+              })}
+            </motion.ol>
+          </div>
         </motion.div>
       </div>
     </section>

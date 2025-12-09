@@ -18,7 +18,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <GraduationCap className="w-8 h-8 text-[#2E9CA0]" />
-              <span className="text-xl font-bold">Assignment Helper</span>
+              <span className="text-xl font-bold">StudyBeee</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-4">
               Your trusted academic partner for quality assignments, research papers, and academic support.
@@ -109,7 +109,7 @@ export default function Footer() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <p className="text-gray-400 text-sm">
-            © 2024 Assignment Helper. All rights reserved.
+            © 2024 StudyBeee. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
             {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((link, index) => (

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Assignment Helper - Your Trusted Academic Partner",
+  title: "StudyBeee - Your Trusted Academic Partner",
   description: "Leading assignment helper service supporting students across various academic disciplines. Expert assistance for assignments, research, proposals, posters, and more.",
 };
 
