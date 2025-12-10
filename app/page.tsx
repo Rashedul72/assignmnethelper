@@ -8,6 +8,7 @@ import ServicesSection from "./components/ServicesSection";
 import ProgressSection from "./components/ProgressSection";
 import TestimonialsSection from "./components/TestimonialsSection";
 import CTASection from "./components/CTASection";
+import PaymentMethodSection from "./components/PaymentMethodSection";
 import Footer from "./components/Footer";
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
       <ProgressSection />
       <TestimonialsSection />
       <CTASection />
+      <PaymentMethodSection />
       <Footer />
     </div>
   );

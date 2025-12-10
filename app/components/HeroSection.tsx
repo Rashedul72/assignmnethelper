@@ -82,14 +82,14 @@ export default function HeroSection() {
               </div>
             </motion.div>
 
-            <motion.h1 
+            {/* <motion.h1 
               className="text-3xl md:text-5xl font-bold mb-6 leading-tight"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               Your Trusted Academic Partner
-            </motion.h1>
+            </motion.h1> */}
 
             {/* CTA Buttons */}
             <motion.div 
@@ -147,7 +147,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           >
-            <div className="relative w-full max-w-xl h-80 md:h-[450px]">
+            <div className="relative w-full max-w-xl h-80 md:h-[360px]">
               <Image
                 src="/hero.png"
                 alt="Students studying with StudyBeee"
