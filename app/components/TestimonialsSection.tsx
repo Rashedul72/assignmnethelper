@@ -109,6 +109,76 @@ export default function TestimonialsSection() {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Founders section */}
+        <motion.div
+          className="mt-20"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <h3 className="text-3xl font-bold text-[#21616A] text-center mb-8">
+            Founders
+          </h3>
+          <div className="grid gap-6 md:grid-cols-3">
+            <motion.div 
+              className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02, y: -3 }}
+            >
+              <div className="text-xs font-semibold text-[#2E9CA0] mb-2 uppercase tracking-wide">
+                CEO
+              </div>
+              <div className="font-semibold text-lg text-[#21616A] mb-1">
+                MD Rashedul Islam Junayed
+              </div>
+              <div className="text-sm text-gray-700 mb-2">
+                Bachelor of Computer Science (Hons) – Mobile Computing and Networking
+              </div>
+              <div className="text-sm text-gray-500">
+                UCSI University, Kuala Lumpur.
+              </div>
+            </motion.div>
+
+            <motion.div 
+              className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02, y: -3 }}
+            >
+              <div className="text-xs font-semibold text-[#2E9CA0] mb-2 uppercase tracking-wide">
+                Managing Director
+              </div>
+              <div className="font-semibold text-lg text-[#21616A] mb-1">
+                Fahad Rahul
+              </div>
+              <div className="text-sm text-gray-700 mb-2">
+                BSc in Environmental Science and Disaster Management
+              </div>
+              <div className="text-sm text-gray-500">
+                Gopalganj Science and Technology University, Gopalganj 8105, Bangladesh.
+              </div>
+            </motion.div>
+
+            <motion.div 
+              className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02, y: -3 }}
+            >
+              <div className="text-xs font-semibold text-[#2E9CA0] mb-2 uppercase tracking-wide">
+                Marketing & Technical Officer
+              </div>
+              <div className="font-semibold text-lg text-[#21616A] mb-1">
+                Irfatul Islam
+              </div>
+              <div className="text-sm text-gray-700 mb-2">
+                BSc in Multimedia & Gaming Technology
+              </div>
+              <div className="text-sm text-gray-500">
+                Asia Pacific University of Technology and Innovation, Kuala Lumpur.
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
