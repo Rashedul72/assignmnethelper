@@ -16,6 +16,11 @@ export default function Navbar() {
       const scrollPosition = window.scrollY;
       setIsScrolled(scrollPosition > 50);
 
+      // Close mobile menu when scrolling
+      if (isOpen) {
+        setIsOpen(false);
+      }
+
       // Update active section based on scroll position
       const sections = ["home", "about", "fields", "services", "testimonials"];
       const current = sections.find(section => {
@@ -32,7 +37,7 @@ export default function Navbar() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isOpen]);
 
   // Smooth scroll to section
   const scrollToSection = (sectionId: string) => {
@@ -143,16 +148,16 @@ export default function Navbar() {
       <div className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
         isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
       }`}>
-        <div className="bg-[#21616A]/95 backdrop-blur-md border-t border-white/10 shadow-2xl">
-          <div className="px-6 py-4 space-y-2">
+        <div className="bg-[#21616A] border-t border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.25)] rounded-b-2xl backdrop-blur-md">
+          <div className="px-6 py-5 space-y-2">
             {navItems.map((item, index) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
                 className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 font-medium group focus:outline-none focus:ring-2 focus:ring-[#2E9CA0]/50 focus:bg-white/10 ${
                   activeSection === item.id
-                    ? 'text-[#2E9CA0] bg-white/10 shadow-lg shadow-[#2E9CA0]/20'
-                    : 'text-gray-200 hover:text-[#2E9CA0] hover:bg-white/5 hover:translate-x-2'
+                    ? 'text-[#2E9CA0] bg-white/10 shadow-md shadow-[#2E9CA0]/20 font-semibold'
+                    : 'text-white hover:text-[#2E9CA0] hover:bg-white/5 hover:translate-x-2'
                 }`}
                 style={{
                   animationDelay: isOpen ? `${index * 100}ms` : '0ms',
@@ -162,8 +167,8 @@ export default function Navbar() {
                 <div className="flex items-center gap-3">
                   <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
                     activeSection === item.id
-                      ? 'bg-[#2E9CA0] shadow-lg shadow-[#2E9CA0]/50'
-                      : 'bg-gray-500 group-hover:bg-[#2E9CA0]'
+                      ? 'bg-[#2E9CA0] shadow-md shadow-[#2E9CA0]/50'
+                      : 'bg-white/60 group-hover:bg-[#2E9CA0]'
                   }`}></div>
                   <span>{item.label}</span>
                 </div>

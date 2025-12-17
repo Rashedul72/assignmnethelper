@@ -153,7 +153,7 @@ export default function ProgressSection() {
           </h3>
           <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 md:p-8 shadow-sm">
             <motion.ol
-              className="relative flex flex-col md:flex-row md:items-center gap-5 md:gap-6 lg:gap-8"
+              className="relative flex flex-col items-center md:flex-row md:items-center gap-5 md:gap-6 lg:gap-8"
               initial="hidden"
               animate={isInView ? "visible" : "hidden"}
               variants={containerVariants}
@@ -162,18 +162,18 @@ export default function ProgressSection() {
               {procedureSteps.map((step, idx) => {
                 const Icon = step.icon;
                 return (
-                <div key={step.label} className="flex items-center md:flex-col gap-3 md:gap-2 z-10">
+                <div key={step.label} className="flex flex-col items-center md:flex-col gap-3 md:gap-2 z-10 w-full md:w-auto">
                   <motion.li
-                    className="relative bg-white border border-gray-100 rounded-xl p-4 md:p-5 shadow-sm flex items-center md:flex-col text-center gap-3 md:gap-2"
+                    className="relative bg-white border border-gray-100 rounded-xl p-4 md:p-5 shadow-sm flex flex-col items-center text-center gap-3 md:gap-2 w-full max-w-xs md:max-w-none"
                     variants={itemVariants}
                     whileHover={{ scale: 1.05, y: -4 }}
                   >
                     <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#2E9CA0]/15 text-[#21616A] flex items-center justify-center font-semibold shrink-0 shadow-sm">
                       {idx + 1}
                     </div>
-                    <div className="text-sm text-gray-700 leading-snug">
-                      <Icon className="w-5 h-5 mx-auto mb-2 text-[#2E9CA0]" />
-                      {step.label}
+                    <div className="text-sm text-gray-700 leading-snug flex flex-col items-center">
+                      <Icon className="w-5 h-5 mb-2 text-[#2E9CA0]" />
+                      <span>{step.label}</span>
                     </div>
                   </motion.li>
                   {idx < procedureSteps.length - 1 && (

@@ -40,31 +40,78 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   const ref = useRef(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [translateX, setTranslateX] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(true);
 
-  // Auto-scroll carousel - infinite loop
+  // Duplicate testimonials for seamless infinite loop
+  const duplicatedTestimonials = [...testimonials, ...testimonials];
+
+  // Calculate translateX based on screen size
   useEffect(() => {
-    const interval = setInterval(() => {
+    const calculateTranslateX = () => {
+      if (!carouselRef.current) return;
+      
+      const container = carouselRef.current;
+      const firstCard = container.querySelector('.carousel-item') as HTMLElement;
+      if (!firstCard) return;
+      
+      const cardWidth = firstCard.offsetWidth;
+      const gap = window.innerWidth >= 768 ? 24 : 16; // md:gap-6 = 24px, gap-4 = 16px
+      
+      // Use modulo to handle the loop - when currentIndex >= testimonials.length,
+      // we show the duplicated set, but calculate position based on modulo
+      const displayIndex = currentIndex % testimonials.length;
+      setTranslateX(-currentIndex * (cardWidth + gap));
+    };
+
+    // Initial calculation
+    const timeoutId = setTimeout(calculateTranslateX, 100);
+    
+    // Recalculate on resize
+    window.addEventListener('resize', calculateTranslateX);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', calculateTranslateX);
+    };
+  }, [currentIndex]);
+
+  // Auto-scroll carousel - infinite loop with seamless transition
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
+    const advanceCarousel = () => {
       setCurrentIndex((prev) => {
         const next = prev + 1;
-        // When we reach the end, reset to 0 after a brief moment
+        
+        // When we reach the end (card 5), transition to duplicated set, then reset to 0
         if (next >= testimonials.length) {
-          // Wait for animation to complete, then reset instantly
-          setTimeout(() => {
+          // Show the duplicated set first (visually identical to original)
+          // After transition completes, instantly reset to 0 without animation
+          timeoutId = setTimeout(() => {
             setIsTransitioning(false);
             setCurrentIndex(0);
-            // Re-enable transitions after reset
-            setTimeout(() => setIsTransitioning(true), 50);
-          }, 600);
-          return next;
+            // Re-enable transitions immediately after reset
+            setTimeout(() => {
+              setIsTransitioning(true);
+            }, 10);
+          }, 600); // Wait for transition animation to complete
+          return next; // Return the duplicated set index
         }
+        
         return next;
       });
-    }, 4000); // Change every 4 seconds
+    };
 
-    return () => clearInterval(interval);
+    const interval = setInterval(advanceCarousel, 4000); // Change every 4 seconds
+
+    return () => {
+      clearInterval(interval);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, []);
 
   return (
@@ -86,11 +133,11 @@ export default function TestimonialsSection() {
 
         {/* Carousel Container */}
         <div ref={ref} className="relative">
-          <div className="overflow-hidden px-2 sm:px-4">
+          <div ref={carouselRef} className="overflow-hidden -ml-2 md:-ml-4">
             <motion.div
-              className="flex gap-4 sm:gap-6 md:gap-8"
+              className="flex gap-4 md:gap-6"
               animate={{
-                x: `-${currentIndex * (100 / 3)}%`,
+                x: translateX,
               }}
               transition={
                 isTransitioning
@@ -102,14 +149,14 @@ export default function TestimonialsSection() {
                   : { duration: 0 }
               }
             >
-              {[...testimonials, ...testimonials].map((testimonial: typeof testimonials[0], index: number) => (
+              {duplicatedTestimonials.map((testimonial: typeof testimonials[0], index: number) => (
                 <div
                   key={`${testimonial.name}-${index}`}
-                  className="shrink-0 w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.333%-1.33rem)]"
+                  className="carousel-item shrink-0 w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] pl-2 md:pl-4"
                 >
-                  <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-2xl sm:rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100/80 p-6 sm:p-8 md:p-10 h-[400px] sm:h-[420px] md:h-[480px] flex flex-col justify-between relative overflow-hidden group hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all duration-300">
+                  <div className="bg-linear-to-br from-white to-gray-50/50 rounded-2xl sm:rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100/80 p-6 sm:p-8 md:p-10 h-[400px] sm:h-[420px] md:h-[480px] flex flex-col justify-between relative overflow-hidden group hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all duration-300">
                     {/* Top accent line */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#2E9CA0] via-[#21616A] to-[#2E9CA0]"></div>
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-[#2E9CA0] via-[#21616A] to-[#2E9CA0]"></div>
                     
                     {/* Quote Icon - subtle */}
                     <div className="absolute top-6 sm:top-8 right-6 sm:right-8 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -133,7 +180,7 @@ export default function TestimonialsSection() {
                     {/* Name at Bottom */}
                     <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200/60 z-10">
                       <div className="flex items-center gap-2 sm:gap-3">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#2E9CA0] to-[#21616A] flex items-center justify-center text-white font-semibold text-xs sm:text-sm shadow-md">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-linear-to-br from-[#2E9CA0] to-[#21616A] flex items-center justify-center text-white font-semibold text-xs sm:text-sm shadow-md">
                           {testimonial.name.charAt(0)}
                         </div>
                         <div>
