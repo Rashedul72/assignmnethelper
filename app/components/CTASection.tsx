@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Globe } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
@@ -37,24 +37,61 @@ export default function CTASection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <a
+          <motion.a
             href="https://wa.me/8801896094070"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary group text-white! flex items-center gap-2"
+            className="btn-primary group text-white flex items-center gap-2"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <FaWhatsapp className="w-5 h-5 text-white" />
-            WhatsApp: 01896094070
-          </a>
-          <a
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <FaWhatsapp className="w-5 h-5 text-white" />
+            </motion.div>
+            <div className="flex flex-col items-start gap-1">
+              <div className="flex items-center gap-2">
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                >
+                  <Globe className="w-4 h-4 text-white" />
+                </motion.div>
+                <span className="font-semibold text-white text-sm">International Students</span>
+              </div>
+              <span className="text-xs text-white/90">WhatsApp: 01896094070</span>
+            </div>
+          </motion.a>
+          <motion.a
             href="https://wa.me/8801857290212"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary group text-white! flex items-center gap-2"
+            className="btn-primary group text-white flex items-center gap-2"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <FaWhatsapp className="w-5 h-5 text-white" />
-            WhatsApp: 01857290212
-          </a>
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            >
+              <FaWhatsapp className="w-5 h-5 text-white" />
+            </motion.div>
+            <div className="flex flex-col items-start gap-1">
+              <div className="flex items-center gap-2">
+                {/* Bangladesh Flag */}
+                <div className="relative w-5 h-4 rounded-sm overflow-hidden shadow-sm">
+                  <div className="absolute inset-0 bg-[#006A4E]"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-3 h-3 rounded-full bg-[#F42A41]"></div>
+                  </div>
+                </div>
+                <span className="font-semibold text-white text-sm">Bangladesh Students</span>
+              </div>
+              <span className="text-xs text-white/90">WhatsApp: 01857290212</span>
+            </div>
+          </motion.a>
         </motion.div>
 
         <motion.div 

@@ -102,10 +102,10 @@ export default function Navbar() {
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`relative px-4 py-2 rounded-xl transition-all duration-300 font-medium backdrop-blur-sm group focus:outline-none focus:ring-2 focus:ring-[#2E9CA0]/50 focus:ring-offset-2 focus:ring-offset-[#21616A] ${
+                className={`relative px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-sm group focus:outline-none focus:ring-2 focus:ring-[#2E9CA0]/50 focus:ring-offset-2 focus:ring-offset-[#21616A] ${
                   activeSection === item.id
-                    ? 'text-[#2E9CA0] bg-white/10 shadow-lg shadow-[#2E9CA0]/20'
-                    : 'text-gray-200 hover:text-[#2E9CA0] hover:bg-white/5 hover:scale-105'
+                    ? 'text-white bg-white/10 shadow-lg shadow-[#2E9CA0]/20 font-bold'
+                    : 'text-gray-200 hover:text-[#2E9CA0] hover:bg-white/5 hover:scale-105 font-medium'
                 }`}
               >
                 <span className="relative z-10">{item.label}</span>
@@ -154,10 +154,10 @@ export default function Navbar() {
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 font-medium group focus:outline-none focus:ring-2 focus:ring-[#2E9CA0]/50 focus:bg-white/10 ${
+                className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-[#2E9CA0]/50 focus:bg-white/10 ${
                   activeSection === item.id
-                    ? 'text-[#2E9CA0] bg-white/10 shadow-md shadow-[#2E9CA0]/20 font-semibold'
-                    : 'text-white hover:text-[#2E9CA0] hover:bg-white/5 hover:translate-x-2'
+                    ? 'text-white bg-white/10 shadow-md shadow-[#2E9CA0]/20 font-bold'
+                    : 'text-white hover:text-[#2E9CA0] hover:bg-white/5 hover:translate-x-2 font-medium'
                 }`}
                 style={{
                   animationDelay: isOpen ? `${index * 100}ms` : '0ms',

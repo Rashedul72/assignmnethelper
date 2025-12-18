@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   Sparkles,
   Star,
+  Globe,
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -296,7 +297,18 @@ export default function HeroSection() {
                 >
                   <FaWhatsapp className="w-5 h-5 text-white relative z-10" />
                 </motion.div>
-                <span className="relative z-10 font-semibold text-white">WhatsApp: 01896094070</span>
+                <div className="relative z-10 flex flex-col items-start gap-1">
+                  <div className="flex items-center gap-2">
+                    <motion.div
+                      animate={{ rotate: [0, 360] }}
+                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    >
+                      <Globe className="w-4 h-4 text-white" />
+                    </motion.div>
+                    <span className="font-semibold text-white text-sm">International Students</span>
+                  </div>
+                  <span className="text-xs text-white/90">WhatsApp: 01896094070</span>
+                </div>
               </motion.a>
 
               <motion.a
@@ -342,7 +354,19 @@ export default function HeroSection() {
                 >
                   <FaWhatsapp className="w-5 h-5 text-white relative z-10" />
                 </motion.div>
-                <span className="relative z-10 font-semibold text-white">WhatsApp: 01857290212</span>
+                <div className="relative z-10 flex flex-col items-start gap-1">
+                  <div className="flex items-center gap-2">
+                    {/* Bangladesh Flag */}
+                    <div className="relative w-5 h-4 rounded-sm overflow-hidden shadow-sm">
+                      <div className="absolute inset-0 bg-[#006A4E]"></div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-3 h-3 rounded-full bg-[#F42A41]"></div>
+                      </div>
+                    </div>
+                    <span className="font-semibold text-white text-sm">Bangladesh Students</span>
+                  </div>
+                  <span className="text-xs text-white/90">WhatsApp: 01857290212</span>
+                </div>
               </motion.a>
             </motion.div>
 
