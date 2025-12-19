@@ -226,7 +226,7 @@ export default function HeroSection() {
             </motion.div>
 
             <motion.h1 
-              className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 leading-tight text-center md:text-left"
+              className="text-2xl md:text-3xl lg:text-4xl font-bold mb-10 md:mb-12 leading-tight text-center md:text-left"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -304,7 +304,7 @@ export default function HeroSection() {
 
             {/* Stats */}
             <motion.div
-              className="grid grid-cols-3 gap-8 mt-8 max-w-2xl md:max-w-md md:mx-0 mx-auto"
+              className="grid grid-cols-3 gap-8 mt-12 md:mt-16 max-w-2xl md:max-w-md md:mx-0 mx-auto"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
