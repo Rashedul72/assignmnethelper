@@ -49,7 +49,7 @@ export default function ServicesSection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#21616A]">What We Do</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[var(--primary)]">What We Do</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Our comprehensive academic services designed to help you succeed
           </p>
@@ -67,18 +67,18 @@ export default function ServicesSection() {
             return (
               <motion.div 
                 key={index}
-                className="group bg-white p-6 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#2E9CA0]/30"
+                className="group bg-white p-6 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[var(--secondary)]/30"
                 variants={itemVariants}
                 whileHover={{ scale: 1.02, y: -5 }}
               >
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0">
-                    <div className="w-14 h-14 rounded-xl bg-[#2E9CA0]/10 flex items-center justify-center group-hover:bg-[#2E9CA0]/20 transition-colors animate-float">
-                      <Icon className="w-7 h-7 text-[#2E9CA0]" />
+                    <div className="w-14 h-14 rounded-xl bg-[var(--secondary)]/10 flex items-center justify-center group-hover:bg-[var(--secondary)]/20 transition-colors animate-float">
+                      <Icon className="w-7 h-7 text-[var(--secondary)]" />
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-lg mb-2 text-[#21616A] group-hover:text-[#2E9CA0] transition-colors">
+                    <h3 className="font-semibold text-lg mb-2 text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors">
                       {service.name}
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">{service.desc}</p>
@@ -100,9 +100,9 @@ export default function ServicesSection() {
             className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4"
             whileHover={{ scale: 1.05 }}
           >
-            <CheckCircle className="w-6 h-6 text-[#2E9CA0] flex-shrink-0" />
+            <CheckCircle className="w-6 h-6 text-[var(--secondary)] flex-shrink-0" />
             <div>
-              <div className="font-semibold text-[#21616A]">Plagiarism-Free</div>
+              <div className="font-semibold text-[var(--primary)]">Plagiarism-Free</div>
               <div className="text-sm text-gray-600">100% Original Content</div>
             </div>
           </motion.div>
@@ -110,9 +110,9 @@ export default function ServicesSection() {
             className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4"
             whileHover={{ scale: 1.05 }}
           >
-            <CheckCircle className="w-6 h-6 text-[#2E9CA0] flex-shrink-0" />
+            <CheckCircle className="w-6 h-6 text-[var(--secondary)] flex-shrink-0" />
             <div>
-              <div className="font-semibold text-[#21616A]">On-Time Delivery</div>
+              <div className="font-semibold text-[var(--primary)]">On-Time Delivery</div>
               <div className="text-sm text-gray-600">Never Miss a Deadline</div>
             </div>
           </motion.div>
@@ -120,9 +120,9 @@ export default function ServicesSection() {
             className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4"
             whileHover={{ scale: 1.05 }}
           >
-            <CheckCircle className="w-6 h-6 text-[#2E9CA0] flex-shrink-0" />
+            <CheckCircle className="w-6 h-6 text-[var(--secondary)] flex-shrink-0" />
             <div>
-              <div className="font-semibold text-[#21616A]">Free AI & Similarity Report</div>
+              <div className="font-semibold text-[var(--primary)]">Free AI & Similarity Report</div>
               <div className="text-sm text-gray-600">Turnitin AI and similarity report included on request</div>
             </div>
           </motion.div>

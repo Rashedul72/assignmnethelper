@@ -12,6 +12,7 @@ import {
   ClipboardCheck,
   Repeat,
   FileCheck,
+  CheckCircle2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
@@ -78,7 +79,7 @@ export default function ProgressSection() {
   };
 
   return (
-    <section className="py-20 px-4 bg-white">
+    <section className="py-20 px-4 bg-[var(--primary)]">
       <div className="max-w-6xl mx-auto">
         <motion.div 
           className="text-center mb-16"
@@ -86,13 +87,13 @@ export default function ProgressSection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-sm uppercase tracking-[0.3em] text-[#2E9CA0] mb-3">
+          <p className="text-sm uppercase tracking-[0.3em] text-[var(--secondary)] mb-3">
             Our Promise
           </p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#21616A]">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
             Quality You Can Rely On
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-200 max-w-2xl mx-auto">
             We obsess over the details so you can focus on learning. Here is how we perform on the metrics students care about most.
           </p>
         </motion.div>
@@ -109,19 +110,19 @@ export default function ProgressSection() {
             return (
               <motion.div
                 key={item.label}
-                className="bg-gray-50 border border-gray-100 rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow"
+                className="bg-[var(--secondary)] border border-[var(--secondary)]/50 rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow"
                 variants={itemVariants}
                 whileHover={{ scale: 1.05, y: -5 }}
               >
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm animate-float">
-                    <Icon className="w-7 h-7 text-[#2E9CA0]" />
+                  <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center shadow-sm animate-float">
+                    <Icon className="w-7 h-7 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm uppercase tracking-wide text-gray-500">
+                    <p className="text-sm uppercase tracking-wide text-white/80">
                       {item.label}
                     </p>
-                    <p className="text-3xl font-bold text-[#21616A]">
+                    <p className="text-3xl font-bold text-white">
                       {item.value}%
                     </p>
                   </div>
@@ -135,7 +136,7 @@ export default function ProgressSection() {
                     transition={{ duration: 1.5, delay: index * 0.2, ease: "easeOut" }}
                   ></motion.div>
                 </div>
-                <p className="text-sm text-gray-600">{item.description}</p>
+                <p className="text-sm text-white/90">{item.description}</p>
               </motion.div>
             );
           })}
@@ -148,42 +149,43 @@ export default function ProgressSection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
-          <h3 className="text-2xl md:text-3xl font-bold text-[#21616A] text-center mb-6">
+          <h3 className="text-2xl md:text-3xl font-bold text-white text-center mb-6">
             Procedure of Our Work
           </h3>
-          <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 md:p-8 shadow-sm">
-            <motion.ol
-              className="relative flex flex-col items-center md:flex-row md:items-center gap-5 md:gap-6 lg:gap-8"
-              initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
-              variants={containerVariants}
-            >
-              <div className="hidden md:block absolute left-16 right-16 top-1/2 h-0.5 bg-linear-to-r from-[#2E9CA0]/25 via-[#21616A]/20 to-[#2E9CA0]/25 -translate-y-1/2 pointer-events-none" />
-              {procedureSteps.map((step, idx) => {
-                const Icon = step.icon;
-                return (
+          <motion.ol
+            className="relative flex flex-col items-center md:flex-row md:items-center gap-5 md:gap-6 lg:gap-8"
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            variants={containerVariants}
+          >
+            <div className="hidden md:block absolute left-16 right-16 top-1/2 h-0.5 bg-linear-to-r from-white/25 via-white/20 to-white/25 -translate-y-1/2 pointer-events-none" />
+            {procedureSteps.map((step, idx) => {
+              const Icon = step.icon;
+              const isLast = idx === procedureSteps.length - 1;
+              return (
                 <div key={step.label} className="flex flex-col items-center md:flex-col gap-3 md:gap-2 z-10 w-full md:w-auto">
                   <motion.li
-                    className="relative bg-white border border-gray-100 rounded-xl p-4 md:p-5 shadow-sm flex flex-col items-center text-center gap-3 md:gap-2 w-full max-w-xs md:max-w-none"
+                    className="relative bg-[var(--secondary)] border border-[var(--secondary)]/50 rounded-xl p-4 md:p-5 shadow-sm flex flex-col items-center text-center gap-3 md:gap-2 w-full max-w-xs md:max-w-none"
                     variants={itemVariants}
                     whileHover={{ scale: 1.05, y: -4 }}
                   >
-                    <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#2E9CA0]/15 text-[#21616A] flex items-center justify-center font-semibold shrink-0 shadow-sm">
+                    <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/20 text-white flex items-center justify-center font-semibold shrink-0 shadow-sm">
                       {idx + 1}
                     </div>
-                    <div className="text-sm text-gray-700 leading-snug flex flex-col items-center">
-                      <Icon className="w-5 h-5 mb-2 text-[#2E9CA0]" />
+                    <div className="text-sm font-semibold text-white leading-snug flex flex-col items-center">
+                      <Icon className="w-5 h-5 mb-2 text-white" />
                       <span>{step.label}</span>
                     </div>
                   </motion.li>
-                  {idx < procedureSteps.length - 1 && (
-                    <ArrowRight className="hidden md:block w-5 h-5 text-[#2E9CA0]" />
+                  {!isLast ? (
+                    <ArrowRight className="hidden md:block w-5 h-5 text-white/60" />
+                  ) : (
+                    <CheckCircle2 className="hidden md:block w-5 h-5 text-white/60" />
                   )}
                 </div>
-                );
-              })}
-            </motion.ol>
-          </div>
+              );
+            })}
+          </motion.ol>
         </motion.div>
       </div>
     </section>

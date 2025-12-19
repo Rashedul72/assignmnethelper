@@ -57,18 +57,10 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative bg-[#21616A] text-white pt-32 pb-0 px-4 overflow-hidden"
+      className="relative bg-[var(--primary)] text-white pt-28 pb-0 px-4 overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Interactive gradient overlay */}
-      <motion.div
-        className="absolute top-0 left-0 right-0 h-32 bg-linear-to-b from-[#21616A]/50 to-transparent z-0"
-        style={{
-          background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(46, 156, 160, 0.1) 0%, transparent 50%)`,
-        }}
-      ></motion.div>
-
       {/* Enhanced Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -82,7 +74,7 @@ export default function HeroSection() {
         {particles.map((particle) => (
           <motion.div
             key={particle.id}
-            className="absolute rounded-full bg-[#2E9CA0]/20"
+            className="absolute rounded-full bg-[var(--secondary)]/20"
             style={{
               width: particle.size,
               height: particle.size,
@@ -117,7 +109,7 @@ export default function HeroSection() {
           scale: { duration: 3, repeat: Infinity, ease: "easeInOut" },
         }}
       >
-        <Star className="w-8 h-8 text-[#2E9CA0]" />
+        <Star className="w-8 h-8 text-[var(--secondary)]" />
       </motion.div>
 
       <motion.div
@@ -132,7 +124,7 @@ export default function HeroSection() {
           ease: "easeInOut",
         }}
       >
-        <Sparkles className="w-6 h-6 text-[#2E9CA0]" />
+        <Sparkles className="w-6 h-6 text-[var(--secondary)]" />
       </motion.div>
 
       <motion.div
@@ -162,16 +154,14 @@ export default function HeroSection() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: 0.3 }}
-                whileHover={{ scale: 1.05, y: -2 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {/* Ripple effect */}
-                <div className="absolute inset-0 bg-[#2E9CA0]/20 scale-0 group-hover:scale-100 transition-transform duration-300 rounded-full"></div>
                 <motion.div
                   animate={{ rotate: [0, 10, -10, 0] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <Shield className="w-4 h-4 text-[#2E9CA0] relative z-10" />
+                  <Shield className="w-4 h-4 text-[var(--secondary)] relative z-10" />
                 </motion.div>
                 <span className="text-sm font-medium relative z-10">100% Confidential</span>
               </motion.div>
@@ -182,33 +172,31 @@ export default function HeroSection() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: 0.5 }}
-                whileHover={{ scale: 1.05, y: -2 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {/* Ripple effect */}
-                <div className="absolute inset-0 bg-[#2E9CA0]/20 scale-0 group-hover:scale-100 transition-transform duration-300 rounded-full"></div>
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <Award className="w-4 h-4 text-[#2E9CA0] relative z-10" />
+                  <Award className="w-4 h-4 text-[var(--secondary)] relative z-10" />
                 </motion.div>
                 <span className="text-sm font-medium relative z-10">Expert Writers</span>
               </motion.div>
 
               <motion.div
-                className="group relative flex items-center gap-2 px-4 py-2 rounded-full border border-[#2E9CA0] bg-[#2E9CA0]/80 text-white shadow-[0_0_24px_rgba(46,156,160,0.6)] cursor-pointer overflow-hidden"
+                className="group relative flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--secondary)] bg-[var(--secondary)]/80 text-white cursor-pointer overflow-hidden shadow-none"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: 0.7 }}
-                whileHover={{ scale: 1.05, y: -2 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 {/* Enhanced glow effect */}
-                <div className="absolute inset-0 rounded-full bg-[#2E9CA0]/40 blur-md animate-pulse" />
+                <div className="absolute inset-0 rounded-full bg-[var(--secondary)]/40 blur-md animate-pulse" />
                 <motion.div
-                  className="absolute inset-0 rounded-full bg-[#2E9CA0]/60"
+                  className="absolute inset-0 rounded-full bg-[var(--secondary)]/60"
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 />
@@ -232,8 +220,8 @@ export default function HeroSection() {
               transition={{ duration: 0.6, delay: 0.3 }}
             >
               {/* <div className="relative">
-                <div className="absolute inset-0 bg-[#2E9CA0] blur-2xl opacity-30 rounded-full"></div>
-                <GraduationCap className="w-20 h-20 relative z-10 text-[#2E9CA0] animate-float" />
+                <div className="absolute inset-0 bg-[var(--secondary)] blur-2xl opacity-30 rounded-full"></div>
+                <GraduationCap className="w-20 h-20 relative z-10 text-[var(--secondary)] animate-float" />
               </div> */}
             </motion.div>
 
@@ -248,7 +236,7 @@ export default function HeroSection() {
 
             {/* CTA Buttons */}
             <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start items-center"
+              className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start items-stretch w-full max-w-2xl"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -258,56 +246,28 @@ export default function HeroSection() {
                 href="https://wa.me/8801896094070"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative btn-primary text-white flex items-center gap-2 overflow-hidden"
-                whileHover={{ scale: 1.05, y: -2 }}
+                className="group relative btn-primary text-white flex items-center gap-3 overflow-hidden !shadow-none flex-1 min-w-0"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.8 }}
               >
-                {/* Animated background */}
-                <div className="absolute inset-0 bg-linear-to-r from-[#2E9CA0] to-[#25D366] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                {/* Ripple effect */}
-                <div className="absolute inset-0 bg-white/20 scale-0 group-active:scale-100 transition-transform duration-150 rounded-lg"></div>
-                {/* Floating particles on hover */}
-                <div className="absolute inset-0 pointer-events-none">
-                  {[...Array(5)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute w-1 h-1 bg-white rounded-full"
-                      initial={{ opacity: 0, scale: 0 }}
-                      whileHover={{
-                        opacity: [0, 1, 0],
-                        scale: [0, 1, 0],
-                        x: Math.random() * 100 - 50,
-                        y: Math.random() * -50,
-                      }}
-                      transition={{
-                        duration: 0.6,
-                        delay: i * 0.1,
-                        ease: "easeOut",
-                      }}
-                    />
-                  ))}
-                </div>
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <FaWhatsapp className="w-5 h-5 text-white relative z-10" />
-                </motion.div>
-                <div className="relative z-10 flex flex-col items-start gap-1">
-                  <div className="flex items-center gap-2">
+                <div className="relative z-10 flex flex-col items-start gap-1 min-w-0 flex-1">
+                  <div className="flex items-center gap-2 whitespace-nowrap">
                     <motion.div
                       animate={{ rotate: [0, 360] }}
                       transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                     >
-                      <Globe className="w-4 h-4 text-white" />
+                      <Globe className="w-6 h-6 text-white shrink-0" />
                     </motion.div>
-                    <span className="font-semibold text-white text-sm">International Students</span>
+                    <span className="font-semibold text-white text-lg whitespace-nowrap">International Students</span>
                   </div>
-                  <span className="text-xs text-white/90">WhatsApp: 01896094070</span>
+                  <div className="flex items-center gap-2 whitespace-nowrap">
+                    <FaWhatsapp className="w-6 h-6 text-white/90 shrink-0" />
+                    <span className="text-lg text-white/90">01896094070</span>
+                  </div>
                 </div>
               </motion.a>
 
@@ -315,64 +275,36 @@ export default function HeroSection() {
                 href="https://wa.me/8801857290212"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative btn-primary text-white flex items-center gap-2 overflow-hidden"
-                whileHover={{ scale: 1.05, y: -2 }}
+                className="group relative btn-primary text-white flex items-center gap-3 overflow-hidden !shadow-none flex-1 min-w-0"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.9 }}
               >
-                {/* Animated background */}
-                <div className="absolute inset-0 bg-linear-to-r from-[#2E9CA0] to-[#25D366] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                {/* Ripple effect */}
-                <div className="absolute inset-0 bg-white/20 scale-0 group-active:scale-100 transition-transform duration-150 rounded-lg"></div>
-                {/* Floating particles on hover */}
-                <div className="absolute inset-0 pointer-events-none">
-                  {[...Array(5)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute w-1 h-1 bg-white rounded-full"
-                      initial={{ opacity: 0, scale: 0 }}
-                      whileHover={{
-                        opacity: [0, 1, 0],
-                        scale: [0, 1, 0],
-                        x: Math.random() * 100 - 50,
-                        y: Math.random() * -50,
-                      }}
-                      transition={{
-                        duration: 0.6,
-                        delay: i * 0.1,
-                        ease: "easeOut",
-                      }}
-                    />
-                  ))}
-                </div>
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                >
-                  <FaWhatsapp className="w-5 h-5 text-white relative z-10" />
-                </motion.div>
-                <div className="relative z-10 flex flex-col items-start gap-1">
-                  <div className="flex items-center gap-2">
+                <div className="relative z-10 flex flex-col items-start gap-1 min-w-0 flex-1">
+                  <div className="flex items-center gap-2 whitespace-nowrap">
                     {/* Bangladesh Flag */}
-                    <div className="relative w-5 h-4 rounded-sm overflow-hidden shadow-sm">
+                    <div className="relative w-6 h-5 rounded-sm overflow-hidden shadow-sm shrink-0">
                       <div className="absolute inset-0 bg-[#006A4E]"></div>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-3 h-3 rounded-full bg-[#F42A41]"></div>
+                        <div className="w-4 h-4 rounded-full bg-[#F42A41]"></div>
                       </div>
                     </div>
-                    <span className="font-semibold text-white text-sm">Bangladesh Students</span>
+                    <span className="font-semibold text-white text-lg whitespace-nowrap">Bangladesh Students</span>
                   </div>
-                  <span className="text-xs text-white/90">WhatsApp: 01857290212</span>
+                  <div className="flex items-center gap-2 whitespace-nowrap">
+                    <FaWhatsapp className="w-6 h-6 text-white/90 shrink-0" />
+                    <span className="text-lg text-white/90">01857290212</span>
+                  </div>
                 </div>
               </motion.a>
             </motion.div>
 
             {/* Stats */}
             <motion.div
-              className="grid grid-cols-3 gap-8 mt-16 max-w-2xl md:max-w-md md:mx-0 mx-auto"
+              className="grid grid-cols-3 gap-8 mt-8 max-w-2xl md:max-w-md md:mx-0 mx-auto"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -398,9 +330,9 @@ export default function HeroSection() {
                   >
                     15+
                   </motion.span>
-                  <div className="absolute -top-2 -right-2 w-2 h-2 bg-[#2E9CA0] rounded-full animate-ping"></div>
+                  <div className="absolute -top-2 -right-2 w-2 h-2 bg-[var(--secondary)] rounded-full animate-ping"></div>
                 </motion.div>
-                <div className="text-sm text-gray-400 group-hover:text-[#2E9CA0] transition-colors duration-300">Expert Writers</div>
+                <div className="text-sm text-gray-400 group-hover:text-[var(--secondary)] transition-colors duration-300">Expert Writers</div>
               </motion.div>
 
               <motion.div
@@ -423,9 +355,9 @@ export default function HeroSection() {
                   >
                     1400+
                   </motion.span>
-                  <div className="absolute -top-2 -right-2 w-2 h-2 bg-[#2E9CA0] rounded-full animate-ping animation-delay-300"></div>
+                  <div className="absolute -top-2 -right-2 w-2 h-2 bg-[var(--secondary)] rounded-full animate-ping animation-delay-300"></div>
                 </motion.div>
-                <div className="text-sm text-gray-400 group-hover:text-[#2E9CA0] transition-colors duration-300">Satisfied Clients</div>
+                <div className="text-sm text-gray-400 group-hover:text-[var(--secondary)] transition-colors duration-300">Satisfied Clients</div>
               </motion.div>
 
               <motion.div
@@ -448,9 +380,9 @@ export default function HeroSection() {
                   >
                     98%
                   </motion.span>
-                  <div className="absolute -top-2 -right-2 w-2 h-2 bg-[#2E9CA0] rounded-full animate-ping animation-delay-600"></div>
+                  <div className="absolute -top-2 -right-2 w-2 h-2 bg-[var(--secondary)] rounded-full animate-ping animation-delay-600"></div>
                 </motion.div>
-                <div className="text-sm text-gray-400 group-hover:text-[#2E9CA0] transition-colors duration-300">Success Rate</div>
+                <div className="text-sm text-gray-400 group-hover:text-[var(--secondary)] transition-colors duration-300">Success Rate</div>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -462,24 +394,24 @@ export default function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           >
-            <div className="relative w-full max-w-xl h-80 lg:h-[400px] xl:h-[450px]">
-              <div className="relative w-full h-full min-h-[320px] flex items-end justify-center">
+            <div className="relative w-full max-w-xl h-76 lg:h-[370px] xl:h-[420px]">
+              <div className="relative w-full h-full min-h-[300px] flex items-end justify-center">
                 <Image
                   src="/hero.png"
-                  alt="Students studying with StudyBeee - Professional academic assistance service"
-                  width={600}
-                  height={600}
+                  alt="Students studying with BDJHelper - Professional academic assistance service"
+                  width={570}
+                  height={570}
                   priority
                   quality={95}
                   sizes="(max-width: 1024px) 0vw, (max-width: 1280px) 50vw, 40vw"
-                  className="object-contain object-bottom drop-shadow-2xl lg:scale-[1.1] xl:scale-[1.3] lg:origin-bottom w-auto h-full max-h-full"
+                  className="object-contain object-bottom drop-shadow-2xl lg:scale-[1.05] xl:scale-[1.2] lg:origin-bottom w-auto h-full max-h-full"
                   style={{ objectPosition: 'bottom' }}
                 />
               </div>
 
                 {/* Floating elements around image */}
                 <motion.div
-                  className="absolute -top-4 -right-4 w-8 h-8 bg-[#2E9CA0] rounded-full flex items-center justify-center shadow-lg z-20"
+                  className="absolute -top-4 -right-4 w-8 h-8 bg-[var(--secondary)] rounded-full flex items-center justify-center shadow-lg z-20"
                   animate={{
                     y: [0, -10, 0],
                     rotate: [0, 180, 360],
@@ -494,7 +426,7 @@ export default function HeroSection() {
                 </motion.div>
 
                 <motion.div
-                  className="absolute -bottom-4 -left-4 w-6 h-6 bg-[#2E9CA0]/80 rounded-full flex items-center justify-center shadow-lg z-20"
+                  className="absolute -bottom-4 -left-4 w-6 h-6 bg-[var(--secondary)]/80 rounded-full flex items-center justify-center shadow-lg z-20"
                   animate={{
                     scale: [1, 1.2, 1],
                     opacity: [0.8, 1, 0.8],

@@ -3,8 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary: #21616A;
-  --secondary: #2E9CA0;
+  --primary: #06021f;
+  --secondary: #620273;
+  --primary-dark: #1a4a52;
+  --secondary-hover: #2599a0;
 }
 
 @theme inline {
@@ -12,6 +14,8 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary-hover: var(--secondary-hover);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -120,11 +124,6 @@ body {
   box-shadow: 0 15px 30px rgba(46, 156, 160, 0.25);
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  background: #2599a0;
-  box-shadow: 0 20px 35px rgba(46, 156, 160, 0.35);
-}
 
 .btn-secondary {
   background: rgba(255, 255, 255, 0.08);
@@ -152,7 +151,7 @@ body {
 
 .progress-fill {
   height: 100%;
-  background: var(--secondary);
+  background: var(--primary);
   border-radius: 999px;
   width: 0;
   transition: width 1.8s ease;

@@ -123,7 +123,7 @@ export default function TestimonialsSection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-5 text-[#21616A] tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-bold mb-5 text-[var(--primary)] tracking-tight">
             Client Testimonials
           </h2>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto font-light">
@@ -156,11 +156,11 @@ export default function TestimonialsSection() {
                 >
                   <div className="bg-linear-to-br from-white to-gray-50/50 rounded-2xl sm:rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100/80 p-6 sm:p-8 md:p-10 h-[400px] sm:h-[420px] md:h-[480px] flex flex-col justify-between relative overflow-hidden group hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all duration-300">
                     {/* Top accent line */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-[#2E9CA0] via-[#21616A] to-[#2E9CA0]"></div>
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-[var(--secondary)] via-[var(--primary)] to-[var(--secondary)]"></div>
                     
                     {/* Quote Icon - subtle */}
                     <div className="absolute top-6 sm:top-8 right-6 sm:right-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                      <Quote className="w-12 h-12 sm:w-16 sm:h-16 text-[#21616A]" />
+                      <Quote className="w-12 h-12 sm:w-16 sm:h-16 text-[var(--primary)]" />
                     </div>
                     
                     {/* Stars */}
@@ -180,11 +180,11 @@ export default function TestimonialsSection() {
                     {/* Name at Bottom */}
                     <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200/60 z-10">
                       <div className="flex items-center gap-2 sm:gap-3">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-linear-to-br from-[#2E9CA0] to-[#21616A] flex items-center justify-center text-white font-semibold text-xs sm:text-sm shadow-md">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-linear-to-br from-[var(--secondary)] to-[var(--primary)] flex items-center justify-center text-white font-semibold text-xs sm:text-sm shadow-md">
                           {testimonial.name.charAt(0)}
                         </div>
                         <div>
-                          <div className="font-semibold text-sm sm:text-base text-[#21616A] tracking-tight">
+                          <div className="font-semibold text-sm sm:text-base text-[var(--primary)] tracking-tight">
                             {testimonial.name}
                           </div>
                           <div className="text-[10px] sm:text-xs text-gray-500 font-normal mt-0.5">
@@ -207,7 +207,7 @@ export default function TestimonialsSection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <h3 className="text-3xl font-bold text-[#21616A] text-center mb-8">
+          <h3 className="text-3xl font-bold text-[var(--primary)] text-center mb-8">
             Founders
           </h3>
           <div className="grid gap-6 md:grid-cols-3">
@@ -218,10 +218,10 @@ export default function TestimonialsSection() {
               transition={{ duration: 0.6, delay: 0.3 }}
               whileHover={{ scale: 1.02, y: -3 }}
             >
-              <div className="text-xs font-semibold text-[#2E9CA0] mb-2 uppercase tracking-wide">
+              <div className="text-xs font-semibold text-[var(--secondary)] mb-2 uppercase tracking-wide">
                 CEO
               </div>
-              <div className="font-semibold text-lg text-[#21616A] mb-1">
+              <div className="font-semibold text-lg text-[var(--primary)] mb-1">
                 MD Rashedul Islam Junayed
               </div>
               <div className="text-sm text-gray-700 mb-2">
@@ -239,10 +239,10 @@ export default function TestimonialsSection() {
               transition={{ duration: 0.6, delay: 0.4 }}
               whileHover={{ scale: 1.02, y: -3 }}
             >
-              <div className="text-xs font-semibold text-[#2E9CA0] mb-2 uppercase tracking-wide">
+              <div className="text-xs font-semibold text-[var(--secondary)] mb-2 uppercase tracking-wide">
                 Managing Director
               </div>
-              <div className="font-semibold text-lg text-[#21616A] mb-1">
+              <div className="font-semibold text-lg text-[var(--primary)] mb-1">
                 Fahad Rahul
               </div>
               <div className="text-sm text-gray-700 mb-2">
@@ -260,10 +260,10 @@ export default function TestimonialsSection() {
               transition={{ duration: 0.6, delay: 0.5 }}
               whileHover={{ scale: 1.02, y: -3 }}
             >
-              <div className="text-xs font-semibold text-[#2E9CA0] mb-2 uppercase tracking-wide">
+              <div className="text-xs font-semibold text-[var(--secondary)] mb-2 uppercase tracking-wide">
                 Marketing & Technical Officer
               </div>
-              <div className="font-semibold text-lg text-[#21616A] mb-1">
+              <div className="font-semibold text-lg text-[var(--primary)] mb-1">
                 Irfatul Islam
               </div>
               <div className="text-sm text-gray-700 mb-2">

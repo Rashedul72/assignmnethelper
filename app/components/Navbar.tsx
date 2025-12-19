@@ -22,7 +22,13 @@ export default function Navbar() {
       }
 
       // Update active section based on scroll position
-      const sections = ["home", "about", "fields", "services", "testimonials"];
+      // Check if at top of page (home section)
+      if (scrollPosition < 100) {
+        setActiveSection("home");
+        return;
+      }
+      
+      const sections = ["about", "fields", "services", "testimonials"];
       const current = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -32,7 +38,9 @@ export default function Navbar() {
         return false;
       });
 
-      if (current) setActiveSection(current);
+      if (current) {
+        setActiveSection(current);
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -41,18 +49,26 @@ export default function Navbar() {
 
   // Smooth scroll to section
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const offsetTop = element.offsetTop - 96; // Account for navbar height
+    if (sectionId === "home") {
       window.scrollTo({
-        top: offsetTop,
+        top: 0,
         behavior: "smooth"
       });
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        const offsetTop = element.offsetTop - 96; // Account for navbar height
+        window.scrollTo({
+          top: offsetTop,
+          behavior: "smooth"
+        });
+      }
     }
     setIsOpen(false);
   };
 
   const navItems = [
+    { id: "home", label: "Home" },
     { id: "about", label: "About" },
     { id: "fields", label: "Fields" },
     { id: "services", label: "Services" },
@@ -62,15 +78,9 @@ export default function Navbar() {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
       isScrolled
-        ? 'bg-[#21616A]/95 backdrop-blur-md border-b border-white/10 shadow-2xl shadow-black/30 h-20'
-        : 'bg-[#21616A] backdrop-blur-sm border-b border-white/5 shadow-lg shadow-black/20 h-24'
+        ? 'bg-[var(--primary)] backdrop-blur-md h-20'
+        : 'bg-[var(--primary)] backdrop-blur-sm h-24'
     }`}>
-      {/* Dynamic gradient overlay */}
-      <div className={`absolute inset-0 transition-all duration-500 ${
-        isScrolled
-          ? 'bg-linear-to-b from-[#21616A]/95 to-[#21616A]/90'
-          : 'bg-linear-to-b from-[#21616A]/90 to-[#21616A]'
-      }`}></div>
 
       {/* Background pattern with dynamic opacity */}
       <div className={`absolute inset-0 transition-opacity duration-500 ${
@@ -87,8 +97,8 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <Link href="/">
               <Image
-                src="/new-logo.png"
-                alt="StudyBeee Logo"
+                src="/logo_text.png"
+                alt="BDJHelper Logo"
                 width={220}
                 height={220}
                 className="cursor-pointer"
@@ -102,26 +112,26 @@ export default function Navbar() {
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`relative px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-sm group focus:outline-none focus:ring-2 focus:ring-[#2E9CA0]/50 focus:ring-offset-2 focus:ring-offset-[#21616A] ${
+                className={`relative px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-sm group focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]/50 focus:ring-offset-2 focus:ring-offset-[var(--primary)] ${
                   activeSection === item.id
-                    ? 'text-white bg-white/10 shadow-lg shadow-[#2E9CA0]/20 font-bold'
-                    : 'text-gray-200 hover:text-[#2E9CA0] hover:bg-white/5 hover:scale-105 font-medium'
+                    ? 'text-white bg-[var(--secondary)] shadow-lg shadow-[var(--secondary)]/20 font-bold'
+                    : 'text-gray-200 hover:text-[var(--secondary)] hover:bg-white/5 hover:scale-105 font-medium'
                 }`}
               >
                 <span className="relative z-10">{item.label}</span>
                 {/* Active indicator */}
                 {activeSection === item.id && (
-                  <div className="absolute inset-0 bg-[#2E9CA0]/20 rounded-xl animate-pulse"></div>
+                  <div className="absolute inset-0 bg-[var(--secondary)]/30 rounded-xl"></div>
                 )}
                 {/* Hover effect */}
-                <div className="absolute inset-0 bg-[#2E9CA0]/10 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                <div className="absolute inset-0 bg-[var(--secondary)]/10 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-300"></div>
               </button>
             ))}
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className={`md:hidden relative p-2 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#2E9CA0]/50 focus:ring-offset-2 focus:ring-offset-[#21616A] ${
+            className={`md:hidden relative p-2 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]/50 focus:ring-offset-2 focus:ring-offset-[var(--primary)] ${
               isOpen ? 'bg-white/10' : 'hover:bg-white/5'
             }`}
             onClick={() => setIsOpen(!isOpen)}
@@ -148,16 +158,16 @@ export default function Navbar() {
       <div className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
         isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
       }`}>
-        <div className="bg-[#21616A] border-t border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.25)] rounded-b-2xl backdrop-blur-md">
+        <div className="bg-[var(--primary)] border-t border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.25)] rounded-b-2xl backdrop-blur-md">
           <div className="px-6 py-5 space-y-2">
             {navItems.map((item, index) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-[#2E9CA0]/50 focus:bg-white/10 ${
+                className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]/50 focus:bg-white/10 ${
                   activeSection === item.id
-                    ? 'text-white bg-white/10 shadow-md shadow-[#2E9CA0]/20 font-bold'
-                    : 'text-white hover:text-[#2E9CA0] hover:bg-white/5 hover:translate-x-2 font-medium'
+                    ? 'text-white bg-[var(--secondary)] shadow-md shadow-[var(--secondary)]/20 font-bold'
+                    : 'text-white hover:text-[var(--secondary)] hover:bg-white/5 hover:translate-x-2 font-medium'
                 }`}
                 style={{
                   animationDelay: isOpen ? `${index * 100}ms` : '0ms',
@@ -167,8 +177,8 @@ export default function Navbar() {
                 <div className="flex items-center gap-3">
                   <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
                     activeSection === item.id
-                      ? 'bg-[#2E9CA0] shadow-md shadow-[#2E9CA0]/50'
-                      : 'bg-white/60 group-hover:bg-[#2E9CA0]'
+                      ? 'bg-[var(--secondary)] shadow-md shadow-[var(--secondary)]/50'
+                      : 'bg-white/60 group-hover:bg-[var(--secondary)]'
                   }`}></div>
                   <span>{item.label}</span>
                 </div>

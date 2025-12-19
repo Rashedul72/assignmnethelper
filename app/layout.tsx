@@ -13,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://studybeee.com"),
+  metadataBase: new URL("https://BDJHelper.com"),
   title: {
-    default: "StudyBeee - Assignment Help, Dissertation Writing & Research Paper Service",
-    template: "%s | StudyBeee",
+    default: "BDJHelper - Assignment Help, Dissertation Writing & Research Paper Service",
+    template: "%s | BDJHelper",
   },
   description:
-    "StudyBeee provides expert assignment help, dissertation writing, research papers, proposals, posters, case studies, and reports. Free Turnitin AI & similarity reports. 15+ expert writers serving 1400+ students across Bangladesh, UK, Australia, USA, Canada, and Austria. CSE, BBA, BSS, MSS, BA, MA, MSC assignments.",
+    "BDJHelper provides expert assignment help, dissertation writing, research papers, proposals, posters, case studies, and reports. Free Turnitin AI & similarity reports. 15+ expert writers serving 1400+ students across Bangladesh, UK, Australia, USA, Canada, and Austria. CSE, BBA, BSS, MSS, BA, MA, MSC assignments.",
   keywords: [
     // Core Services
     "assignment help",
@@ -159,13 +159,13 @@ export const metadata: Metadata = {
     "three revisions",
     
     // Brand
-    "StudyBeee",
-    "StudyBeee assignment help",
-    "StudyBeee reviews",
+    "BDJHelper",
+    "BDJHelper assignment help",
+    "BDJHelper reviews",
   ],
-  authors: [{ name: "StudyBeee Team" }],
-  creator: "StudyBeee",
-  publisher: "StudyBeee",
+  authors: [{ name: "BDJHelper Team" }],
+  creator: "BDJHelper",
+  publisher: "BDJHelper",
   robots: {
     index: true,
     follow: true,
@@ -178,11 +178,11 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "StudyBeee - Expert Assignment Help, Dissertation & Research Paper Writing Service",
+    title: "BDJHelper - Expert Assignment Help, Dissertation & Research Paper Writing Service",
     description:
       "Get professional assignment help, dissertation writing, research papers, proposals, posters, and reports. Free Turnitin AI & similarity reports. 15+ expert writers. 1400+ satisfied students. Operating in Bangladesh, UK, Australia, USA, Canada, and Austria.",
-    url: "https://studybeee.com",
-    siteName: "StudyBeee",
+    url: "https://BDJHelper.com",
+    siteName: "BDJHelper",
     type: "website",
     locale: "en_US",
     images: [
@@ -190,26 +190,26 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "StudyBeee - Assignment Help & Academic Writing Service",
+        alt: "BDJHelper - Assignment Help & Academic Writing Service",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "StudyBeee - Assignment Help, Dissertation & Research Paper Service",
+    title: "BDJHelper - Assignment Help, Dissertation & Research Paper Service",
     description:
       "Expert assignment help, dissertation writing, research papers, proposals, and posters. Free Turnitin reports. 15+ expert writers. 1400+ satisfied students.",
     images: ["/og-image.jpg"],
-    creator: "@studybeee",
+    creator: "@BDJHelper",
   },
   alternates: {
-    canonical: "https://studybeee.com",
+    canonical: "https://BDJHelper.com",
   },
   category: "Education",
   classification: "Academic Writing Service",
   other: {
-    "application-name": "StudyBeee",
-    "apple-mobile-web-app-title": "StudyBeee",
+    "application-name": "BDJHelper",
+    "apple-mobile-web-app-title": "BDJHelper",
     "apple-mobile-web-app-capable": "yes",
     "mobile-web-app-capable": "yes",
     "theme-color": "#21616A",
@@ -234,14 +234,14 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "EducationalOrganization",
-              "@id": "https://studybeee.com/#organization",
-              name: "StudyBeee",
-              alternateName: "StudyBeee Assignment Helper",
+              "@id": "https://BDJHelper.com/#organization",
+              name: "BDJHelper",
+              alternateName: "BDJHelper Assignment Helper",
               description:
                 "Professional academic writing service providing assignment help, dissertation writing, research papers, proposals, posters, case studies, and reports. Free Turnitin AI & similarity reports included.",
-              url: "https://studybeee.com",
-              logo: "https://studybeee.com/logo.png",
-              image: "https://studybeee.com/og-image.jpg",
+              url: "https://BDJHelper.com",
+              logo: "https://BDJHelper.com/logo.png",
+              image: "https://BDJHelper.com/og-image.jpg",
               foundingDate: "2020",
               numberOfEmployees: {
                 "@type": "QuantitativeValue",
@@ -298,13 +298,13 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Service",
-              "@id": "https://studybeee.com/#assignment-help-service",
+              "@id": "https://BDJHelper.com/#assignment-help-service",
               serviceType: "Assignment Writing Service",
               name: "Assignment Help Service",
               description:
                 "Professional assignment writing and completion service for university and college students across all academic disciplines including CSE, BBA, BSS, MSS, BA, MA, MSC, and BSE.",
               provider: {
-                "@id": "https://studybeee.com/#organization",
+                "@id": "https://BDJHelper.com/#organization",
               },
               areaServed: [
                 "Bangladesh",
@@ -330,13 +330,13 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Service",
-              "@id": "https://studybeee.com/#dissertation-help-service",
+              "@id": "https://BDJHelper.com/#dissertation-help-service",
               serviceType: "Dissertation Writing Service",
               name: "Dissertation & Thesis Writing Service",
               description:
                 "Expert dissertation and thesis writing assistance for undergraduate, graduate, and PhD students. Comprehensive research, writing, and formatting support.",
               provider: {
-                "@id": "https://studybeee.com/#organization",
+                "@id": "https://BDJHelper.com/#organization",
               },
               areaServed: [
                 "Bangladesh",
@@ -358,13 +358,13 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Service",
-              "@id": "https://studybeee.com/#research-paper-service",
+              "@id": "https://BDJHelper.com/#research-paper-service",
               serviceType: "Research Paper Writing Service",
               name: "Research Paper Writing Service",
               description:
                 "Academic research paper writing service with in-depth research, proper citations, and academic formatting. Includes free Turnitin similarity reports.",
               provider: {
-                "@id": "https://studybeee.com/#organization",
+                "@id": "https://BDJHelper.com/#organization",
               },
             }),
           }}
@@ -381,10 +381,10 @@ export default function RootLayout({
               mainEntity: [
                 {
                   "@type": "Question",
-                  name: "What services does StudyBeee offer?",
+                  name: "What services does BDJHelper offer?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "StudyBeee offers comprehensive academic writing services including assignment help, dissertation writing, research papers, proposals, posters, case studies, reports, essays, and proofreading services. We also provide free Turnitin AI & similarity reports with all orders.",
+                    text: "BDJHelper offers comprehensive academic writing services including assignment help, dissertation writing, research papers, proposals, posters, case studies, reports, essays, and proofreading services. We also provide free Turnitin AI & similarity reports with all orders.",
                   },
                 },
                 {
@@ -392,7 +392,7 @@ export default function RootLayout({
                   name: "Do you provide Turnitin reports?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "Yes, StudyBeee provides free Turnitin AI & similarity reports with all assignments upon request. This helps ensure your work is original and plagiarism-free.",
+                    text: "Yes, BDJHelper provides free Turnitin AI & similarity reports with all assignments upon request. This helps ensure your work is original and plagiarism-free.",
                   },
                 },
                 {
@@ -400,7 +400,7 @@ export default function RootLayout({
                   name: "How many revisions are included?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "StudyBeee includes up to three revisions with every order to ensure your complete satisfaction with the final work.",
+                    text: "BDJHelper includes up to three revisions with every order to ensure your complete satisfaction with the final work.",
                   },
                 },
                 {
@@ -408,7 +408,7 @@ export default function RootLayout({
                   name: "Which countries do you serve?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "StudyBeee operates in Bangladesh, UK, Australia, USA, Canada, and Austria, serving students worldwide.",
+                    text: "BDJHelper operates in Bangladesh, UK, Australia, USA, Canada, and Austria, serving students worldwide.",
                   },
                 },
                 {
@@ -424,15 +424,15 @@ export default function RootLayout({
                   name: "Is the content plagiarism-free?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "Yes, all work provided by StudyBeee is 100% original and plagiarism-free. We provide free Turnitin similarity reports to verify originality.",
+                    text: "Yes, all work provided by BDJHelper is 100% original and plagiarism-free. We provide free Turnitin similarity reports to verify originality.",
                   },
                 },
                 {
                   "@type": "Question",
-                  name: "How do I contact StudyBeee?",
+                  name: "How do I contact BDJHelper?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "You can contact StudyBeee via WhatsApp at 01896094070 or 01857290212. We offer 24/7 customer support.",
+                    text: "You can contact BDJHelper via WhatsApp at 01896094070 or 01857290212. We offer 24/7 customer support.",
                   },
                 },
               ],
@@ -453,19 +453,19 @@ export default function RootLayout({
                   "@type": "ListItem",
                   position: 1,
                   name: "Home",
-                  item: "https://studybeee.com",
+                  item: "https://BDJHelper.com",
                 },
                 {
                   "@type": "ListItem",
                   position: 2,
                   name: "Services",
-                  item: "https://studybeee.com#services",
+                  item: "https://BDJHelper.com#services",
                 },
                 {
                   "@type": "ListItem",
                   position: 3,
                   name: "About Us",
-                  item: "https://studybeee.com#about",
+                  item: "https://BDJHelper.com#about",
                 },
               ],
             }),
@@ -482,11 +482,11 @@ export default function RootLayout({
               "@type": "Review",
               itemReviewed: {
                 "@type": "Service",
-                name: "StudyBeee Assignment Help Service",
+                name: "BDJHelper Assignment Help Service",
               },
               author: {
                 "@type": "Organization",
-                name: "StudyBeee",
+                name: "BDJHelper",
               },
               reviewRating: {
                 "@type": "Rating",
@@ -495,7 +495,7 @@ export default function RootLayout({
                 worstRating: "1",
               },
               reviewBody:
-                "StudyBeee has helped over 1400+ students with their academic assignments, dissertations, and research papers. With 15+ expert writers and a 98% success rate, we provide quality academic writing services with free Turnitin reports and three revisions included.",
+                "BDJHelper has helped over 1400+ students with their academic assignments, dissertations, and research papers. With 15+ expert writers and a 98% success rate, we provide quality academic writing services with free Turnitin reports and three revisions included.",
             }),
           }}
         />

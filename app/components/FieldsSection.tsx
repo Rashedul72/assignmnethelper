@@ -44,7 +44,7 @@ export default function FieldsSection() {
   };
 
   return (
-    <section id="fields" className="py-20 px-4 scroll-mt-20">
+    <section id="fields" className="py-20 px-4 scroll-mt-20 bg-[var(--primary)]">
       <div className="max-w-7xl mx-auto">
         <motion.div 
           className="text-center mb-10"
@@ -52,18 +52,18 @@ export default function FieldsSection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#21616A]">Fields We Cover</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Fields We Cover</h2>
+          <p className="text-lg text-gray-200 max-w-2xl mx-auto">
             We provide specialized assistance across the following academic majors and fields
           </p>
         </motion.div>
 
         {/* Moving ticker of subjects */}
-        <div className="subject-marquee-container border-y border-gray-200 py-3 mb-10 bg-white/60">
-          <div className="subject-marquee-track gap-8 text-sm font-medium text-[#21616A]/80">
+        <div className="subject-marquee-container border-y border-white/20 py-3 mb-10 bg-white/10">
+          <div className="subject-marquee-track gap-8 text-sm font-medium text-white/90">
             {tickerItems.map((field, index) => (
               <span key={index} className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#2E9CA0]" />
+                <span className="w-2 h-2 rounded-full bg-[var(--secondary)]" />
                 {field.code} &mdash; {field.name}
               </span>
             ))}
@@ -80,14 +80,14 @@ export default function FieldsSection() {
           {fields.map((field, index) => (
             <motion.div 
               key={index}
-              className="group bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-[#2E9CA0] hover:shadow-lg transition-all duration-300 cursor-pointer"
+              className="group bg-[var(--secondary)] border-2 border-[var(--secondary)]/50 rounded-xl p-6 hover:border-white/50 hover:shadow-lg transition-all duration-300 cursor-pointer"
               variants={itemVariants}
               whileHover={{ scale: 1.05, y: -5 }}
             >
-              <div className="text-3xl font-bold text-[#21616A] mb-3 group-hover:text-[#2E9CA0] transition-colors">
+              <div className="text-3xl font-bold text-white mb-3 group-hover:text-white transition-colors">
                 {field.code}
               </div>
-              <div className="text-gray-700 text-sm leading-relaxed group-hover:text-gray-900 transition-colors">
+              <div className="text-white/90 text-sm leading-relaxed group-hover:text-white transition-colors">
                 {field.name}
               </div>
             </motion.div>

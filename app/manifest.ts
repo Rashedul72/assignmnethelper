@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'StudyBeee - Assignment Help & Academic Writing Service',
-    short_name: 'StudyBeee',
+    name: 'BDJHelper - Assignment Help & Academic Writing Service',
+    short_name: 'BDJHelper',
     description: 'Expert assignment help, dissertation writing, research papers, proposals, posters, and reports. Free Turnitin AI & similarity reports.',
     start_url: '/',
     display: 'standalone',
