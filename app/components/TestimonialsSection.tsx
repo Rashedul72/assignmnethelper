@@ -261,7 +261,7 @@ export default function TestimonialsSection() {
               whileHover={{ scale: 1.02, y: -3 }}
             >
               <div className="text-xs font-semibold text-[var(--secondary)] mb-2 uppercase tracking-wide">
-                Marketing & Technical Officer
+                Marketing & Technical Head
               </div>
               <div className="font-semibold text-lg text-[var(--primary)] mb-1">
                 Irfatul Islam
