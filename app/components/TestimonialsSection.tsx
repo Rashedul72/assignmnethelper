@@ -269,9 +269,6 @@ export default function TestimonialsSection() {
               <div className="text-sm text-gray-700 mb-2">
                 BSc in Multimedia & Gaming Technology
               </div>
-              <div className="text-sm text-gray-500">
-                Asia Pacific University of Technology and Innovation, Kuala Lumpur.
-              </div>
             </motion.div>
           </div>
         </motion.div>
