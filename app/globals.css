@@ -1,12 +1,37 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------
+   Design Tokens
+   - Brand colors (primary / secondary) are LOCKED.
+   - Everything else is a derived alias to keep visual cohesion.
+   ------------------------------------------------------------------ */
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary: #06021f;
-  --secondary: #620273;
-  --primary-dark: #1a4a52;
-  --secondary-hover: #2599a0;
+
+  /* Locked brand colors */
+  --primary: #06021f;        /* deep navy / brand base */
+  --secondary: #620273;      /* purple / brand accent */
+
+  /* Derived surfaces & states */
+  --surface: #f8f8fb;
+  --surface-muted: #f1f1f6;
+  --border-soft: #ececf4;
+  --primary-hover: #0d0833;
+  --secondary-hover: #7a0790;
+
+  /* Typography rhythm */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-pill: 999px;
+
+  /* Elevation */
+  --shadow-soft: 0 10px 28px rgba(6, 2, 31, 0.06);
+  --shadow-card: 0 18px 40px rgba(6, 2, 31, 0.08);
+  --shadow-cta: 0 12px 32px rgba(98, 2, 115, 0.25);
+  --shadow-cta-hover: 0 18px 36px rgba(98, 2, 115, 0.32);
 }
 
 @theme inline {
@@ -14,203 +39,274 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
-  --color-primary-dark: var(--primary-dark);
-  --color-secondary-hover: var(--secondary-hover);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base */
 html {
   scroll-behavior: smooth;
-}
-
-html {
-  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Animations */
+/* Accessible focus ring across the whole site */
+:where(a, button, [role="button"]):focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 3px;
+  border-radius: 0.4rem;
+}
+
+/* Selection styling — uses brand secondary */
+::selection {
+  background: var(--secondary);
+  color: #ffffff;
+}
+
+/* ------------------------------------------------------------------
+   Keyframes
+   ------------------------------------------------------------------ */
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
 }
 
 @keyframes pulse-glow {
-  0% {
-    box-shadow: 0 0 0 0 rgba(46, 156, 160, 0.35);
+  0%   { box-shadow: 0 0 0 0 rgba(98, 2, 115, 0.45); }
+  70%  { box-shadow: 0 0 0 16px rgba(98, 2, 115, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(98, 2, 115, 0); }
+}
+
+@keyframes subject-marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ------------------------------------------------------------------
+   Animation utilities
+   ------------------------------------------------------------------ */
+.animate-fade-in     { animation: fade-in 0.6s ease-out both; }
+.animate-fade-in-up  { animation: fade-in-up 0.8s ease-out both; }
+.animate-float       { animation: float 4s ease-in-out infinite; }
+.animate-pulse-glow  { animation: pulse-glow 2.5s infinite; }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* ------------------------------------------------------------------
+   Components / Helpers
+   Layout primitives shared across all sections.
+   ------------------------------------------------------------------ */
+.section-shell {
+  padding: 5.5rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .section-shell {
+    padding: 6rem 1.5rem;
   }
-  70% {
-    box-shadow: 0 0 0 15px rgba(46, 156, 160, 0);
+}
+
+@media (max-width: 640px) {
+  .section-shell {
+    padding: 4rem 1rem;
   }
-  100% {
-    box-shadow: 0 0 0 0 rgba(46, 156, 160, 0);
-  }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.6s ease-out;
+.content-shell {
+  max-width: 80rem;
+  margin-inline: auto;
+  width: 100%;
 }
 
-.animate-fade-in-up {
-  animation: fade-in-up 0.8s ease-out both;
+.section-title {
+  font-size: clamp(1.85rem, 4vw, 2.85rem);
+  line-height: 1.12;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 2.5s infinite;
-}
-
-.delay-100 {
-  animation-delay: 0.1s;
-}
-
-.delay-200 {
-  animation-delay: 0.2s;
-}
-
-.btn-primary {
-  background: var(--secondary);
-  color: var(--primary);
-  padding: 1rem 2.5rem;
-  border-radius: 0.75rem;
+.section-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
   font-weight: 600;
-  font-size: 1.125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--secondary);
+  margin-bottom: 0.75rem;
+}
+
+.gradient-text {
+  background: linear-gradient(120deg, var(--secondary), #b07ad1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Card system */
+.soft-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.soft-card:hover {
+  border-color: rgba(98, 2, 115, 0.25);
+  box-shadow: var(--shadow-card);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Pills (used for trust badges) */
+.pill {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  box-shadow: 0 15px 30px rgba(46, 156, 160, 0.25);
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffffff;
 }
 
+/* CTAs */
+.btn-primary {
+  background: var(--secondary);
+  color: #ffffff;
+  padding: 0.95rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  box-shadow: var(--shadow-cta);
+}
+
+.btn-primary:hover {
+  background: var(--secondary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-cta-hover);
+}
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
-  padding: 1rem 2.5rem;
-  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 0.95rem 1.5rem;
+  border-radius: var(--radius-md);
   font-weight: 600;
-  font-size: 1.125rem;
+  font-size: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: background 0.2s ease, border 0.2s ease;
+  transition: background 0.2s ease, border 0.2s ease, transform 0.2s ease;
 }
 
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
 }
 
+/* Progress meter (used in ProgressSection) */
 .progress-track {
   width: 100%;
-  height: 10px;
-  background: #e5e7eb;
-  border-radius: 999px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-pill);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--primary);
-  border-radius: 999px;
+  background: #ffffff;
+  border-radius: var(--radius-pill);
   width: 0;
-  transition: width 1.8s ease;
+  transition: width 1.6s ease;
 }
 
-/* Subject ticker / marquee */
-@keyframes subject-marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
+/* Subject marquee */
 .subject-marquee-container {
   overflow: hidden;
   position: relative;
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 6%,
+    #000 94%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 6%,
+    #000 94%,
+    transparent 100%
+  );
 }
 
 .subject-marquee-track {
   display: inline-flex;
   white-space: nowrap;
-  animation: subject-marquee 22s linear infinite;
+  animation: subject-marquee 28s linear infinite;
+  will-change: transform;
 }
 
-/* Animations */
-@keyframes fade-in {
-  from {
-    opacity: 0;
+/* ------------------------------------------------------------------
+   Accessibility — respect users who request reduced motion.
+   Disables decorative animation/transitions globally.
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
-  to {
-    opacity: 1;
+
+  .subject-marquee-track {
+    animation: none !important;
   }
-}
-
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in {
-  animation: fade-in 0.6s ease-out;
-}
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.8s ease-out;
-}
-
-.delay-100 {
-  animation-delay: 0.1s;
-}
-
-.delay-200 {
-  animation-delay: 0.2s;
 }

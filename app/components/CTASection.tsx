@@ -1,38 +1,66 @@
 "use client";
 
-import { CheckCircle, Globe } from "lucide-react";
+import { CheckCircle, Globe, Clock, RefreshCcw } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
+
+const PERKS = [
+  {
+    icon: RefreshCcw,
+    title: "Three Revisions",
+    desc: "Up to three revisions included with every order.",
+  },
+  {
+    icon: Clock,
+    title: "24/7 Support",
+    desc: "Always here when you need us — day or night.",
+  },
+  {
+    icon: CheckCircle,
+    title: "Plagiarism-Free",
+    desc: "Free Turnitin AI & similarity report on request.",
+  },
+];
 
 export default function CTASection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const prefersReducedMotion = useReducedMotion();
 
   return (
-    <section className="py-20 px-4 bg-[var(--primary)] text-white">
-      <div className="max-w-4xl mx-auto text-center">
-        <motion.h2 
-          className="text-4xl md:text-5xl font-bold mb-6"
+    <section
+      aria-labelledby="cta-heading"
+      className="section-shell bg-[var(--primary)] text-white relative overflow-hidden"
+    >
+      <div
+        aria-hidden
+        className="absolute -top-32 left-1/2 -translate-x-1/2 w-[36rem] h-[36rem] rounded-full bg-[var(--secondary)]/20 blur-[140px] pointer-events-none"
+      />
+
+      <div className="max-w-4xl mx-auto text-center relative z-10">
+        <motion.h2
+          id="cta-heading"
+          className="section-title mb-4"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
           Ready to Excel in Your Studies?
         </motion.h2>
-        <motion.p 
-          className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto"
+
+        <motion.p
+          className="text-base md:text-lg text-gray-300 mb-10 max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          Join thousands of successful students who trust us with their academic assignments. 
-          Get started today and experience the difference.
+          Join thousands of successful students who trust BDJHelper with their
+          academic work. Reach out on WhatsApp to get started today.
         </motion.p>
 
-        <motion.div 
-          className="flex flex-col sm:flex-row gap-4 justify-center items-stretch w-full max-w-2xl mx-auto mb-12"
+        <motion.div
+          className="flex flex-col sm:flex-row gap-3 justify-center items-stretch w-full max-w-2xl mx-auto mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.4 }}
@@ -41,83 +69,90 @@ export default function CTASection() {
             href="https://wa.me/8801896094070"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary group text-white flex items-center gap-3 flex-1 min-w-0 !shadow-none"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            aria-label="WhatsApp for international students"
+            className="btn-primary group flex-1 min-w-0 !shadow-none"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
           >
-            <div className="relative z-10 flex flex-col items-start gap-1 min-w-0 flex-1">
-              <div className="flex items-center gap-2 whitespace-nowrap">
-                <motion.div
-                  animate={{ rotate: [0, 360] }}
+            <span className="flex flex-col items-start gap-1 min-w-0 flex-1">
+              <span className="flex items-center gap-2 whitespace-nowrap">
+                <motion.span
+                  animate={
+                    prefersReducedMotion ? undefined : { rotate: [0, 360] }
+                  }
                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="inline-flex"
                 >
-                  <Globe className="w-6 h-6 text-white shrink-0" />
-                </motion.div>
-                <span className="font-semibold text-white text-lg whitespace-nowrap">International Students</span>
-              </div>
-              <div className="flex items-center gap-2 whitespace-nowrap">
-                <FaWhatsapp className="w-6 h-6 text-white/90 shrink-0" />
-                <span className="text-lg text-white/90">01896094070</span>
-              </div>
-            </div>
+                  <Globe className="w-5 h-5 text-white shrink-0" />
+                </motion.span>
+                <span className="font-semibold text-base">
+                  International Students
+                </span>
+              </span>
+              <span className="flex items-center gap-2 whitespace-nowrap text-white/90">
+                <FaWhatsapp className="w-5 h-5 shrink-0" />
+                <span className="text-sm md:text-base">01896094070</span>
+              </span>
+            </span>
           </motion.a>
+
           <motion.a
             href="https://wa.me/8801857290212"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary group text-white flex items-center gap-3 flex-1 min-w-0 !shadow-none"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            aria-label="WhatsApp for Bangladesh students"
+            className="btn-primary group flex-1 min-w-0 !shadow-none"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
           >
-            <div className="relative z-10 flex flex-col items-start gap-1 min-w-0 flex-1">
-              <div className="flex items-center gap-2 whitespace-nowrap">
-                {/* Bangladesh Flag */}
-                <div className="relative w-6 h-5 rounded-sm overflow-hidden shadow-sm shrink-0">
-                  <div className="absolute inset-0 bg-[#006A4E]"></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-4 h-4 rounded-full bg-[#F42A41]"></div>
-                  </div>
-                </div>
-                <span className="font-semibold text-white text-lg whitespace-nowrap">Bangladesh Students</span>
-              </div>
-              <div className="flex items-center gap-2 whitespace-nowrap">
-                <FaWhatsapp className="w-6 h-6 text-white/90 shrink-0" />
-                <span className="text-lg text-white/90">01857290212</span>
-              </div>
-            </div>
+            <span className="flex flex-col items-start gap-1 min-w-0 flex-1">
+              <span className="flex items-center gap-2 whitespace-nowrap">
+                <span
+                  aria-hidden
+                  className="relative w-5 h-4 rounded-sm overflow-hidden shadow-sm shrink-0"
+                >
+                  <span className="absolute inset-0 bg-[#006A4E]" />
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="w-3 h-3 rounded-full bg-[#F42A41]" />
+                  </span>
+                </span>
+                <span className="font-semibold text-base">
+                  Bangladesh Students
+                </span>
+              </span>
+              <span className="flex items-center gap-2 whitespace-nowrap text-white/90">
+                <FaWhatsapp className="w-5 h-5 shrink-0" />
+                <span className="text-sm md:text-base">01857290212</span>
+              </span>
+            </span>
           </motion.a>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           ref={ref}
-          className="grid sm:grid-cols-1 md:grid-cols-2 gap-8 text-center max-w-3xl mx-auto"
+          className="grid sm:grid-cols-3 gap-5 max-w-3xl mx-auto"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
-          <motion.div 
-            className="flex flex-col items-center text-center gap-3"
-            whileHover={{ scale: 1.05, y: -3 }}
-          >
-            <CheckCircle className="w-6 h-6 text-[var(--secondary)] shrink-0" />
-            <div className="text-center">
-              <div className="font-semibold mb-1">Three Revisions</div>
-              <div className="text-sm text-gray-400">Up to three revisions included</div>
-            </div>
-          </motion.div>
-          <motion.div 
-            className="flex flex-col items-center text-center gap-3"
-            whileHover={{ scale: 1.05, y: -3 }}
-          >
-            <CheckCircle className="w-6 h-6 text-[var(--secondary)] shrink-0" />
-            <div className="text-center">
-              <div className="font-semibold mb-1">24/7 Support</div>
-              <div className="text-sm text-gray-400">Always here when you need us</div>
-            </div>
-          </motion.div>
+          {PERKS.map((p) => {
+            const Icon = p.icon;
+            return (
+              <motion.div
+                key={p.title}
+                className="glass-card p-5 flex flex-col items-center gap-2 text-center"
+                whileHover={{ y: -3 }}
+              >
+                <div className="w-10 h-10 rounded-xl bg-[var(--secondary)]/30 flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-white" />
+                </div>
+                <div className="font-semibold text-white">{p.title}</div>
+                <div className="text-sm text-gray-300">{p.desc}</div>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>
   );
 }
-
