@@ -1,131 +1,195 @@
 "use client";
 
-import { BookOpen, FileText, Presentation, PenTool, CheckCircle } from "lucide-react";
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import dynamic from "next/dynamic";
+import {
+  BookOpen,
+  FileText,
+  Presentation,
+  PenTool,
+  CheckCircle,
+  ClipboardList,
+  Layers,
+  type LucideIcon,
+} from "lucide-react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 
-const services = [
-  { icon: FileText, name: "Assignments", desc: "High-quality assignment writing and completion" },
-  { icon: BookOpen, name: "Research", desc: "In-depth research papers and academic research" },
-  { icon: PenTool, name: "Proposals", desc: "Research proposals, project proposals, and grant proposals" },
-  { icon: Presentation, name: "Posters", desc: "Academic posters and presentation materials" },
-  { icon: FileText, name: "Essays", desc: "Essay writing across all academic levels" },
-  { icon: BookOpen, name: "Dissertations", desc: "Thesis and dissertation writing support" },
-  { icon: FileText, name: "Case Studies", desc: "Detailed case study analysis and writing" },
-  { icon: FileText, name: "Reports", desc: "Academic reports and documentation" },
-  { icon: Presentation, name: "Presentations", desc: "PowerPoint presentations and slides" },
-  { icon: PenTool, name: "Proofreading & Editing", desc: "Professional editing and proofreading services" },
+// Lazy-load the WebGL gradient on the client only — keeps `ogl` out of the
+// initial server bundle and avoids any SSR mismatch.
+const GradientBlinds = dynamic(() => import("./GradientBlinds"), {
+  ssr: false,
+  loading: () => null,
+});
+
+type Service = {
+  icon: LucideIcon;
+  name: string;
+  desc: string;
+};
+
+const SERVICES: Service[] = [
+  { icon: FileText, name: "Assignments", desc: "High-quality assignment writing and completion." },
+  { icon: BookOpen, name: "Research", desc: "In-depth research papers and academic research." },
+  { icon: PenTool, name: "Proposals", desc: "Research, project, and grant proposals." },
+  { icon: Presentation, name: "Posters", desc: "Academic posters and presentation materials." },
+  { icon: FileText, name: "Essays", desc: "Essay writing across all academic levels." },
+  { icon: BookOpen, name: "Dissertations", desc: "Thesis and dissertation writing support." },
+  { icon: ClipboardList, name: "Case Studies", desc: "Detailed case study analysis and writing." },
+  { icon: Layers, name: "Reports", desc: "Academic reports and structured documentation." },
+  { icon: Presentation, name: "Presentations", desc: "PowerPoint presentations and slides." },
+  { icon: PenTool, name: "Proofreading & Editing", desc: "Professional editing and proofreading services." },
 ];
+
+const TRUST_FEATURES = [
+  {
+    title: "Plagiarism-Free",
+    desc: "100% original content, every time.",
+  },
+  {
+    title: "On-Time Delivery",
+    desc: "We never miss a deadline.",
+  },
+  {
+    title: "Free AI & Similarity Report",
+    desc: "Turnitin AI and similarity report on request.",
+  },
+];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: "easeOut" as const },
+  },
+};
 
 export default function ServicesSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-    },
-  };
+  const prefersReducedMotion = useReducedMotion();
 
   return (
-    <section id="services" className="py-20 px-4 bg-gradient-to-b from-white to-gray-50 scroll-mt-20">
-      <div className="max-w-7xl mx-auto">
-        <motion.div 
-          className="text-center mb-16"
+    <section
+      id="services"
+      aria-labelledby="services-heading"
+      className="section-shell scroll-mt-24 bg-[var(--primary)] relative overflow-hidden isolate"
+    >
+      {/* Animated gradient blinds background — sits behind everything else.
+          Skipped entirely when the user prefers reduced motion. */}
+      {!prefersReducedMotion && (
+        <div aria-hidden className="absolute inset-0 z-0">
+          <GradientBlinds
+            gradientColors={["#c084fc", "#e100ff", "#5227FF"]}
+            angle={0}
+            noise={0.25}
+            blindCount={14}
+            blindMinWidth={64}
+            spotlightRadius={0.55}
+            spotlightSoftness={1.1}
+            spotlightOpacity={0.85}
+            mouseDampening={0.18}
+            distortAmount={0}
+            shineDirection="left"
+            mixBlendMode="lighten"
+          />
+        </div>
+      )}
+
+      {/* Vignette to keep card edges crisp and copy legible. */}
+      <div
+        aria-hidden
+        className="absolute inset-0 z-[1] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, transparent 0%, rgba(6,2,31,0.55) 75%, rgba(6,2,31,0.85) 100%)",
+        }}
+      />
+
+      <div className="content-shell relative z-10">
+        <motion.div
+          className="text-center mb-12 md:mb-14"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[var(--primary)]">What We Do</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Our comprehensive academic services designed to help you succeed
+          <span className="section-eyebrow text-white/90">Services</span>
+          <h2 id="services-heading" className="section-title text-white">
+            What We Do
+          </h2>
+          <p className="text-base md:text-lg text-white/80 max-w-2xl mx-auto mt-4">
+            Comprehensive academic services designed to help you succeed.
           </p>
         </motion.div>
-        
-        <motion.div 
+
+        <motion.ul
           ref={ref}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6"
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {services.map((service, index) => {
+          {SERVICES.map((service) => {
             const Icon = service.icon;
             return (
-              <motion.div 
-                key={index}
-                className="group bg-white p-6 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[var(--secondary)]/30"
+              <motion.li
+                key={service.name}
+                className="group soft-card p-6 list-none"
                 variants={itemVariants}
-                whileHover={{ scale: 1.02, y: -5 }}
+                whileHover={{ y: -4 }}
               >
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-14 h-14 rounded-xl bg-[var(--secondary)]/10 flex items-center justify-center group-hover:bg-[var(--secondary)]/20 transition-colors animate-float">
-                      <Icon className="w-7 h-7 text-[var(--secondary)]" />
+                  <div className="shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-[var(--secondary)]/10 flex items-center justify-center group-hover:bg-[var(--secondary)]/20 transition-colors">
+                      <Icon className="w-6 h-6 text-[var(--secondary)]" />
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-lg mb-2 text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors">
+                    <h3 className="font-semibold text-base md:text-lg mb-1.5 text-[var(--primary)] group-hover:text-[var(--secondary)] transition-colors">
                       {service.name}
                     </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{service.desc}</p>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {service.desc}
+                    </p>
                   </div>
                 </div>
-              </motion.div>
+              </motion.li>
             );
           })}
-        </motion.div>
+        </motion.ul>
 
-        {/* Trust Features */}
-        <motion.div 
-          className="mt-16 grid md:grid-cols-3 gap-6"
+        {/* Trust strip */}
+        <motion.div
+          className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <motion.div 
-            className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4"
-            whileHover={{ scale: 1.05 }}
-          >
-            <CheckCircle className="w-6 h-6 text-[var(--secondary)] flex-shrink-0" />
-            <div>
-              <div className="font-semibold text-[var(--primary)]">Plagiarism-Free</div>
-              <div className="text-sm text-gray-600">100% Original Content</div>
-            </div>
-          </motion.div>
-          <motion.div 
-            className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4"
-            whileHover={{ scale: 1.05 }}
-          >
-            <CheckCircle className="w-6 h-6 text-[var(--secondary)] flex-shrink-0" />
-            <div>
-              <div className="font-semibold text-[var(--primary)]">On-Time Delivery</div>
-              <div className="text-sm text-gray-600">Never Miss a Deadline</div>
-            </div>
-          </motion.div>
-          <motion.div 
-            className="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4"
-            whileHover={{ scale: 1.05 }}
-          >
-            <CheckCircle className="w-6 h-6 text-[var(--secondary)] flex-shrink-0" />
-            <div>
-              <div className="font-semibold text-[var(--primary)]">Free AI & Similarity Report</div>
-              <div className="text-sm text-gray-600">Turnitin AI and similarity report included on request</div>
-            </div>
-          </motion.div>
+          {TRUST_FEATURES.map((f) => (
+            <motion.div
+              key={f.title}
+              className="soft-card p-6 flex items-center gap-4"
+              whileHover={{ y: -3 }}
+            >
+              <div className="w-11 h-11 rounded-xl bg-[var(--secondary)]/10 flex items-center justify-center shrink-0">
+                <CheckCircle className="w-5 h-5 text-[var(--secondary)]" />
+              </div>
+              <div>
+                <div className="font-semibold text-[var(--primary)]">
+                  {f.title}
+                </div>
+                <div className="text-sm text-gray-600">{f.desc}</div>
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </section>

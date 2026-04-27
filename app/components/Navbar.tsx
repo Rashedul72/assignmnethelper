@@ -1,152 +1,171 @@
 "use client";
 
-import { GraduationCap, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+type NavItem = { id: string; label: string };
+
+const NAV_ITEMS: NavItem[] = [
+  { id: "home", label: "Home" },
+  { id: "about", label: "About" },
+  { id: "fields", label: "Fields" },
+  { id: "services", label: "Services" },
+  { id: "testimonials", label: "Reviews" },
+];
+
+const SCROLL_OFFSET = 96;
+const TRACKED_SECTIONS = ["about", "fields", "services", "testimonials"];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
+  const [activeSection, setActiveSection] = useState<string>("home");
+  const isOpenRef = useRef(isOpen);
 
-  // Handle scroll effects
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      setIsScrolled(scrollPosition > 50);
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
 
-      // Close mobile menu when scrolling
-      if (isOpen) {
-        setIsOpen(false);
-      }
+  useEffect(() => {
+    let ticking = false;
 
-      // Update active section based on scroll position
-      // Check if at top of page (home section)
-      if (scrollPosition < 100) {
+    const updateState = () => {
+      const y = window.scrollY;
+      setIsScrolled(y > 40);
+
+      if (isOpenRef.current) setIsOpen(false);
+
+      if (y < 120) {
         setActiveSection("home");
+        ticking = false;
         return;
       }
-      
-      const sections = ["about", "fields", "services", "testimonials"];
-      const current = sections.find(section => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
-        }
-        return false;
+
+      const current = TRACKED_SECTIONS.find((id) => {
+        const el = document.getElementById(id);
+        if (!el) return false;
+        const rect = el.getBoundingClientRect();
+        return rect.top <= 120 && rect.bottom >= 120;
       });
 
-      if (current) {
-        setActiveSection(current);
+      if (current) setActiveSection(current);
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateState);
+        ticking = true;
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isOpen]);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    updateState();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-  // Smooth scroll to section
-  const scrollToSection = (sectionId: string) => {
-    if (sectionId === "home") {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    } else {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        const offsetTop = element.offsetTop - 96; // Account for navbar height
-        window.scrollTo({
-          top: offsetTop,
-          behavior: "smooth"
-        });
-      }
-    }
+  const scrollToSection = useCallback((sectionId: string) => {
     setIsOpen(false);
-  };
-
-  const navItems = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "fields", label: "Fields" },
-    { id: "services", label: "Services" },
-    { id: "testimonials", label: "Reviews" }
-  ];
+    if (sectionId === "home") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    const el = document.getElementById(sectionId);
+    if (!el) return;
+    window.scrollTo({
+      top: el.offsetTop - SCROLL_OFFSET,
+      behavior: "smooth",
+    });
+  }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
-      isScrolled
-        ? 'bg-[var(--primary)] backdrop-blur-md h-20'
-        : 'bg-[var(--primary)] backdrop-blur-sm h-24'
-    }`}>
-
-      {/* Background pattern with dynamic opacity */}
-      <div className={`absolute inset-0 transition-opacity duration-500 ${
-        isScrolled ? 'opacity-8' : 'opacity-5'
-      }`}>
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }}></div>
+    <nav
+      aria-label="Primary"
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ease-in-out ${
+        isScrolled
+          ? "bg-[var(--primary)]/95 backdrop-blur-md shadow-[0_10px_28px_rgba(6,2,31,0.45)]"
+          : "bg-[var(--primary)]/90 backdrop-blur-sm"
+      }`}
+    >
+      <div className="absolute inset-0 pointer-events-none opacity-[0.06]">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
+            backgroundSize: "40px 40px",
+          }}
+        />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex justify-between items-center h-24">
-          <div className="flex items-center gap-2">
-            <Link href="/">
-              <Image
-                src="/logo_text.png"
-                alt="BDJHelper Logo"
-                width={220}
-                height={220}
-                className="cursor-pointer"
-              />
-            </Link>
+        <div
+          className={`flex items-center justify-between transition-all duration-500 ${
+            isScrolled ? "h-[4.25rem]" : "h-[5rem] md:h-[5.5rem]"
+          }`}
+        >
+          <Link
+            href="/"
+            aria-label="BDJHelper home"
+            className="flex items-center"
+          >
+            <Image
+              src="/logo_text.png"
+              alt="BDJHelper Logo"
+              width={220}
+              height={220}
+              priority
+              className={`w-auto transition-all duration-500 ${
+                isScrolled ? "h-10 md:h-11" : "h-11 md:h-13"
+              }`}
+            />
+          </Link>
+
+          <div className="hidden md:flex items-center gap-1 lg:gap-2">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`relative px-3 lg:px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--secondary)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--primary)] ${
+                    isActive
+                      ? "text-white bg-[var(--secondary)] shadow-[0_8px_18px_rgba(98,2,115,0.45)] font-semibold"
+                      : "text-gray-200 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`relative px-4 py-2 rounded-xl transition-all duration-300 backdrop-blur-sm group focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]/50 focus:ring-offset-2 focus:ring-offset-[var(--primary)] ${
-                  activeSection === item.id
-                    ? 'text-white bg-[var(--secondary)] shadow-lg shadow-[var(--secondary)]/20 font-bold'
-                    : 'text-gray-200 hover:text-[var(--secondary)] hover:bg-white/5 hover:scale-105 font-medium'
-                }`}
-              >
-                <span className="relative z-10">{item.label}</span>
-                {/* Active indicator */}
-                {activeSection === item.id && (
-                  <div className="absolute inset-0 bg-[var(--secondary)]/30 rounded-xl"></div>
-                )}
-                {/* Hover effect */}
-                <div className="absolute inset-0 bg-[var(--secondary)]/10 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-              </button>
-            ))}
-          </div>
-
-          {/* Mobile Menu Button */}
           <button
-            className={`md:hidden relative p-2 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]/50 focus:ring-offset-2 focus:ring-offset-[var(--primary)] ${
-              isOpen ? 'bg-white/10' : 'hover:bg-white/5'
+            type="button"
+            className={`md:hidden relative p-2 rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--secondary)]/60 ${
+              isOpen ? "bg-white/10" : "hover:bg-white/5"
             }`}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => setIsOpen((v) => !v)}
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
+            aria-controls="mobile-nav"
           >
             <div className="relative w-6 h-6">
-              <span className={`absolute inset-0 transition-all duration-300 ${
-                isOpen ? 'rotate-180 opacity-0' : 'rotate-0 opacity-100'
-              }`}>
+              <span
+                className={`absolute inset-0 transition-all duration-300 ${
+                  isOpen ? "rotate-180 opacity-0" : "rotate-0 opacity-100"
+                }`}
+              >
                 <Menu className="w-6 h-6 text-white" />
               </span>
-              <span className={`absolute inset-0 transition-all duration-300 ${
-                isOpen ? 'rotate-0 opacity-100' : 'rotate-180 opacity-0'
-              }`}>
+              <span
+                className={`absolute inset-0 transition-all duration-300 ${
+                  isOpen ? "rotate-0 opacity-100" : "rotate-180 opacity-0"
+                }`}
+              >
                 <X className="w-6 h-6 text-white" />
               </span>
             </div>
@@ -154,52 +173,41 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      <div className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
-        isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-      }`}>
-        <div className="bg-[var(--primary)] border-t border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.25)] rounded-b-2xl backdrop-blur-md">
-          <div className="px-6 py-5 space-y-2">
-            {navItems.map((item, index) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-[var(--secondary)]/50 focus:bg-white/10 ${
-                  activeSection === item.id
-                    ? 'text-white bg-[var(--secondary)] shadow-md shadow-[var(--secondary)]/20 font-bold'
-                    : 'text-white hover:text-[var(--secondary)] hover:bg-white/5 hover:translate-x-2 font-medium'
-                }`}
-                style={{
-                  animationDelay: isOpen ? `${index * 100}ms` : '0ms',
-                  animation: isOpen ? 'slideInLeft 0.3s ease-out forwards' : 'none'
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    activeSection === item.id
-                      ? 'bg-[var(--secondary)] shadow-md shadow-[var(--secondary)]/50'
-                      : 'bg-white/60 group-hover:bg-[var(--secondary)]'
-                  }`}></div>
-                  <span>{item.label}</span>
-                </div>
-              </button>
-            ))}
+      <div
+        id="mobile-nav"
+        className={`md:hidden overflow-hidden transition-[max-height,opacity] duration-500 ease-in-out ${
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="bg-[var(--primary)] border-t border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.25)] backdrop-blur-md">
+          <div className="px-5 py-4 space-y-1.5">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--secondary)]/60 ${
+                    isActive
+                      ? "text-white bg-[var(--secondary)] font-semibold"
+                      : "text-white/90 hover:bg-white/10"
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <span
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        isActive ? "bg-white" : "bg-white/40"
+                      }`}
+                    />
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes slideInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-      `}</style>
     </nav>
   );
 }

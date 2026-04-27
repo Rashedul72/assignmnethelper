@@ -1,6 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#06021f" },
+    { media: "(prefers-color-scheme: dark)", color: "#06021f" },
+  ],
+  colorScheme: "light",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -207,12 +218,16 @@ export const metadata: Metadata = {
   },
   category: "Education",
   classification: "Academic Writing Service",
+  formatDetection: {
+    telephone: false,
+    email: false,
+    address: false,
+  },
   other: {
     "application-name": "BDJHelper",
     "apple-mobile-web-app-title": "BDJHelper",
     "apple-mobile-web-app-capable": "yes",
     "mobile-web-app-capable": "yes",
-    "theme-color": "#21616A",
   },
 };
 
@@ -273,11 +288,22 @@ export default function RootLayout({
                   name: "Austria",
                 },
               ],
-              contactPoint: {
-                "@type": "ContactPoint",
-                contactType: "Customer Service",
-                availableLanguage: ["English"],
-              },
+              contactPoint: [
+                {
+                  "@type": "ContactPoint",
+                  contactType: "Customer Service",
+                  telephone: "+8801896094070",
+                  availableLanguage: ["English"],
+                  areaServed: ["GB", "AU", "US", "CA", "AT"],
+                },
+                {
+                  "@type": "ContactPoint",
+                  contactType: "Customer Service",
+                  telephone: "+8801857290212",
+                  availableLanguage: ["English", "Bengali"],
+                  areaServed: "BD",
+                },
+              ],
               sameAs: [],
               aggregateRating: {
                 "@type": "AggregateRating",
