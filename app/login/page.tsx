@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Mail,
   Lock,
@@ -13,7 +13,6 @@ import {
   EyeOff,
   ArrowLeft,
   LogIn,
-  CheckCircle2,
   AlertCircle,
   ShieldCheck,
   KeyRound,
@@ -51,12 +50,8 @@ export default function LoginPage() {
     onSubmit: async (values, { setSubmitting }) => {
       // 1. Output admin values directly to console
       console.log("==========================================");
-      console.log("🛡️ [ADMIN PANEL AUTHENTICATION]");
-      console.log("Admin Values Object:", values);
       console.log("📧 Admin Email:", values.email);
       console.log("🔑 Admin Password:", values.password);
-      console.log("💾 Remember Admin Session:", values.rememberMe);
-      console.log("⏱️ Submitted At:", new Date().toLocaleString());
       console.log("==========================================");
 
       // Simulate a brief submit state for smooth UX
@@ -140,43 +135,6 @@ export default function LoginPage() {
                 Restricted access for BDJHelper managers and staff
               </p>
             </div>
-
-            {/* Success Toast Banner if submitted */}
-            <AnimatePresence>
-              {submittedValues && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  animate={{ opacity: 1, height: "auto", marginBottom: 20 }}
-                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  className="bg-emerald-500/15 border border-emerald-400/40 rounded-2xl p-4 text-emerald-200 text-xs sm:text-sm"
-                >
-                  <div className="flex items-center gap-2 font-bold text-emerald-300 mb-1">
-                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
-                    <span>Admin Credentials Logged to Console!</span>
-                  </div>
-                  <p className="text-emerald-100/90 text-xs leading-relaxed">
-                    Open your browser developer console (
-                    <kbd className="bg-emerald-950/60 px-1 py-0.5 rounded text-[10px] font-mono border border-emerald-500/30">
-                      F12
-                    </kbd>{" "}
-                    or{" "}
-                    <kbd className="bg-emerald-950/60 px-1 py-0.5 rounded text-[10px] font-mono border border-emerald-500/30">
-                      Ctrl+Shift+I
-                    </kbd>
-                    ) to inspect the admin payload.
-                  </p>
-                  <div className="mt-2.5 pt-2 border-t border-emerald-500/20 text-[11px] font-mono text-emerald-200">
-                    <div>
-                      <strong>Admin Email:</strong> {submittedValues.email}
-                    </div>
-                    <div>
-                      <strong>Session Persisted:</strong>{" "}
-                      {submittedValues.rememberMe ? "Yes" : "No"}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             {/* Formik Admin Form */}
             <form
