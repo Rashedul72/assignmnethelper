@@ -15,12 +15,7 @@ import {
   CheckCircle2,
   type LucideIcon,
 } from "lucide-react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
-import dynamic from "next/dynamic";
-import type { HyperspeedEffectOptions } from "./Hyperspeed";
-
-// Lazy-load the WebGL background only on the client.
-const Hyperspeed = dynamic(() => import("./Hyperspeed"), { ssr: false });
+import { motion, useInView } from "framer-motion";
 
 type Metric = {
   icon: LucideIcon;
@@ -78,53 +73,10 @@ const itemVariants = {
   },
 };
 
-// Hyperspeed configuration tuned for a light/white surface — light road,
-// brand-purple car lights. Defined at module scope so the same reference
-// is passed every render (otherwise the WebGL scene would rebuild on each
-// re-render via the [effectOptions] dependency).
-const HYPERSPEED_OPTIONS: HyperspeedEffectOptions = {
-  distortion: "turbulentDistortion",
-  length: 400,
-  roadWidth: 10,
-  islandWidth: 2,
-  lanesPerRoad: 3,
-  fov: 90,
-  fovSpeedUp: 150,
-  speedUp: 2,
-  carLightsFade: 0.4,
-  totalSideLightSticks: 18,
-  lightPairsPerRoadWay: 36,
-  shoulderLinesWidthPercentage: 0.05,
-  brokenLinesWidthPercentage: 0.1,
-  brokenLinesLengthPercentage: 0.5,
-  lightStickWidth: [0.12, 0.5],
-  lightStickHeight: [1.3, 1.7],
-  movingAwaySpeed: [60, 80],
-  movingCloserSpeed: [-120, -160],
-  carLightsLength: [12, 80],
-  carLightsRadius: [0.05, 0.14],
-  carWidthPercentage: [0.3, 0.5],
-  carShiftX: [-0.8, 0.8],
-  carFloorSeparation: [0, 5],
-  colors: {
-    // Soft cool whites so the canvas blends into the section bg.
-    roadColor: 0xeef0f4,
-    islandColor: 0xd9dbe1,
-    background: 0xffffff,
-    shoulderLines: 0x06021f,
-    brokenLines: 0x06021f,
-    // Brand purple gradient on the left, complementary cool tones on the right.
-    leftCars: [0xc084fc, 0x9333ea, 0x620273],
-    rightCars: [0x06021f, 0x4338ca, 0x6366f1],
-    sticks: 0xc084fc,
-  },
-};
-
 export default function ProgressSection() {
   const [animate, setAnimate] = useState(false);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (!isInView) return;
@@ -137,33 +89,6 @@ export default function ProgressSection() {
       aria-labelledby="progress-heading"
       className="section-shell bg-white relative overflow-hidden isolate"
     >
-      {/* Animated Hyperspeed tunnel — sits behind everything, decorative.
-          Skipped when the user prefers reduced motion. */}
-      {!prefersReducedMotion && (
-        <div
-          aria-hidden
-          className="absolute inset-0 z-0 pointer-events-none opacity-80"
-        >
-          <Hyperspeed effectOptions={HYPERSPEED_OPTIONS} />
-        </div>
-      )}
-
-      {/* Soft white wash so cards/copy keep solid contrast over the canvas. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 z-[1] pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.55) 25%, rgba(255,255,255,0.45) 75%, rgba(255,255,255,0.95) 100%)",
-        }}
-      />
-
-      {/* Brand glow — kept subtle, sits above the wash. */}
-      <div
-        aria-hidden
-        className="absolute -top-32 -right-32 w-[28rem] h-[28rem] rounded-full bg-[var(--secondary)]/10 blur-[140px] pointer-events-none z-[1]"
-      />
-
       <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
           className="text-center mb-12 md:mb-14"

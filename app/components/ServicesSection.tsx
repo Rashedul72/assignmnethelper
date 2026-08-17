@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import {
   BookOpen,
   FileText,
@@ -11,15 +10,8 @@ import {
   Layers,
   type LucideIcon,
 } from "lucide-react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-
-// Lazy-load the WebGL gradient on the client only — keeps `ogl` out of the
-// initial server bundle and avoids any SSR mismatch.
-const GradientBlinds = dynamic(() => import("./GradientBlinds"), {
-  ssr: false,
-  loading: () => null,
-});
 
 type Service = {
   icon: LucideIcon;
@@ -75,45 +67,13 @@ const itemVariants = {
 export default function ServicesSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const prefersReducedMotion = useReducedMotion();
 
   return (
     <section
       id="services"
       aria-labelledby="services-heading"
-      className="section-shell scroll-mt-24 bg-[var(--primary)] relative overflow-hidden isolate"
+      className="section-shell scroll-mt-24 section-dark relative overflow-hidden isolate"
     >
-      {/* Animated gradient blinds background — sits behind everything else.
-          Skipped entirely when the user prefers reduced motion. */}
-      {!prefersReducedMotion && (
-        <div aria-hidden className="absolute inset-0 z-0">
-          <GradientBlinds
-            gradientColors={["#c084fc", "#e100ff", "#5227FF"]}
-            angle={0}
-            noise={0.25}
-            blindCount={14}
-            blindMinWidth={64}
-            spotlightRadius={0.55}
-            spotlightSoftness={1.1}
-            spotlightOpacity={0.85}
-            mouseDampening={0.18}
-            distortAmount={0}
-            shineDirection="left"
-            mixBlendMode="lighten"
-          />
-        </div>
-      )}
-
-      {/* Vignette to keep card edges crisp and copy legible. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 z-[1] pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, transparent 0%, rgba(6,2,31,0.55) 75%, rgba(6,2,31,0.85) 100%)",
-        }}
-      />
-
       <div className="content-shell relative z-10">
         <motion.div
           className="text-center mb-12 md:mb-14"

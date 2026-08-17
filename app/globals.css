@@ -90,12 +90,6 @@ body {
   100% { transform: translateY(0px); }
 }
 
-@keyframes pulse-glow {
-  0%   { box-shadow: 0 0 0 0 rgba(98, 2, 115, 0.45); }
-  70%  { box-shadow: 0 0 0 16px rgba(98, 2, 115, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(98, 2, 115, 0); }
-}
-
 @keyframes subject-marquee {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -112,7 +106,6 @@ body {
 .animate-fade-in     { animation: fade-in 0.6s ease-out both; }
 .animate-fade-in-up  { animation: fade-in-up 0.8s ease-out both; }
 .animate-float       { animation: float 4s ease-in-out infinite; }
-.animate-pulse-glow  { animation: pulse-glow 2.5s infinite; }
 
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
@@ -143,6 +136,23 @@ body {
   max-width: 80rem;
   margin-inline: auto;
   width: 100%;
+}
+
+/* Shared static premium backdrop for dark brand sections.
+   Replaces the old animated WebGL canvases — no runtime cost. */
+.section-dark {
+  background-color: var(--primary);
+  background-image:
+    radial-gradient(
+      ellipse 70% 55% at 50% -10%,
+      rgba(98, 2, 115, 0.45) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 100% 110%,
+      rgba(98, 2, 115, 0.3) 0%,
+      transparent 55%
+    );
 }
 
 .section-title {

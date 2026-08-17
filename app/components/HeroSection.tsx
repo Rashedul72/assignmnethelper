@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { Shield, Award, ShieldCheck, Globe } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import {
@@ -9,16 +8,6 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-
-// Lazy-load the WebGL canvas on the client only — keeps three.js +
-// postprocessing out of the initial server bundle and avoids SSR mismatch.
-const GridScan = dynamic(
-  () => import("./GridScan").then((m) => m.GridScan),
-  {
-    ssr: false,
-    loading: () => null,
-  }
-);
 
 const stats = [
   { value: "15+", label: "Expert Writers" },
@@ -35,48 +24,16 @@ export default function HeroSection() {
     <section
       id="home"
       aria-labelledby="hero-heading"
-      className="relative bg-[var(--primary)] text-white pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24 px-4 overflow-hidden isolate min-h-[680px] md:min-h-[760px]"
+      className="section-dark relative text-white pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24 px-4 overflow-hidden isolate min-h-[680px] md:min-h-[760px]"
     >
-      {/* Full-section interactive grid scan background.
-          Skipped entirely when the user prefers reduced motion. */}
-      {!prefersReducedMotion && (
-        <div aria-hidden className="absolute inset-0 z-0">
-          <GridScan
-            sensitivity={0.55}
-            lineThickness={1}
-            linesColor="#2a223a"
-            gridScale={0.1}
-            scanColor="#c084fc"
-            scanOpacity={0.45}
-            enablePost
-            bloomIntensity={0.55}
-            chromaticAberration={0.0018}
-            noiseIntensity={0.008}
-            scanDirection="pingpong"
-            scanDuration={2.0}
-            scanDelay={1.5}
-          />
-        </div>
-      )}
-
-      {/* Soft brand glows on top of the grid to keep the section warm. */}
+      {/* Static brand glows for depth — no animation, no runtime cost. */}
       <div
         aria-hidden
-        className="absolute -top-32 -right-32 w-[28rem] h-[28rem] rounded-full bg-[var(--secondary)]/25 blur-[120px] pointer-events-none z-[1]"
+        className="absolute -top-32 -right-32 w-[28rem] h-[28rem] rounded-full bg-[var(--secondary)]/20 blur-[120px] pointer-events-none z-0"
       />
       <div
         aria-hidden
-        className="absolute -bottom-32 -left-32 w-[24rem] h-[24rem] rounded-full bg-[var(--secondary)]/15 blur-[110px] pointer-events-none z-[1]"
-      />
-
-      {/* Vignette + centre wash so headline/CTAs stay legible against the grid. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 z-[2] pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 55% at 50% 45%, rgba(6,2,31,0.55) 0%, rgba(6,2,31,0.25) 55%, transparent 80%), linear-gradient(180deg, rgba(6,2,31,0.35) 0%, transparent 30%, transparent 70%, rgba(6,2,31,0.6) 100%)",
-        }}
+        className="absolute -bottom-32 -left-32 w-[24rem] h-[24rem] rounded-full bg-[var(--secondary)]/12 blur-[110px] pointer-events-none z-0"
       />
 
       <motion.div
@@ -106,7 +63,7 @@ export default function HeroSection() {
               <Award className="w-4 h-4 text-[var(--secondary)]" />
               Expert Writers
             </span>
-            <span className="pill relative overflow-hidden border border-[var(--secondary)] bg-[var(--secondary)]/85 text-white animate-pulse-glow">
+            <span className="pill border border-[var(--secondary)] bg-[var(--secondary)] text-white">
               <ShieldCheck className="w-4 h-4 text-white" />
               <span className="font-semibold">
                 Free AI &amp; Similarity Report
@@ -235,16 +192,6 @@ export default function HeroSection() {
               </motion.div>
             ))}
           </motion.div>
-
-          {/* Subtle hint label so users know the background reacts. */}
-          {!prefersReducedMotion && (
-            <div
-              aria-hidden
-              className="text-[11px] uppercase tracking-[0.22em] text-white/55 mt-2"
-            >
-              Scanning · move your cursor
-            </div>
-          )}
         </motion.div>
       </motion.div>
     </section>

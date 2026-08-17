@@ -1,15 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-
-// Lazy-load the WebGL aurora on the client only — keeps `ogl` out of the
-// initial server bundle and avoids any SSR mismatch.
-const SoftAurora = dynamic(() => import("./SoftAurora"), {
-  ssr: false,
-  loading: () => null,
-});
 
 type Field = { code: string; name: string };
 
@@ -47,41 +39,17 @@ const itemVariants = {
 export default function FieldsSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const prefersReducedMotion = useReducedMotion();
 
   return (
     <section
       id="fields"
       aria-labelledby="fields-heading"
-      className="section-shell scroll-mt-24 bg-[var(--primary)] relative overflow-hidden isolate"
+      className="section-shell scroll-mt-24 section-dark relative overflow-hidden isolate"
     >
-      {/* Animated aurora background — sits behind everything else.
-          Skipped entirely when the user prefers reduced motion. */}
-      {!prefersReducedMotion && (
-        <div aria-hidden className="absolute inset-0 z-0">
-          <SoftAurora
-            speed={0.6}
-            scale={1.5}
-            brightness={1.0}
-            color1="#c084fc"
-            color2="#e100ff"
-            noiseFrequency={2.5}
-            noiseAmplitude={1.0}
-            bandHeight={0.5}
-            bandSpread={1.0}
-            octaveDecay={0.1}
-            layerOffset={0}
-            colorSpeed={1.0}
-            enableMouseInteraction
-            mouseInfluence={0.25}
-          />
-        </div>
-      )}
-
-      {/* Soft brand glow on top of the aurora to keep the section warm. */}
+      {/* Static brand glow for depth — no animation. */}
       <div
         aria-hidden
-        className="absolute -top-24 left-1/2 -translate-x-1/2 w-[36rem] h-[36rem] rounded-full bg-[var(--secondary)]/15 blur-[140px] pointer-events-none z-[1]"
+        className="absolute -top-24 left-1/2 -translate-x-1/2 w-[36rem] h-[36rem] rounded-full bg-[var(--secondary)]/12 blur-[140px] pointer-events-none z-0"
       />
 
       <div className="content-shell relative z-10">
@@ -95,7 +63,7 @@ export default function FieldsSection() {
           <h2 id="fields-heading" className="section-title text-white">
             Fields We Cover
           </h2>
-          <p className="text-base md:text-lg text-gray-200/90 max-w-2xl mx-auto mt-4">
+          <p className="text-base md:text-lg text-white/70 max-w-2xl mx-auto mt-4">
             Specialized assistance across every major academic field.
           </p>
         </motion.div>
