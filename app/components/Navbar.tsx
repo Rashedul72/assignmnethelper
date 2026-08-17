@@ -325,7 +325,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile CTA WhatsApp Buttons */}
-          <div className="pt-3 border-t border-white/10 space-y-2">
+          <div className="pt-2 border-t border-white/10 space-y-2">
             <div className="text-xs font-bold uppercase tracking-wider text-purple-300 px-1">
               Connect on WhatsApp (24/7 Fast Response)
             </div>
