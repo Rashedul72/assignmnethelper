@@ -9,8 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@hugeicons/core-free-icons": "^4.3.5",
+    "@hugeicons/react": "^1.1.10",
     "formik": "^2.4.9",
     "framer-motion": "^12.23.25",
+    "hugeicons-react": "^0.4.0",
     "lucide-react": "^0.555.0",
     "next": "^16.0.8",
     "react": "19.2.0",
