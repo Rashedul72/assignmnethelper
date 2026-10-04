@@ -1,19 +1,18 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { motion } from "framer-motion";
 import {
-  Search01Icon,
-  FilterIcon,
-  ArrowLeft01Icon,
-  ArrowRight01Icon,
-  Sorting01Icon,
-  ArrowUp01Icon,
-  ArrowDown01Icon,
-  FileNotFoundIcon,
-  Cancel01Icon,
-} from "hugeicons-react";
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  X,
+  SlidersHorizontal,
+} from "lucide-react";
 import { useTheme } from "./ThemeContext";
+import { EmptyState } from "./EmptyState";
 
 export interface Column<T> {
   key: string;
@@ -59,7 +58,7 @@ export function DataTable<T extends Record<string, any>>({
   pagination = true,
   pageSize = 8,
   emptyTitle = "No records found",
-  emptySubtitle = "There are no entries matching your current parameters.",
+  emptySubtitle = "There are no entries matching your parameters.",
   actionButton,
   onRowClick,
 }: DataTableProps<T>) {
@@ -79,7 +78,9 @@ export function DataTable<T extends Record<string, any>>({
       const term = searchTerm.toLowerCase();
       result = result.filter((row) => {
         if (searchKeys && searchKeys.length > 0) {
-          return searchKeys.some((k) => String(row[k] || "").toLowerCase().includes(term));
+          return searchKeys.some((k) =>
+            String(row[k] || "").toLowerCase().includes(term)
+          );
         }
         return Object.values(row).some((val) =>
           String(val || "").toLowerCase().includes(term)
@@ -133,18 +134,18 @@ export function DataTable<T extends Record<string, any>>({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Top Toolbar */}
       {(searchable || (filters && filters.length > 0) || actionButton) && (
         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-          <div className="flex flex-1 flex-wrap items-center gap-3">
+          <div className="flex flex-1 flex-wrap items-center gap-2.5">
             {searchable && (
-              <div className="relative flex-1 min-w-[240px]">
-                <Search01Icon
-                  className={`absolute left-3.5 top-1/2 -translate-y-1/2 ${
-                    isDark ? "text-gray-400" : "text-slate-400"
+              <div className="relative flex-1 min-w-[220px]">
+                <Search
+                  className={`absolute left-3 top-1/2 -translate-y-1/2 ${
+                    isDark ? "text-slate-400" : "text-slate-400"
                   }`}
-                  size={18}
+                  size={16}
                 />
                 <input
                   type="text"
@@ -154,56 +155,46 @@ export function DataTable<T extends Record<string, any>>({
                     setCurrentPage(1);
                   }}
                   placeholder={searchPlaceholder}
-                  className={`w-full border rounded-2xl py-2.5 pl-10 pr-9 text-sm transition-all ${
+                  className={`w-full pl-9 pr-8 py-2 rounded-xl text-xs sm:text-sm border transition-all ${
                     isDark
-                      ? "bg-white/5 border-white/10 text-white placeholder-gray-500 focus:border-purple-500"
-                      : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-purple-600 shadow-sm"
+                      ? "bg-white/[0.04] border-white/10 text-slate-100 placeholder:text-slate-500 focus:border-purple-500"
+                      : "bg-white border-slate-200/80 text-slate-900 placeholder:text-slate-400 focus:border-purple-500 shadow-2xs"
                   }`}
                 />
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm("")}
-                    className={`absolute right-3 top-1/2 -translate-y-1/2 ${
-                      isDark ? "text-gray-400 hover:text-white" : "text-slate-400 hover:text-slate-700"
-                    }`}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                   >
-                    <Cancel01Icon size={14} />
+                    <X size={14} />
                   </button>
                 )}
               </div>
             )}
 
+            {/* Filter Dropdowns */}
             {filters &&
               filters.map((filter) => (
-                <div key={filter.key} className="relative min-w-[140px]">
+                <div key={filter.key} className="flex items-center space-x-1.5">
+                  <SlidersHorizontal size={14} className="text-slate-400 hidden sm:inline" />
                   <select
                     value={filter.value}
                     onChange={(e) => {
                       filter.onChange(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className={`w-full border rounded-2xl py-2.5 pl-4 pr-8 text-sm appearance-none font-medium ${
+                    className={`py-2 px-3 rounded-xl text-xs font-medium border transition-colors ${
                       isDark
-                        ? "bg-white/5 border-white/10 text-gray-200 focus:border-purple-500"
-                        : "bg-white border-slate-200 text-slate-700 focus:border-purple-600 shadow-sm"
+                        ? "bg-[#0b0826] border-white/10 text-slate-200"
+                        : "bg-white border-slate-200 text-slate-700 shadow-2xs"
                     }`}
                   >
                     {filter.options.map((opt) => (
-                      <option
-                        key={opt.value}
-                        value={opt.value}
-                        className={isDark ? "bg-[#0b0628] text-white" : "bg-white text-slate-900"}
-                      >
+                      <option key={opt.value} value={opt.value}>
                         {opt.label}
                       </option>
                     ))}
                   </select>
-                  <FilterIcon
-                    size={14}
-                    className={`absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${
-                      isDark ? "text-gray-400" : "text-slate-400"
-                    }`}
-                  />
                 </div>
               ))}
           </div>
@@ -214,208 +205,165 @@ export function DataTable<T extends Record<string, any>>({
 
       {/* Main Table Container */}
       <div
-        className={`border rounded-3xl overflow-hidden transition-all ${
+        className={`rounded-2xl border overflow-hidden transition-all ${
           isDark
-            ? "bg-black/30 border-white/10 shadow-2xl backdrop-blur-xl"
-            : "bg-white border-slate-200 shadow-sm"
+            ? "bg-[#0b0826]/70 border-white/[0.08]"
+            : "bg-white border-slate-200/80 shadow-2xs"
         }`}
       >
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto sidebar-scrollbar">
+          <table className="w-full text-left text-xs sm:text-sm border-collapse">
+            {/* Table Header */}
             <thead>
               <tr
-                className={`border-b text-xs font-semibold uppercase tracking-wider ${
+                className={`border-b ${
                   isDark
-                    ? "border-white/10 bg-white/[0.03] text-gray-400"
-                    : "border-slate-200 bg-slate-50 text-slate-500"
+                    ? "border-white/[0.08] bg-white/[0.02] text-slate-400"
+                    : "border-slate-100 bg-slate-50/70 text-slate-500"
                 }`}
               >
-                {columns.map((col) => {
-                  const isSorted = sortColumn === col.key;
-                  return (
-                    <th
-                      key={col.key}
-                      style={{ width: col.width }}
-                      className={`p-4 ${
-                        col.align === "right"
-                          ? "text-right"
-                          : col.align === "center"
-                          ? "text-center"
-                          : "text-left"
+                {columns.map((col) => (
+                  <th
+                    key={col.key}
+                    style={{ width: col.width }}
+                    className={`px-4 py-3 font-semibold text-[11px] uppercase tracking-wider ${
+                      col.align === "center"
+                        ? "text-center"
+                        : col.align === "right"
+                        ? "text-right"
+                        : "text-left"
+                    } ${col.sortable ? "cursor-pointer select-none" : ""}`}
+                    onClick={() => col.sortable && handleSort(col.key)}
+                  >
+                    <div
+                      className={`inline-flex items-center space-x-1.5 ${
+                        col.align === "center"
+                          ? "justify-center"
+                          : col.align === "right"
+                          ? "justify-end"
+                          : "justify-start"
                       }`}
                     >
-                      {col.sortable ? (
-                        <button
-                          onClick={() => handleSort(col.key)}
-                          className={`inline-flex items-center space-x-1.5 transition-colors group ${
-                            isDark ? "hover:text-white" : "hover:text-slate-900"
-                          }`}
-                        >
-                          <span>{col.header}</span>
-                          {isSorted ? (
+                      <span>{col.header}</span>
+                      {col.sortable && (
+                        <span className="text-slate-400">
+                          {sortColumn === col.key ? (
                             sortDirection === "asc" ? (
-                              <ArrowUp01Icon size={14} className="text-purple-500" />
+                              <ArrowUp size={12} className="text-purple-500" />
                             ) : (
-                              <ArrowDown01Icon size={14} className="text-purple-500" />
+                              <ArrowDown size={12} className="text-purple-500" />
                             )
                           ) : (
-                            <Sorting01Icon
-                              size={14}
-                              className="opacity-0 group-hover:opacity-100 text-gray-400 transition-opacity"
-                            />
+                            <ArrowUpDown size={12} />
                           )}
-                        </button>
-                      ) : (
-                        <span>{col.header}</span>
+                        </span>
                       )}
-                    </th>
-                  );
-                })}
+                    </div>
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className={`divide-y ${isDark ? "divide-white/5" : "divide-slate-100"}`}>
+
+            {/* Table Body */}
+            <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04]">
               {loading ? (
-                // Loading Skeleton Rows
-                Array.from({ length: 5 }).map((_, idx) => (
-                  <tr key={idx} className="animate-pulse">
+                // Skeleton Rows
+                Array.from({ length: pageSize > 5 ? 5 : pageSize }).map((_, idx) => (
+                  <tr key={idx} className="h-12">
                     {columns.map((col, cIdx) => (
-                      <td key={cIdx} className="p-4">
-                        <div
-                          className={`h-4 rounded-lg w-3/4 ${
-                            isDark ? "bg-white/10" : "bg-slate-200"
-                          }`}
-                        />
+                      <td key={cIdx} className="px-4 py-3">
+                        <div className="h-4 bg-slate-200 dark:bg-white/10 rounded animate-pulse w-3/4" />
                       </td>
                     ))}
                   </tr>
                 ))
               ) : paginatedData.length === 0 ? (
-                // Empty State
                 <tr>
-                  <td colSpan={columns.length} className="p-12 text-center">
-                    <div
-                      className={`w-16 h-16 rounded-2xl border flex items-center justify-center mx-auto mb-4 ${
-                        isDark
-                          ? "bg-white/5 border-white/10 text-gray-500"
-                          : "bg-slate-50 border-slate-200 text-slate-400"
-                      }`}
-                    >
-                      <FileNotFoundIcon size={28} />
-                    </div>
-                    <h3
-                      className={`text-lg font-bold mb-1 ${
-                        isDark ? "text-white" : "text-slate-900"
-                      }`}
-                    >
-                      {emptyTitle}
-                    </h3>
-                    <p
-                      className={`text-sm max-w-sm mx-auto ${
-                        isDark ? "text-gray-400" : "text-slate-500"
-                      }`}
-                    >
-                      {emptySubtitle}
-                    </p>
+                  <td colSpan={columns.length} className="p-0">
+                    <EmptyState
+                      title={emptyTitle}
+                      description={emptySubtitle}
+                    />
                   </td>
                 </tr>
               ) : (
-                // Data Rows
-                paginatedData.map((row, index) => (
-                  <motion.tr
-                    key={row.id || index}
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.03, duration: 0.2 }}
+                paginatedData.map((row, rIdx) => (
+                  <tr
+                    key={row.id || rIdx}
                     onClick={() => onRowClick && onRowClick(row)}
-                    className={`border-b transition-colors ${
+                    className={`h-12 transition-colors ${
+                      onRowClick ? "cursor-pointer" : ""
+                    } ${
                       isDark
-                        ? "border-white/5 hover:bg-white/[0.04] text-gray-200"
-                        : "border-slate-100 hover:bg-slate-50/80 text-slate-800"
-                    } ${onRowClick ? "cursor-pointer" : ""}`}
+                        ? "hover:bg-white/[0.03] text-slate-200"
+                        : "hover:bg-slate-50/80 text-slate-800"
+                    }`}
                   >
                     {columns.map((col) => (
                       <td
                         key={col.key}
-                        className={`p-4 text-sm ${
-                          col.align === "right"
-                            ? "text-right"
-                            : col.align === "center"
+                        className={`px-4 py-3 align-middle ${
+                          col.align === "center"
                             ? "text-center"
+                            : col.align === "right"
+                            ? "text-right"
                             : "text-left"
                         }`}
                       >
-                        {col.render
-                          ? col.render(row, (currentPage - 1) * pageSize + index)
-                          : row[col.key] ?? "—"}
+                        {col.render ? col.render(row, rIdx) : row[col.key] ?? "—"}
                       </td>
                     ))}
-                  </motion.tr>
+                  </tr>
                 ))
               )}
             </tbody>
           </table>
         </div>
 
-        {/* Footer / Pagination */}
-        {pagination && !loading && filteredData.length > 0 && (
+        {/* Table Pagination */}
+        {pagination && filteredData.length > 0 && !loading && (
           <div
-            className={`p-4 border-t flex flex-col sm:flex-row items-center justify-between gap-4 text-sm ${
+            className={`px-4 py-3 border-t flex items-center justify-between text-xs ${
               isDark
-                ? "border-white/10 bg-white/[0.02] text-gray-400"
-                : "border-slate-200 bg-slate-50/50 text-slate-600"
+                ? "border-white/[0.08] bg-[#08061f]/40 text-slate-400"
+                : "border-slate-100 bg-slate-50/50 text-slate-500"
             }`}
           >
             <div>
               Showing{" "}
-              <span className={`font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
+              <span className="font-semibold text-slate-900 dark:text-slate-100">
                 {(currentPage - 1) * pageSize + 1}
               </span>{" "}
               to{" "}
-              <span className={`font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
+              <span className="font-semibold text-slate-900 dark:text-slate-100">
                 {Math.min(currentPage * pageSize, filteredData.length)}
               </span>{" "}
               of{" "}
-              <span className={`font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
+              <span className="font-semibold text-slate-900 dark:text-slate-100">
                 {filteredData.length}
               </span>{" "}
-              entries
+              records
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1.5">
               <button
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                 disabled={currentPage === 1}
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                className={`p-2 rounded-xl border disabled:opacity-40 disabled:pointer-events-none transition-all ${
-                  isDark
-                    ? "bg-white/5 border-white/10 text-gray-300 hover:text-white hover:bg-white/10"
-                    : "bg-white border-slate-200 text-slate-700 hover:bg-slate-100 shadow-sm"
-                }`}
-                aria-label="Previous Page"
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
               >
-                <ArrowLeft01Icon size={16} />
+                <ChevronLeft size={16} />
               </button>
 
-              <span
-                className={`px-3 py-1 border rounded-xl text-xs font-semibold ${
-                  isDark
-                    ? "bg-white/5 border-white/10 text-white"
-                    : "bg-white border-slate-200 text-slate-800 shadow-sm"
-                }`}
-              >
-                Page {currentPage} of {totalPages}
+              <span className="px-2 font-medium">
+                {currentPage} / {totalPages}
               </span>
 
               <button
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                className={`p-2 rounded-xl border disabled:opacity-40 disabled:pointer-events-none transition-all ${
-                  isDark
-                    ? "bg-white/5 border-white/10 text-gray-300 hover:text-white hover:bg-white/10"
-                    : "bg-white border-slate-200 text-slate-700 hover:bg-slate-100 shadow-sm"
-                }`}
-                aria-label="Next Page"
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
               >
-                <ArrowRight01Icon size={16} />
+                <ChevronRight size={16} />
               </button>
             </div>
           </div>

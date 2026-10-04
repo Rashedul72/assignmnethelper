@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Cancel01Icon } from "hugeicons-react";
+import { X } from "lucide-react";
 import { useTheme } from "./ThemeContext";
 
 export interface ModalProps {
@@ -53,93 +53,84 @@ export function Modal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto scrollbar-none">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto sidebar-scrollbar">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className={`fixed inset-0 backdrop-blur-md transition-opacity ${
-              isDark ? "bg-black/75" : "bg-slate-900/40"
-            }`}
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
           />
 
           {/* Modal Container */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+            initial={{ opacity: 0, scale: 0.96, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 15 }}
-            transition={{ type: "spring", duration: 0.3, bounce: 0.1 }}
-            className={`relative w-full ${sizeClasses} rounded-3xl overflow-hidden z-10 flex flex-col my-auto border shadow-2xl ${
+            exit={{ opacity: 0, scale: 0.96, y: 10 }}
+            transition={{ duration: 0.2 }}
+            className={`relative w-full ${sizeClasses} rounded-2xl overflow-hidden z-10 flex flex-col my-auto border shadow-xl ${
               isDark
-                ? "bg-[#0b0628] border-white/10 text-gray-200 shadow-[0_0_50px_rgba(0,0,0,0.8)]"
-                : "bg-white border-slate-200 text-slate-800 shadow-2xl"
+                ? "bg-[#0b0826] border-white/10 text-slate-200"
+                : "bg-white border-slate-200 text-slate-800"
             }`}
           >
-            {/* Header Ambient Glow */}
-            <div
-              className={`absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-24 blur-2xl rounded-full pointer-events-none ${
-                isDark ? "bg-purple-500/10" : "bg-purple-500/5"
-              }`}
-            />
-
             {/* Modal Header */}
             <div
-              className={`p-6 border-b flex justify-between items-center relative z-10 ${
-                isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-100 bg-slate-50/50"
+              className={`px-6 py-4 border-b flex justify-between items-center relative z-10 ${
+                isDark ? "border-white/[0.08]" : "border-slate-200/80"
               }`}
             >
               <div className="flex items-center space-x-3">
                 {Icon && (
                   <div
-                    className={`p-2.5 rounded-xl border ${
+                    className={`p-2 rounded-xl border ${
                       isDark
-                        ? "bg-purple-500/20 border-white/10 text-purple-400"
+                        ? "bg-purple-950/60 border-purple-800/60 text-purple-400"
                         : "bg-purple-50 border-purple-200 text-purple-600"
                     }`}
                   >
-                    <Icon size={22} />
+                    <Icon size={18} />
                   </div>
                 )}
                 <div>
                   <h3
-                    className={`text-xl font-bold tracking-tight ${
-                      isDark ? "text-white" : "text-slate-900"
+                    className={`text-base font-bold tracking-tight ${
+                      isDark ? "text-slate-100" : "text-slate-900"
                     }`}
                   >
                     {title}
                   </h3>
                   {subtitle && (
-                    <p className={`text-xs mt-0.5 ${isDark ? "text-gray-400" : "text-slate-500"}`}>
+                    <p
+                      className={`text-xs mt-0.5 ${
+                        isDark ? "text-slate-400" : "text-slate-500"
+                      }`}
+                    >
                       {subtitle}
                     </p>
                   )}
                 </div>
               </div>
+
               <button
                 onClick={onClose}
-                className={`p-2 rounded-xl border transition-colors ${
-                  isDark
-                    ? "text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 border-white/5"
-                    : "text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 border-slate-200"
-                }`}
-                aria-label="Close Modal"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
               >
-                <Cancel01Icon size={18} />
+                <X size={18} />
               </button>
             </div>
 
-            {/* Modal Content */}
-            <div className="p-6 space-y-4 overflow-y-auto max-h-[75vh] relative z-10 scrollbar-none">
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto max-h-[75vh] sidebar-scrollbar space-y-4">
               {children}
             </div>
 
             {/* Modal Footer */}
             {footer && (
               <div
-                className={`p-6 border-t flex items-center justify-end space-x-3 relative z-10 ${
-                  isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-100 bg-slate-50/50"
+                className={`px-6 py-3.5 border-t flex items-center justify-end space-x-3 ${
+                  isDark ? "border-white/[0.08] bg-[#08061f]/50" : "border-slate-200/80 bg-slate-50/50"
                 }`}
               >
                 {footer}

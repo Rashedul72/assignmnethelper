@@ -2,21 +2,28 @@
 
 import { useEffect, useState, useCallback } from "react";
 import {
-  File01Icon,
-  Add01Icon,
-  UserIcon,
-  Calendar01Icon,
-  EyeIcon,
-  Book01Icon,
-  QuillWrite01Icon,
-  Money01Icon,
-  PencilEdit02Icon,
-} from "hugeicons-react";
+  FileText,
+  Plus,
+  User,
+  Calendar,
+  Eye,
+  PenTool,
+  CreditCard,
+  Pencil,
+  BookOpen,
+  DollarSign,
+  CheckCircle2,
+  Search,
+  ChevronDown,
+  X,
+} from "lucide-react";
 import { DataTable, Column } from "../../components/ui/Table";
 import { Modal } from "../../components/ui/Modal";
 import { Badge } from "../../components/ui/Badge";
+import { PageHeader } from "../../components/ui/PageHeader";
 import { useToast } from "../../components/ui/ToastContext";
 import { useTheme } from "../../components/ui/ThemeContext";
+import { fetchWithAuth } from "../../lib/api";
 
 export default function AssignmentsPage() {
   const { showToast } = useToast();
@@ -63,6 +70,11 @@ export default function AssignmentsPage() {
     rate_per_word: "",
     grand_total: "",
     status: "NEW",
+    assigned_status: "PENDING",
+    payment_status: "PENDING",
+    writer_commission_status: "PENDING",
+    commission_type: "PERCENTAGE",
+    commission_value: "30",
   });
 
   const [saving, setSaving] = useState(false);
@@ -83,10 +95,7 @@ export default function AssignmentsPage() {
   const fetchAssignments = useCallback(async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("admin_token");
-      const res = await fetch("http://localhost:5000/api/admin/assignments", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetchWithAuth("/admin/assignments");
       if (res.ok) {
         const data = await res.json();
         setAssignments(data);
@@ -101,14 +110,9 @@ export default function AssignmentsPage() {
 
   const fetchStudentsAndWriters = useCallback(async () => {
     try {
-      const token = localStorage.getItem("admin_token");
       const [studentsRes, writersRes] = await Promise.all([
-        fetch("http://localhost:5000/api/admin/students", {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        fetch("http://localhost:5000/api/admin/writers", {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
+        fetchWithAuth("/admin/students"),
+        fetchWithAuth("/admin/writers"),
       ]);
 
       if (studentsRes.ok) {
@@ -129,6 +133,12 @@ export default function AssignmentsPage() {
     fetchStudentsAndWriters();
   }, [fetchAssignments, fetchStudentsAndWriters]);
 
+  // Searchable student combobox states
+  const [createStudentSearch, setCreateStudentSearch] = useState("");
+  const [createStudentDropdownOpen, setCreateStudentDropdownOpen] = useState(false);
+  const [editStudentSearch, setEditStudentSearch] = useState("");
+  const [editStudentDropdownOpen, setEditStudentDropdownOpen] = useState(false);
+
   const handleOpenCreateModal = () => {
     setFormData({
       client_id: students.length > 0 ? students[0].id : "",
@@ -142,10 +152,27 @@ export default function AssignmentsPage() {
       rate_per_word: "",
       grand_total: "",
     });
+    setCreateStudentSearch("");
+    setCreateStudentDropdownOpen(false);
     setIsCreateModalOpen(true);
   };
 
   const handleOpenEditModal = (row: any) => {
+    if (userRole !== "ADMIN" && row.writer_commission_status === "PAID") {
+      showToast(
+        "This assignment is locked because Writer Commission is paid. Only admins can edit it.",
+        "warning"
+      );
+      return;
+    }
+    const latestComm = row.commissionRecords?.[0] || row.writers?.[0];
+    const initialCommType = latestComm?.calculation_type || latestComm?.commission_type || "PERCENTAGE";
+    const initialCommVal = latestComm?.commission_value
+      ? String(latestComm.commission_value)
+      : latestComm?.commission_percentage
+      ? String(latestComm.commission_percentage)
+      : "30";
+
     setEditFormData({
       id: row.id,
       client_id: row.client_id || "",
@@ -159,7 +186,14 @@ export default function AssignmentsPage() {
       rate_per_word: row.rate_per_word ? String(row.rate_per_word) : "",
       grand_total: row.grand_total ? String(row.grand_total) : "",
       status: row.status || "NEW",
+      assigned_status: row.assigned_status || "PENDING",
+      payment_status: row.payment_status || "PENDING",
+      writer_commission_status: row.writer_commission_status || "PENDING",
+      commission_type: initialCommType,
+      commission_value: initialCommVal,
     });
+    setEditStudentSearch("");
+    setEditStudentDropdownOpen(false);
     setIsEditModalOpen(true);
   };
 
@@ -230,12 +264,10 @@ export default function AssignmentsPage() {
 
     setSaving(true);
     try {
-      const token = localStorage.getItem("admin_token");
-      const res = await fetch("http://localhost:5000/api/admin/assignments", {
+      const res = await fetchWithAuth("/admin/assignments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           ...formData,
@@ -265,14 +297,12 @@ export default function AssignmentsPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const token = localStorage.getItem("admin_token");
-      const res = await fetch(
-        `http://localhost:5000/api/admin/assignments/${editFormData.id}`,
+      const res = await fetchWithAuth(
+        `/admin/assignments/${editFormData.id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             ...editFormData,
@@ -323,7 +353,7 @@ export default function AssignmentsPage() {
       sortable: true,
       render: (row) => (
         <span
-          className={`font-mono font-bold text-sm tracking-wide ${
+          className={`font-mono text-xs font-semibold ${
             isDark ? "text-purple-300" : "text-purple-700"
           }`}
         >
@@ -336,23 +366,21 @@ export default function AssignmentsPage() {
       header: "Student Client",
       sortable: true,
       render: (row) => (
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2.5">
           <div
-            className={`w-8 h-8 rounded-xl border flex items-center justify-center shrink-0 ${
+            className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 ${
               isDark
-                ? "bg-purple-500/10 border-purple-500/20 text-purple-400"
-                : "bg-purple-100 border-purple-200 text-purple-700"
+                ? "bg-purple-950/60 border-purple-800/60 text-purple-400"
+                : "bg-purple-50 border-purple-200 text-purple-700"
             }`}
           >
-            <UserIcon size={16} />
+            <User size={14} />
           </div>
           <div>
-            <div className={`font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
+            <div className={`font-semibold text-xs ${isDark ? "text-slate-100" : "text-slate-900"}`}>
               {row.client?.name || "Unknown"}
             </div>
-            <div
-              className={`text-xs font-mono ${isDark ? "text-gray-400" : "text-slate-500"}`}
-            >
+            <div className={`text-[11px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
               ID: {row.client?.student_id || "N/A"}
             </div>
           </div>
@@ -367,20 +395,20 @@ export default function AssignmentsPage() {
         return writerName ? (
           <div className="flex items-center space-x-2">
             <div
-              className={`p-1.5 rounded-lg border shrink-0 ${
+              className={`p-1 rounded-md border shrink-0 ${
                 isDark
-                  ? "bg-pink-500/10 border-pink-500/20 text-pink-400"
-                  : "bg-pink-100 border-pink-200 text-pink-700"
+                  ? "bg-pink-950/60 border-pink-800/60 text-pink-400"
+                  : "bg-pink-50 border-pink-200 text-pink-700"
               }`}
             >
-              <QuillWrite01Icon size={14} />
+              <PenTool size={12} />
             </div>
-            <span className={`font-semibold text-xs ${isDark ? "text-white" : "text-slate-900"}`}>
+            <span className={`font-medium text-xs ${isDark ? "text-slate-100" : "text-slate-900"}`}>
               {writerName}
             </span>
           </div>
         ) : (
-          <span className="text-gray-400 text-xs italic">Unassigned</span>
+          <span className="text-slate-400 text-xs italic">Unassigned</span>
         );
       },
     },
@@ -389,10 +417,10 @@ export default function AssignmentsPage() {
       header: "Course & Title",
       render: (row) => (
         <div>
-          <div className={`font-medium ${isDark ? "text-gray-200" : "text-slate-800"}`}>
+          <div className={`font-medium text-xs ${isDark ? "text-slate-200" : "text-slate-800"}`}>
             {row.title || row.course_code}
           </div>
-          <div className={`text-xs font-mono ${isDark ? "text-gray-500" : "text-slate-400"}`}>
+          <div className={`text-[11px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
             {row.course_code} • Assign #{row.assignment_no}
           </div>
         </div>
@@ -410,7 +438,7 @@ export default function AssignmentsPage() {
                   BDT {Number(row.grand_total).toLocaleString()}
                 </div>
               ) : (
-                <span className="text-gray-400 text-xs italic">—</span>
+                <span className="text-slate-400 text-xs italic">—</span>
               ),
           },
         ]
@@ -423,14 +451,14 @@ export default function AssignmentsPage() {
         row.due_at ? (
           <div
             className={`flex items-center space-x-1.5 text-xs font-medium ${
-              isDark ? "text-gray-300" : "text-slate-700"
+              isDark ? "text-slate-300" : "text-slate-700"
             }`}
           >
-            <Calendar01Icon size={14} className="text-amber-500" />
+            <Calendar size={13} className="text-amber-500" />
             <span>{new Date(row.due_at).toLocaleDateString()}</span>
           </div>
         ) : (
-          <span className="text-gray-400 text-xs italic">No due date</span>
+          <span className="text-slate-400 text-xs italic">No due date</span>
         ),
     },
     {
@@ -459,37 +487,37 @@ export default function AssignmentsPage() {
       header: "Actions",
       align: "right",
       render: (row) => (
-        <div className="flex items-center justify-end space-x-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleOpenEditModal(row);
-            }}
-            className={`p-2 rounded-xl border transition-colors inline-flex items-center space-x-1 text-xs font-semibold ${
-              isDark
-                ? "bg-white/5 hover:bg-white/10 text-blue-400 border-white/10"
-                : "bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
-            }`}
-            title="Edit Assignment"
-          >
-            <PencilEdit02Icon size={14} />
-            <span>Edit</span>
-          </button>
+        <div className="flex items-center justify-end space-x-1.5">
+          {(() => {
+            const isLocked = userRole !== "ADMIN" && row.writer_commission_status === "PAID";
+            return (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpenEditModal(row);
+                }}
+                disabled={isLocked}
+                className={`p-1.5 rounded-lg border transition-colors ${
+                  isLocked
+                    ? "opacity-40 cursor-not-allowed border-slate-200 dark:border-white/10 text-slate-400"
+                    : "border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5"
+                }`}
+                title={isLocked ? "Locked (Writer Commission Paid)" : "Edit Assignment"}
+              >
+                <Pencil size={14} />
+              </button>
+            );
+          })()}
           <button
             onClick={(e) => {
               e.stopPropagation();
               setSelectedAssignment(row);
               setIsViewModalOpen(true);
             }}
-            className={`p-2 rounded-xl border transition-colors inline-flex items-center space-x-1 text-xs font-semibold ${
-              isDark
-                ? "bg-white/5 hover:bg-white/10 text-purple-300 border-white/10"
-                : "bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200"
-            }`}
+            className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-colors"
             title="View Details"
           >
-            <EyeIcon size={14} />
-            <span>Details</span>
+            <Eye size={14} />
           </button>
         </div>
       ),
@@ -497,45 +525,41 @@ export default function AssignmentsPage() {
   ];
 
   const inputClass = isDark
-    ? "w-full bg-black/40 border border-white/10 rounded-2xl py-2.5 px-4 text-white focus:outline-none focus:border-purple-500 transition-all text-sm"
-    : "w-full bg-slate-50 border border-slate-200 rounded-2xl py-2.5 px-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-purple-600 transition-all text-sm";
+    ? "w-full bg-white/[0.04] border border-white/10 rounded-xl py-2 px-3.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm"
+    : "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
+
+  const labelClass = `block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
+    isDark ? "text-slate-400" : "text-slate-600"
+  }`;
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1
-            className={`text-3xl font-extrabold tracking-tight ${
-              isDark ? "text-white" : "text-slate-900"
-            }`}
+      {/* Page Header */}
+      <PageHeader
+        title="Assignments Management"
+        description="Monitor, allocate, and manage client assignment records and writer assignments"
+        badge="Operations"
+        actions={
+          <button
+            onClick={handleOpenCreateModal}
+            className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium text-xs sm:text-sm flex items-center space-x-1.5 shadow-2xs transition-colors"
           >
-            Assignments
-          </h1>
-          <p className={`text-sm mt-1 ${isDark ? "text-gray-400" : "text-slate-600"}`}>
-            Manage and track student assignment requests & writer allocations
-          </p>
-        </div>
+            <Plus size={16} />
+            <span>Create Assignment</span>
+          </button>
+        }
+      />
 
-        <button
-          onClick={handleOpenCreateModal}
-          className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold py-2.5 px-5 rounded-2xl flex items-center space-x-2 shadow-[0_0_20px_rgba(147,51,234,0.25)] transition-all text-sm"
-        >
-          <Add01Icon size={18} />
-          <span>New Assignment</span>
-        </button>
-      </div>
-
-      {/* Main DataTable */}
+      {/* Main Table Component */}
       <DataTable
         columns={columns}
         data={filteredAssignments}
         loading={loading}
-        searchPlaceholder="Search reference, student, course, or title..."
-        searchKeys={["reference", "course_code", "title"]}
+        pageSize={10}
+        searchPlaceholder="Search assignment ID, course, title, student..."
         filters={[
           {
-            key: "status",
+            key: "statusFilter",
             label: "Status Filter",
             value: statusFilter,
             onChange: (val) => setStatusFilter(val),
@@ -551,128 +575,232 @@ export default function AssignmentsPage() {
           },
         ]}
         emptyTitle="No assignments found"
-        emptySubtitle="Click 'New Assignment' above to create a new record."
+        emptySubtitle="Try adjusting your filters or click Create Assignment to add one."
       />
 
-      {/* Create Modal */}
+      {/* Create Assignment Modal */}
       <Modal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        title="Create Assignment"
-        subtitle="Fill in assignment details to register and map writer"
-        icon={File01Icon}
+        title="Create New Assignment"
+        subtitle="Fill in student assignment details and assign an optional writer."
+        icon={FileText}
         size="lg"
+        footer={
+          <>
+            <button
+              onClick={() => setIsCreateModalOpen(false)}
+              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleCreateAssignment}
+              disabled={saving}
+              className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold flex items-center space-x-1.5 transition-colors shadow-2xs"
+            >
+              {saving && (
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1" />
+              )}
+              <span>Create Assignment</span>
+            </button>
+          </>
+        }
       >
-        <form id="create-assignment-form" onSubmit={handleCreateAssignment} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Select Student Client *
-              </label>
-              <select
-                required
-                value={formData.client_id}
-                onChange={(e) => setFormData({ ...formData, client_id: e.target.value })}
-                className={inputClass}
-              >
-                <option value="" disabled className={isDark ? "bg-[#0b0628]" : "bg-white"}>
-                  Select a student...
-                </option>
-                {students.map((student) => (
-                  <option
-                    key={student.id}
-                    value={student.id}
-                    className={isDark ? "bg-[#0b0628]" : "bg-white"}
-                  >
-                    {student.name} ({student.student_id})
-                  </option>
-                ))}
-              </select>
-            </div>
+        <form onSubmit={handleCreateAssignment} className="space-y-4 max-w-2xl mx-auto">
+          {/* Section 1: Client Selection */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+              Student Client Information
+            </h4>
 
             <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Assign Writer (Optional)
-              </label>
-              <select
-                value={formData.writer_id}
-                onChange={(e) => setFormData({ ...formData, writer_id: e.target.value })}
-                className={inputClass}
-              >
-                <option value="" className={isDark ? "bg-[#0b0628]" : "bg-white"}>
-                  Auto-map from Creator / Unassigned
-                </option>
-                {writers.map((writer) => (
-                  <option
-                    key={writer.id}
-                    value={writer.id}
-                    className={isDark ? "bg-[#0b0628]" : "bg-white"}
+              <label className={labelClass}>Select Student Client *</label>
+              <div className="relative">
+                {/* Trigger Button */}
+                <div
+                  onClick={() => setCreateStudentDropdownOpen(!createStudentDropdownOpen)}
+                  className={`w-full p-2.5 rounded-xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
+                    isDark
+                      ? "bg-[#0c082b] border-white/10 text-slate-100 hover:border-purple-500/50"
+                      : "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
+                  }`}
+                >
+                  {(() => {
+                    const selectedStudent = students.find((s) => s.id === formData.client_id);
+                    if (selectedStudent) {
+                      return (
+                        <div className="flex items-center space-x-2 truncate min-w-0">
+                          <span className="font-bold text-slate-900 dark:text-white truncate">
+                            {selectedStudent.name}
+                          </span>
+                          <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 font-semibold shrink-0">
+                            ID: {selectedStudent.student_id}
+                          </span>
+                          {selectedStudent.university && (
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate shrink">
+                              • {selectedStudent.university}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    }
+                    return (
+                      <span className="text-slate-400 font-normal">
+                        Click or search student by name or ID...
+                      </span>
+                    );
+                  })()}
+                  <ChevronDown
+                    size={16}
+                    className={`text-slate-400 shrink-0 ml-2 transition-transform duration-200 ${
+                      createStudentDropdownOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {/* Dropdown Overlay */}
+                {createStudentDropdownOpen && (
+                  <div
+                    className={`absolute z-50 left-0 right-0 mt-1 rounded-xl border shadow-2xl p-2.5 space-y-2 ${
+                      isDark
+                        ? "bg-[#0b0826] border-white/15 text-slate-100"
+                        : "bg-white border-slate-200 text-slate-900"
+                    }`}
                   >
-                    {writer.name} ({writer.phone_number})
-                  </option>
-                ))}
-              </select>
+                    {/* Live Search Input Box */}
+                    <div className="relative">
+                      <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
+                      <input
+                        type="text"
+                        autoFocus
+                        placeholder="Search student by name, student ID or university..."
+                        value={createStudentSearch}
+                        onChange={(e) => setCreateStudentSearch(e.target.value)}
+                        className={`w-full pl-8 pr-8 py-2 rounded-lg border text-xs outline-none transition-colors ${
+                          isDark
+                            ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
+                            : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
+                        }`}
+                      />
+                      {createStudentSearch && (
+                        <button
+                          type="button"
+                          onClick={() => setCreateStudentSearch("")}
+                          className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                        >
+                          <X size={14} />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Scrollable Filtered Students List */}
+                    <div className="max-h-52 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                      {(() => {
+                        const filtered = students.filter((st) => {
+                          if (!createStudentSearch.trim()) return true;
+                          const q = createStudentSearch.toLowerCase();
+                          return (
+                            st.name?.toLowerCase().includes(q) ||
+                            st.student_id?.toLowerCase().includes(q) ||
+                            st.university?.toLowerCase().includes(q)
+                          );
+                        });
+
+                        if (filtered.length === 0) {
+                          return (
+                            <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                              No students found matching "{createStudentSearch}"
+                            </div>
+                          );
+                        }
+
+                        return filtered.map((st) => {
+                          const isSelected = formData.client_id === st.id;
+                          return (
+                            <div
+                              key={st.id}
+                              onClick={() => {
+                                setFormData({ ...formData, client_id: st.id });
+                                setCreateStudentDropdownOpen(false);
+                              }}
+                              className={`p-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors text-xs ${
+                                isSelected
+                                  ? isDark
+                                    ? "bg-purple-900/50 text-purple-200 font-semibold border border-purple-700/50"
+                                    : "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
+                                  : isDark
+                                  ? "hover:bg-white/5 text-slate-200"
+                                  : "hover:bg-slate-100 text-slate-800"
+                              }`}
+                            >
+                              <div className="flex flex-col min-w-0 pr-2">
+                                <div className="flex items-center space-x-2">
+                                  <span className="font-bold truncate">{st.name}</span>
+                                  <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-medium shrink-0">
+                                    ID: {st.student_id}
+                                  </span>
+                                </div>
+                                {st.university && (
+                                  <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                                    {st.university}
+                                  </span>
+                                )}
+                              </div>
+                              {isSelected && (
+                                <CheckCircle2
+                                  size={16}
+                                  className="text-purple-600 dark:text-purple-400 shrink-0 ml-2"
+                                />
+                              )}
+                            </div>
+                          );
+                        });
+                      })()}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Course Code *
-              </label>
-              <input
-                required
-                type="text"
-                placeholder="e.g. CSE-101"
-                value={formData.course_code}
-                onChange={(e) => setFormData({ ...formData, course_code: e.target.value })}
-                className={inputClass}
-              />
+          {/* Section 2: Course & Assignment Info */}
+          <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-white/[0.04]">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+              Course Details
+            </h4>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Course Code *</label>
+                <input
+                  type="text"
+                  placeholder="e.g. CSE-101"
+                  value={formData.course_code}
+                  onChange={(e) => setFormData({ ...formData, course_code: e.target.value })}
+                  className={inputClass}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Assignment Number *</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 1, HW-01, Task A"
+                  value={formData.assignment_no}
+                  onChange={(e) => setFormData({ ...formData, assignment_no: e.target.value })}
+                  className={inputClass}
+                  required
+                />
+              </div>
             </div>
 
             <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Assignment No. / Identifier (Text) *
-              </label>
-              <input
-                required
-                type="text"
-                placeholder="e.g. Assignment 1, Lab Report, or Final Thesis"
-                value={formData.assignment_no}
-                onChange={(e) => setFormData({ ...formData, assignment_no: e.target.value })}
-                className={inputClass}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Assignment Title
-              </label>
+              <label className={labelClass}>Assignment Title</label>
               <input
                 type="text"
-                placeholder="e.g. Data Structures Essay"
+                placeholder="e.g. Data Structures Research Paper"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 className={inputClass}
@@ -680,395 +808,504 @@ export default function AssignmentsPage() {
             </div>
 
             <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Due Date
-              </label>
-              <input
-                type="datetime-local"
-                value={formData.due_at}
-                onChange={(e) => setFormData({ ...formData, due_at: e.target.value })}
+              <label className={labelClass}>Description & Special Instructions</label>
+              <textarea
+                rows={3}
+                placeholder="Enter formatting, reference style, or special notes..."
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className={inputClass}
               />
             </div>
           </div>
 
-          <div>
-            <label
-              className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                isDark ? "text-gray-400" : "text-slate-600"
-              }`}
-            >
-              Word Count
-            </label>
-            <input
-              type="number"
-              placeholder="e.g. 2000"
-              value={formData.word_count}
-              onChange={(e) => handleWordCountChange(e.target.value)}
-              className={inputClass}
-            />
-          </div>
+          {/* Section 3: Writer & Schedule */}
+          <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-white/[0.04]">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+              Writer & Due Date
+            </h4>
 
-          {/* Extra Optional Pricing Fields - Admin Only */}
-          {userRole === "ADMIN" && (
-            <div
-              className={`p-4 border rounded-2xl space-y-3 transition-colors ${
-                isDark
-                  ? "bg-purple-900/15 border-purple-500/30"
-                  : "bg-purple-50/80 border-purple-200"
-              }`}
-            >
-              <div className="text-xs font-bold text-purple-600 dark:text-purple-300 uppercase tracking-wider flex items-center space-x-1.5">
-                <Money01Icon size={16} />
-                <span>Pricing & Calculations (Admin Only)</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Assign Writer</label>
+                {userRole === "ADMIN" ? (
+                  <select
+                    value={formData.writer_id}
+                    onChange={(e) => setFormData({ ...formData, writer_id: e.target.value })}
+                    className={inputClass}
+                  >
+                    <option value="">-- Leave Unassigned --</option>
+                    {writers.map((w) => (
+                      <option key={w.id} value={w.id}>
+                        {w.name} ({w.phone_number})
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <div
+                    className={`p-2.5 rounded-xl border text-xs flex items-center justify-between font-medium ${
+                      isDark
+                        ? "bg-white/5 border-white/10 text-purple-300"
+                        : "bg-purple-50 border-purple-200 text-purple-900"
+                    }`}
+                  >
+                    <span>Auto-assigned to you (Logged in Writer)</span>
+                    <Badge variant="purple">Writer</Badge>
+                  </div>
+                )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label
-                    className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                      isDark ? "text-gray-400" : "text-slate-600"
-                    }`}
-                  >
-                    Rate Multiplier (Per Word)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="e.g. 1.5"
-                    value={formData.rate_per_word}
-                    onChange={(e) => handleRateChange(e.target.value)}
-                    className={inputClass}
-                  />
-                  {formData.word_count && formData.rate_per_word && (
-                    <p className="text-[11px] text-purple-600 dark:text-purple-400 font-medium mt-1">
-                      Auto-Calc: {formData.word_count} words × {formData.rate_per_word} = BDT{" "}
-                      {formData.grand_total}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                      isDark ? "text-gray-400" : "text-slate-600"
-                    }`}
-                  >
-                    Grand Total (BDT)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="e.g. 3000"
-                    value={formData.grand_total}
-                    onChange={(e) =>
-                      setFormData({ ...formData, grand_total: e.target.value })
-                    }
-                    className={inputClass}
-                  />
-                </div>
+              <div>
+                <label className={labelClass}>Due Date & Time</label>
+                <input
+                  type="datetime-local"
+                  value={formData.due_at}
+                  onChange={(e) => setFormData({ ...formData, due_at: e.target.value })}
+                  className={inputClass}
+                />
               </div>
             </div>
-          )}
-
-          <div>
-            <label
-              className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                isDark ? "text-gray-400" : "text-slate-600"
-              }`}
-            >
-              Description / Notes
-            </label>
-            <textarea
-              rows={3}
-              placeholder="Instructions, guidelines, formatting requirements..."
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className={inputClass}
-            />
           </div>
 
-          <div
-            className={`pt-4 flex justify-end space-x-3 border-t ${
-              isDark ? "border-white/10" : "border-slate-200"
-            }`}
-          >
-            <button
-              type="button"
-              onClick={() => setIsCreateModalOpen(false)}
-              className={`px-5 py-2.5 rounded-2xl font-medium text-sm transition-colors ${
-                isDark
-                  ? "bg-white/5 hover:bg-white/10 text-white"
-                  : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-              }`}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-[0_0_20px_rgba(147,51,234,0.3)] disabled:opacity-50 transition-all"
-            >
-              {saving ? "Saving..." : "Create Assignment"}
-            </button>
+          {/* Section 4: Billing & Word Count */}
+          <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-white/[0.04]">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+              {userRole === "ADMIN" ? "Financials & Word Rate" : "Word Count Specification"}
+            </h4>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className={labelClass}>Word Count</label>
+                <input
+                  type="number"
+                  placeholder="e.g. 1500"
+                  value={formData.word_count}
+                  onChange={(e) => handleWordCountChange(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+
+              {userRole === "ADMIN" && (
+                <>
+                  <div>
+                    <label className={labelClass}>Rate / Word (BDT)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="1.50"
+                      value={formData.rate_per_word}
+                      onChange={(e) => handleRateChange(e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>Grand Total (BDT)</label>
+                    <input
+                      type="number"
+                      placeholder="Auto calculated"
+                      value={formData.grand_total}
+                      onChange={(e) => setFormData({ ...formData, grand_total: e.target.value })}
+                      className={inputClass}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </form>
       </Modal>
 
-      {/* Edit Modal */}
+      {/* Edit Assignment Modal */}
       <Modal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        title="Edit Assignment"
-        subtitle="Update assignment configuration, status, or pricing"
-        icon={PencilEdit02Icon}
+        title="Edit Assignment Details"
+        subtitle="Update assignment properties, status, or assigned writer."
+        icon={Pencil}
         size="lg"
+        footer={
+          <>
+            <button
+              onClick={() => setIsEditModalOpen(false)}
+              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleUpdateAssignment}
+              disabled={saving}
+              className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold flex items-center space-x-1.5 transition-colors shadow-2xs"
+            >
+              {saving && (
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1" />
+              )}
+              <span>Save Changes</span>
+            </button>
+          </>
+        }
       >
-        <form onSubmit={handleUpdateAssignment} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Select Student Client *
-              </label>
-              <select
-                required
-                value={editFormData.client_id}
-                onChange={(e) => setEditFormData({ ...editFormData, client_id: e.target.value })}
-                className={inputClass}
-              >
-                <option value="" disabled className={isDark ? "bg-[#0b0628]" : "bg-white"}>
-                  Select a student...
-                </option>
-                {students.map((student) => (
-                  <option
-                    key={student.id}
-                    value={student.id}
-                    className={isDark ? "bg-[#0b0628]" : "bg-white"}
-                  >
-                    {student.name} ({student.student_id})
-                  </option>
-                ))}
-              </select>
-            </div>
+        <form onSubmit={handleUpdateAssignment} className="space-y-4 max-w-2xl mx-auto">
+          {/* Student Client Information (Searchable) */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+              Student Client Information
+            </h4>
 
             <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Assign / Change Writer
-              </label>
-              <select
-                value={editFormData.writer_id}
-                onChange={(e) => setEditFormData({ ...editFormData, writer_id: e.target.value })}
-                className={inputClass}
-              >
-                <option value="" className={isDark ? "bg-[#0b0628]" : "bg-white"}>
-                  Unassigned / Keep Current
-                </option>
-                {writers.map((writer) => (
-                  <option
-                    key={writer.id}
-                    value={writer.id}
-                    className={isDark ? "bg-[#0b0628]" : "bg-white"}
+              <label className={labelClass}>Select Student Client *</label>
+              <div className="relative">
+                {/* Trigger Button */}
+                <div
+                  onClick={() => setEditStudentDropdownOpen(!editStudentDropdownOpen)}
+                  className={`w-full p-2.5 rounded-xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
+                    isDark
+                      ? "bg-[#0c082b] border-white/10 text-slate-100 hover:border-purple-500/50"
+                      : "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
+                  }`}
+                >
+                  {(() => {
+                    const selectedStudent = students.find((s) => s.id === editFormData.client_id);
+                    if (selectedStudent) {
+                      return (
+                        <div className="flex items-center space-x-2 truncate min-w-0">
+                          <span className="font-bold text-slate-900 dark:text-white truncate">
+                            {selectedStudent.name}
+                          </span>
+                          <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 font-semibold shrink-0">
+                            ID: {selectedStudent.student_id}
+                          </span>
+                          {selectedStudent.university && (
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate shrink">
+                              • {selectedStudent.university}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    }
+                    return (
+                      <span className="text-slate-400 font-normal">
+                        Click or search student by name or ID...
+                      </span>
+                    );
+                  })()}
+                  <ChevronDown
+                    size={16}
+                    className={`text-slate-400 shrink-0 ml-2 transition-transform duration-200 ${
+                      editStudentDropdownOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {/* Dropdown Overlay */}
+                {editStudentDropdownOpen && (
+                  <div
+                    className={`absolute z-50 left-0 right-0 mt-1 rounded-xl border shadow-2xl p-2.5 space-y-2 ${
+                      isDark
+                        ? "bg-[#0b0826] border-white/15 text-slate-100"
+                        : "bg-white border-slate-200 text-slate-900"
+                    }`}
                   >
-                    {writer.name} ({writer.phone_number})
-                  </option>
-                ))}
-              </select>
+                    {/* Live Search Input Box */}
+                    <div className="relative">
+                      <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
+                      <input
+                        type="text"
+                        autoFocus
+                        placeholder="Search student by name, student ID or university..."
+                        value={editStudentSearch}
+                        onChange={(e) => setEditStudentSearch(e.target.value)}
+                        className={`w-full pl-8 pr-8 py-2 rounded-lg border text-xs outline-none transition-colors ${
+                          isDark
+                            ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
+                            : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
+                        }`}
+                      />
+                      {editStudentSearch && (
+                        <button
+                          type="button"
+                          onClick={() => setEditStudentSearch("")}
+                          className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                        >
+                          <X size={14} />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Scrollable Filtered Students List */}
+                    <div className="max-h-52 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                      {(() => {
+                        const filtered = students.filter((st) => {
+                          if (!editStudentSearch.trim()) return true;
+                          const q = editStudentSearch.toLowerCase();
+                          return (
+                            st.name?.toLowerCase().includes(q) ||
+                            st.student_id?.toLowerCase().includes(q) ||
+                            st.university?.toLowerCase().includes(q)
+                          );
+                        });
+
+                        if (filtered.length === 0) {
+                          return (
+                            <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                              No students found matching "{editStudentSearch}"
+                            </div>
+                          );
+                        }
+
+                        return filtered.map((st) => {
+                          const isSelected = editFormData.client_id === st.id;
+                          return (
+                            <div
+                              key={st.id}
+                              onClick={() => {
+                                setEditFormData({ ...editFormData, client_id: st.id });
+                                setEditStudentDropdownOpen(false);
+                              }}
+                              className={`p-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors text-xs ${
+                                isSelected
+                                  ? isDark
+                                    ? "bg-purple-900/50 text-purple-200 font-semibold border border-purple-700/50"
+                                    : "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
+                                  : isDark
+                                  ? "hover:bg-white/5 text-slate-200"
+                                  : "hover:bg-slate-100 text-slate-800"
+                              }`}
+                            >
+                              <div className="flex flex-col min-w-0 pr-2">
+                                <div className="flex items-center space-x-2">
+                                  <span className="font-bold truncate">{st.name}</span>
+                                  <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-medium shrink-0">
+                                    ID: {st.student_id}
+                                  </span>
+                                </div>
+                                {st.university && (
+                                  <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                                    {st.university}
+                                  </span>
+                                )}
+                              </div>
+                              {isSelected && (
+                                <CheckCircle2
+                                  size={16}
+                                  className="text-purple-600 dark:text-purple-400 shrink-0 ml-2"
+                                />
+                              )}
+                            </div>
+                          );
+                        });
+                      })()}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
+          {/* Status Selection */}
+          <div>
+            <label className={labelClass}>Assignment Status</label>
+            <select
+              value={editFormData.status}
+              onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
+              className={inputClass}
+            >
+              <option value="NEW">NEW</option>
+              <option value="ASSIGNED">ASSIGNED</option>
+              <option value="IN_PROGRESS">IN PROGRESS</option>
+              <option value="SUBMITTED">SUBMITTED</option>
+              <option value="COMPLETED">COMPLETED</option>
+              <option value="CANCELLED">CANCELLED</option>
+            </select>
+          </div>
+
+          {/* Admin Specific Status Controls */}
+          {userRole === "ADMIN" && (
+            <div className="p-3.5 rounded-xl border border-purple-200/60 dark:border-purple-900/40 bg-purple-50/50 dark:bg-purple-950/20 space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-300">
+                Admin Workflow Statuses
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className={labelClass}>Assigned Status</label>
+                  <select
+                    value={editFormData.assigned_status}
+                    onChange={(e) => setEditFormData({ ...editFormData, assigned_status: e.target.value })}
+                    className={inputClass}
+                  >
+                    <option value="PENDING">PENDING</option>
+                    <option value="SUBMITTED">SUBMITTED</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className={labelClass}>Payment Status</label>
+                  <select
+                    value={editFormData.payment_status}
+                    onChange={(e) => setEditFormData({ ...editFormData, payment_status: e.target.value })}
+                    className={inputClass}
+                  >
+                    <option value="PENDING">PENDING</option>
+                    <option value="PAID">PAID</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className={labelClass}>Writer Commission</label>
+                  <select
+                    value={editFormData.writer_commission_status}
+                    onChange={(e) => setEditFormData({ ...editFormData, writer_commission_status: e.target.value })}
+                    className={inputClass}
+                  >
+                    <option value="PENDING">PENDING</option>
+                    <option value="PAID">PAID</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Writer Commission Calculator & Financial Breakdown */}
+              {(() => {
+                const activeEditingAssign = assignments.find((a) => a.id === editFormData.id);
+                const costsTotal = activeEditingAssign?.costs
+                  ? activeEditingAssign.costs.reduce((sum: number, c: any) => sum + Number(c.price || 0), 0)
+                  : 0;
+                const grandTotalNum = parseFloat(editFormData.grand_total) || 0;
+                const netBase = Math.max(0, grandTotalNum - costsTotal);
+                const commValNum = parseFloat(editFormData.commission_value) || 0;
+                const finalComm =
+                  editFormData.commission_type === "FLAT"
+                    ? commValNum
+                    : (netBase * commValNum) / 100;
+
+                return (
+                  <div className="pt-3 border-t border-purple-200/60 dark:border-purple-900/40 space-y-3">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <span className="text-xs font-semibold text-purple-900 dark:text-purple-200 flex items-center space-x-1">
+                        <DollarSign size={14} className="text-emerald-500" />
+                        <span>Commission Calculation Method:</span>
+                      </span>
+                      <div className="flex items-center space-x-1 bg-white dark:bg-black/40 p-1 rounded-lg border border-purple-200 dark:border-purple-800">
+                        <button
+                          type="button"
+                          onClick={() => setEditFormData({ ...editFormData, commission_type: "PERCENTAGE" })}
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all ${
+                            editFormData.commission_type === "PERCENTAGE"
+                              ? "bg-purple-600 text-white font-bold shadow-2xs"
+                              : "text-slate-600 dark:text-slate-300 hover:text-purple-600"
+                          }`}
+                        >
+                          Percentage (%)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEditFormData({ ...editFormData, commission_type: "FLAT" })}
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all ${
+                            editFormData.commission_type === "FLAT"
+                              ? "bg-purple-600 text-white font-bold shadow-2xs"
+                              : "text-slate-600 dark:text-slate-300 hover:text-purple-600"
+                          }`}
+                        >
+                          Flat Amount (BDT)
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+                      <div>
+                        <label className={labelClass}>
+                          {editFormData.commission_type === "PERCENTAGE"
+                            ? "Commission Percentage (%) *"
+                            : "Flat Commission Amount (BDT) *"}
+                        </label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          placeholder={editFormData.commission_type === "PERCENTAGE" ? "e.g. 30" : "e.g. 800"}
+                          value={editFormData.commission_value}
+                          onChange={(e) =>
+                            setEditFormData({ ...editFormData, commission_value: e.target.value })
+                          }
+                          className={inputClass}
+                        />
+                      </div>
+
+                      {/* Live Financial Breakdown Card */}
+                      <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-950/40 text-xs space-y-1.5 shadow-2xs">
+                        <div className="flex justify-between text-[11px] text-slate-600 dark:text-slate-400">
+                          <span>Student Total:</span>
+                          <span className="font-semibold text-slate-900 dark:text-white">
+                            BDT {grandTotalNum.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-[11px] text-slate-600 dark:text-slate-400">
+                          <span>Assignment Costs:</span>
+                          <span className="font-semibold text-rose-600 dark:text-rose-400">
+                            - BDT {costsTotal.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-[11px] font-medium text-slate-700 dark:text-slate-300 pt-1 border-t border-emerald-200 dark:border-emerald-800/60">
+                          <span>Net Remaining Base:</span>
+                          <span className="font-bold text-slate-900 dark:text-white">
+                            BDT {netBase.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between font-bold text-emerald-700 dark:text-emerald-300 pt-1 border-t border-emerald-300 dark:border-emerald-700/60 text-xs">
+                          <span>
+                            Writer Commission (
+                            {editFormData.commission_type === "PERCENTAGE"
+                              ? `${commValNum}% of BDT ${netBase.toLocaleString()}`
+                              : "Flat"}
+                            ):
+                          </span>
+                          <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
+                            BDT {finalComm.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Course Code *
-              </label>
+              <label className={labelClass}>Course Code *</label>
               <input
-                required
                 type="text"
                 value={editFormData.course_code}
                 onChange={(e) => setEditFormData({ ...editFormData, course_code: e.target.value })}
                 className={inputClass}
+                required
               />
             </div>
 
             <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Assignment No. / Identifier *
-              </label>
+              <label className={labelClass}>Assignment Number *</label>
               <input
-                required
                 type="text"
                 value={editFormData.assignment_no}
                 onChange={(e) => setEditFormData({ ...editFormData, assignment_no: e.target.value })}
                 className={inputClass}
+                required
               />
             </div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Assignment Title
-              </label>
-              <input
-                type="text"
-                value={editFormData.title}
-                onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Status
-              </label>
-              <select
-                value={editFormData.status}
-                onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
-                className={inputClass}
-              >
-                <option value="NEW" className={isDark ? "bg-[#0b0628]" : "bg-white"}>NEW</option>
-                <option value="ASSIGNED" className={isDark ? "bg-[#0b0628]" : "bg-white"}>ASSIGNED</option>
-                <option value="IN_PROGRESS" className={isDark ? "bg-[#0b0628]" : "bg-white"}>IN_PROGRESS</option>
-                <option value="SUBMITTED" className={isDark ? "bg-[#0b0628]" : "bg-white"}>SUBMITTED</option>
-                <option value="REVISION_REQUESTED" className={isDark ? "bg-[#0b0628]" : "bg-white"}>REVISION_REQUESTED</option>
-                <option value="COMPLETED" className={isDark ? "bg-[#0b0628]" : "bg-white"}>COMPLETED</option>
-                <option value="CANCELLED" className={isDark ? "bg-[#0b0628]" : "bg-white"}>CANCELLED</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Due Date
-              </label>
-              <input
-                type="datetime-local"
-                value={editFormData.due_at}
-                onChange={(e) => setEditFormData({ ...editFormData, due_at: e.target.value })}
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Word Count
-              </label>
-              <input
-                type="number"
-                value={editFormData.word_count}
-                onChange={(e) => handleEditWordCountChange(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-          </div>
-
-          {/* Pricing Fields in Edit Modal - Admin Only */}
-          {userRole === "ADMIN" && (
-            <div
-              className={`p-4 border rounded-2xl space-y-3 transition-colors ${
-                isDark
-                  ? "bg-purple-900/15 border-purple-500/30"
-                  : "bg-purple-50/80 border-purple-200"
-              }`}
-            >
-              <div className="text-xs font-bold text-purple-600 dark:text-purple-300 uppercase tracking-wider flex items-center space-x-1.5">
-                <Money01Icon size={16} />
-                <span>Pricing & Calculations (Admin Only)</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label
-                    className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                      isDark ? "text-gray-400" : "text-slate-600"
-                    }`}
-                  >
-                    Rate Multiplier (Per Word)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="e.g. 1.5"
-                    value={editFormData.rate_per_word}
-                    onChange={(e) => handleEditRateChange(e.target.value)}
-                    className={inputClass}
-                  />
-                  {editFormData.word_count && editFormData.rate_per_word && (
-                    <p className="text-[11px] text-purple-600 dark:text-purple-400 font-medium mt-1">
-                      Auto-Calc: {editFormData.word_count} words × {editFormData.rate_per_word} = BDT{" "}
-                      {editFormData.grand_total}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                      isDark ? "text-gray-400" : "text-slate-600"
-                    }`}
-                  >
-                    Grand Total (BDT)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="e.g. 3000"
-                    value={editFormData.grand_total}
-                    onChange={(e) =>
-                      setEditFormData({ ...editFormData, grand_total: e.target.value })
-                    }
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
 
           <div>
-            <label
-              className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                isDark ? "text-gray-400" : "text-slate-600"
-              }`}
-            >
-              Description / Notes
-            </label>
+            <label className={labelClass}>Assignment Title</label>
+            <input
+              type="text"
+              value={editFormData.title}
+              onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
+              className={inputClass}
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Description</label>
             <textarea
               rows={3}
               value={editFormData.description}
@@ -1077,132 +1314,262 @@ export default function AssignmentsPage() {
             />
           </div>
 
-          <div
-            className={`pt-4 flex justify-end space-x-3 border-t ${
-              isDark ? "border-white/10" : "border-slate-200"
-            }`}
-          >
-            <button
-              type="button"
-              onClick={() => setIsEditModalOpen(false)}
-              className={`px-5 py-2.5 rounded-2xl font-medium text-sm transition-colors ${
-                isDark
-                  ? "bg-white/5 hover:bg-white/10 text-white"
-                  : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-              }`}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-[0_0_20px_rgba(59,130,246,0.3)] disabled:opacity-50 transition-all"
-            >
-              {saving ? "Updating..." : "Save Changes"}
-            </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>Assigned Writer</label>
+              <select
+                value={editFormData.writer_id}
+                onChange={(e) => setEditFormData({ ...editFormData, writer_id: e.target.value })}
+                className={inputClass}
+              >
+                <option value="">-- Unassigned --</option>
+                {writers.map((w) => (
+                  <option key={w.id} value={w.id}>
+                    {w.name} ({w.phone_number})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className={labelClass}>Due Date & Time</label>
+              <input
+                type="datetime-local"
+                value={editFormData.due_at}
+                onChange={(e) => setEditFormData({ ...editFormData, due_at: e.target.value })}
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          {/* Word Count & Billing (Word Count editable for Writers & Admins) */}
+          <div className="pt-2 border-t border-slate-100 dark:border-white/[0.04] space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+              {userRole === "ADMIN" ? "Financials & Word Rate" : "Word Count Specification"}
+            </h4>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className={labelClass}>Word Count</label>
+                <input
+                  type="number"
+                  placeholder="e.g. 1500"
+                  value={editFormData.word_count}
+                  onChange={(e) => handleEditWordCountChange(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+
+              {userRole === "ADMIN" && (
+                <>
+                  <div>
+                    <label className={labelClass}>Rate / Word (BDT)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="1.50"
+                      value={editFormData.rate_per_word}
+                      onChange={(e) => handleEditRateChange(e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>Grand Total (BDT)</label>
+                    <input
+                      type="number"
+                      placeholder="Auto calculated"
+                      value={editFormData.grand_total}
+                      onChange={(e) => setEditFormData({ ...editFormData, grand_total: e.target.value })}
+                      className={inputClass}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </form>
       </Modal>
 
       {/* View Details Modal */}
-      <Modal
-        isOpen={isViewModalOpen}
-        onClose={() => setIsViewModalOpen(false)}
-        title="Assignment Details"
-        subtitle={selectedAssignment?.reference}
-        icon={Book01Icon}
-        size="md"
-      >
-        {selectedAssignment && (
-          <div className="space-y-4 text-sm">
-            <div
-              className={`p-4 border rounded-2xl space-y-2.5 ${
-                isDark
-                  ? "bg-white/5 border-white/10"
-                  : "bg-slate-50 border-slate-200 text-slate-900"
-              }`}
+      {selectedAssignment && (
+        <Modal
+          isOpen={isViewModalOpen}
+          onClose={() => setIsViewModalOpen(false)}
+          title={`Assignment Overview (${selectedAssignment.reference})`}
+          subtitle="Full specification details and assigned entity data."
+          icon={Eye}
+          size="lg"
+          footer={
+            <button
+              onClick={() => setIsViewModalOpen(false)}
+              className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition-colors"
             >
+              Close
+            </button>
+          }
+        >
+          <div className="space-y-4 text-xs">
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-white/10 space-y-2">
               <div className="flex justify-between items-center">
-                <span className={isDark ? "text-gray-400" : "text-slate-500"}>Reference:</span>
-                <span className="font-mono text-purple-600 dark:text-purple-300 font-bold">
+                <span className="font-semibold text-slate-500 dark:text-slate-400">Reference:</span>
+                <span className="font-mono font-bold text-purple-600 dark:text-purple-400">
                   {selectedAssignment.reference}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className={isDark ? "text-gray-400" : "text-slate-500"}>Student:</span>
-                <span className="font-semibold">{selectedAssignment.client?.name}</span>
+                <span className="font-semibold text-slate-500 dark:text-slate-400">Student Name:</span>
+                <span className="font-semibold">{selectedAssignment.client?.name || "N/A"}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className={isDark ? "text-gray-400" : "text-slate-500"}>Mapped Writer:</span>
-                <span className="font-semibold text-pink-600 dark:text-pink-400">
-                  {getAssignedWriterName(selectedAssignment) || "Unassigned"}
-                </span>
+                <span className="font-semibold text-slate-500 dark:text-slate-400">Course Code:</span>
+                <span>{selectedAssignment.course_code}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className={isDark ? "text-gray-400" : "text-slate-500"}>Course Code:</span>
-                <span className="font-mono">{selectedAssignment.course_code}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className={isDark ? "text-gray-400" : "text-slate-500"}>Assignment No:</span>
-                <span>{selectedAssignment.assignment_no}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className={isDark ? "text-gray-400" : "text-slate-500"}>Word Count:</span>
-                <span>{selectedAssignment.word_count || "N/A"} words</span>
-              </div>
-              {userRole === "ADMIN" && (
-                <>
-                  {selectedAssignment.rate_per_word && (
-                    <div className="flex justify-between items-center">
-                      <span className={isDark ? "text-gray-400" : "text-slate-500"}>
-                        Rate Multiplier:
-                      </span>
-                      <span className="font-mono text-purple-600 dark:text-purple-300 font-semibold">
-                        {selectedAssignment.rate_per_word} / word
-                      </span>
-                    </div>
-                  )}
-                  {selectedAssignment.grand_total && (
-                    <div className="flex justify-between items-center border-t pt-2 border-slate-200 dark:border-white/10">
-                      <span className="font-bold text-slate-700 dark:text-gray-300">Grand Total:</span>
-                      <span className="font-extrabold text-base text-emerald-600 dark:text-emerald-400">
-                        BDT {Number(selectedAssignment.grand_total).toLocaleString()}
-                      </span>
-                    </div>
-                  )}
-                </>
-              )}
-              <div className="flex justify-between items-center">
-                <span className={isDark ? "text-gray-400" : "text-slate-500"}>Status:</span>
+                <span className="font-semibold text-slate-500 dark:text-slate-400">Status:</span>
                 <Badge variant="purple">{selectedAssignment.status}</Badge>
               </div>
             </div>
 
+            {userRole === "ADMIN" && (
+              <div className="p-4 rounded-xl border border-purple-200/60 dark:border-purple-900/40 bg-purple-50/50 dark:bg-purple-950/20 space-y-3">
+                <h5 className="font-bold text-xs uppercase tracking-wider text-purple-700 dark:text-purple-300">
+                  Admin Workflow Statuses
+                </h5>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-white/60 dark:bg-black/30 border border-slate-200 dark:border-white/5">
+                    <span className="font-semibold text-slate-500 dark:text-slate-400">Assigned Status:</span>
+                    <Badge variant={selectedAssignment.assigned_status === "SUBMITTED" ? "success" : "warning"}>
+                      {selectedAssignment.assigned_status || "PENDING"}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-white/60 dark:bg-black/30 border border-slate-200 dark:border-white/5">
+                    <span className="font-semibold text-slate-500 dark:text-slate-400">Payment Status:</span>
+                    <Badge variant={selectedAssignment.payment_status === "PAID" ? "success" : "warning"}>
+                      {selectedAssignment.payment_status || "PENDING"}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-white/60 dark:bg-black/30 border border-slate-200 dark:border-white/5">
+                    <span className="font-semibold text-slate-500 dark:text-slate-400">Writer Commission:</span>
+                    <Badge variant={selectedAssignment.writer_commission_status === "PAID" ? "success" : "warning"}>
+                      {selectedAssignment.writer_commission_status || "PENDING"}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Net Profit & Financial Overview (Admin Only) */}
+                {(() => {
+                  const studentTotal = Number(selectedAssignment.grand_total || 0);
+                  const costsTotal = selectedAssignment.costs
+                    ? selectedAssignment.costs.reduce((sum: number, c: any) => sum + Number(c.price || 0), 0)
+                    : 0;
+                  const latestCommRecord = selectedAssignment.commissionRecords?.[0];
+                  const writerComm = latestCommRecord
+                    ? Number(latestCommRecord.final_commission_amount || 0)
+                    : Number(selectedAssignment.writers?.[0]?.commission_amount || 0);
+                  const netProfit = studentTotal - costsTotal - writerComm;
+
+                  return (
+                    <div className="pt-2 border-t border-purple-200/60 dark:border-purple-900/40 space-y-2">
+                      <h5 className="font-bold text-xs uppercase tracking-wider text-emerald-700 dark:text-emerald-300 flex items-center space-x-1">
+                        <DollarSign size={14} className="text-emerald-500" />
+                        <span>Financial Summary & Net Profit</span>
+                      </h5>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                        <div className="p-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/30">
+                          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                            Student Total
+                          </div>
+                          <div className="font-bold text-slate-900 dark:text-white font-mono mt-0.5">
+                            BDT {studentTotal.toLocaleString()}
+                          </div>
+                        </div>
+
+                        <div className="p-2.5 rounded-lg border border-rose-200 dark:border-rose-900/40 bg-rose-50/50 dark:bg-rose-950/20">
+                          <div className="text-[10px] text-rose-700 dark:text-rose-300 font-medium">
+                            Assignment Costs
+                          </div>
+                          <div className="font-bold text-rose-600 dark:text-rose-400 font-mono mt-0.5">
+                            - BDT {costsTotal.toLocaleString()}
+                          </div>
+                        </div>
+
+                        <div className="p-2.5 rounded-lg border border-purple-200 dark:border-purple-900/40 bg-purple-50/50 dark:bg-purple-950/30">
+                          <div className="text-[10px] text-purple-700 dark:text-purple-300 font-medium">
+                            Writer Commission
+                          </div>
+                          <div className="font-bold text-purple-600 dark:text-purple-400 font-mono mt-0.5">
+                            - BDT {writerComm.toLocaleString()}
+                          </div>
+                        </div>
+
+                        <div className="p-2.5 rounded-lg border border-emerald-400/60 bg-emerald-100/70 dark:bg-emerald-950/60 shadow-2xs">
+                          <div className="text-[10px] text-emerald-800 dark:text-emerald-300 font-bold uppercase tracking-wider">
+                            Net Profit Left
+                          </div>
+                          <div className="font-black text-emerald-700 dark:text-emerald-300 font-mono text-sm mt-0.5">
+                            BDT {netProfit.toLocaleString()}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
+            {/* Stored Commission Calculation Records Table (Admin Only) */}
+            {userRole === "ADMIN" && selectedAssignment.commissionRecords && selectedAssignment.commissionRecords.length > 0 && (
+              <div className="space-y-2 mt-3">
+                <h5 className="font-bold text-xs uppercase tracking-wider text-purple-700 dark:text-purple-300">
+                  Writer Commission Audit Table
+                </h5>
+                <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-white/10">
+                  <table className="w-full text-left text-[11px]">
+                    <thead className="bg-slate-100 dark:bg-white/5 font-semibold text-slate-600 dark:text-slate-300">
+                      <tr>
+                        <th className="p-2">Date</th>
+                        <th className="p-2">Type</th>
+                        <th className="p-2">Student Total</th>
+                        <th className="p-2">Costs</th>
+                        <th className="p-2">Net Base</th>
+                        <th className="p-2 text-right">Commission Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+                      {selectedAssignment.commissionRecords.map((rec: any) => (
+                        <tr key={rec.id} className="hover:bg-slate-50 dark:hover:bg-white/5">
+                          <td className="p-2">{new Date(rec.createdAt).toLocaleDateString()}</td>
+                          <td className="p-2 font-semibold text-purple-600 dark:text-purple-400">
+                            {rec.calculation_type === "FLAT"
+                              ? `Flat (BDT ${rec.commission_value})`
+                              : `${rec.commission_value}%`}
+                          </td>
+                          <td className="p-2 font-mono">BDT {Number(rec.grand_total).toLocaleString()}</td>
+                          <td className="p-2 font-mono text-rose-500">- BDT {Number(rec.total_cost).toLocaleString()}</td>
+                          <td className="p-2 font-mono font-medium">BDT {Number(rec.net_base_amount).toLocaleString()}</td>
+                          <td className="p-2 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                            BDT {Number(rec.final_commission_amount).toLocaleString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
             {selectedAssignment.description && (
-              <div
-                className={`p-4 border rounded-2xl ${
-                  isDark ? "bg-black/30 border-white/5" : "bg-white border-slate-200"
-                }`}
-              >
-                <h4
-                  className={`text-xs font-semibold uppercase tracking-wider mb-1 ${
-                    isDark ? "text-gray-400" : "text-slate-500"
-                  }`}
-                >
-                  Description
-                </h4>
-                <p
-                  className={`text-xs leading-relaxed whitespace-pre-wrap ${
-                    isDark ? "text-gray-300" : "text-slate-700"
-                  }`}
-                >
+              <div>
+                <span className="font-semibold block mb-1">Description:</span>
+                <p className="p-3 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">
                   {selectedAssignment.description}
                 </p>
               </div>
             )}
           </div>
-        )}
-      </Modal>
+        </Modal>
+      )}
     </div>
   );
 }

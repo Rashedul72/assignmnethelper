@@ -13,14 +13,15 @@ import {
   Moon01Icon,
 } from "hugeicons-react";
 import { useToast } from "../../components/ui/ToastContext";
+import { API_BASE_URL } from "../../lib/api";
 
 export default function AdminLogin() {
   const router = useRouter();
   const { showToast } = useToast();
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
-  const [email, setEmail] = useState("admin@bdjhelper.com");
-  const [password, setPassword] = useState("adminBDJ123");
+  const [email, setEmail] = useState("ceo@bdjhelper.com");
+  const [password, setPassword] = useState("ceojoeBDJ123");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +37,7 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/admin/login", {
+      const res = await fetch(`${API_BASE_URL}/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -49,7 +50,7 @@ export default function AdminLogin() {
 
         // Fetch user's assigned menus to redirect to their primary allowed page
         try {
-          const menuRes = await fetch("http://localhost:5000/api/admin/me/menus", {
+          const menuRes = await fetch(`${API_BASE_URL}/admin/me/menus`, {
             headers: { Authorization: `Bearer ${data.token}` },
           });
           if (menuRes.ok) {

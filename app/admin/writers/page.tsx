@@ -2,19 +2,22 @@
 
 import { useEffect, useState, useCallback } from "react";
 import {
-  QuillWrite01Icon,
-  UserAdd01Icon,
-  PencilEdit02Icon,
-  Delete02Icon,
-  RefreshIcon,
-  Call02Icon,
-  Mail01Icon,
-} from "hugeicons-react";
+  PenTool,
+  UserPlus,
+  Pencil,
+  Trash2,
+  RotateCcw,
+  Phone,
+  Mail,
+} from "lucide-react";
 import { DataTable, Column } from "../../components/ui/Table";
 import { Modal } from "../../components/ui/Modal";
+import { ConfirmDialog } from "../../components/ui/ConfirmDialog";
 import { Badge } from "../../components/ui/Badge";
+import { PageHeader } from "../../components/ui/PageHeader";
 import { useToast } from "../../components/ui/ToastContext";
 import { useTheme } from "../../components/ui/ThemeContext";
+import { fetchWithAuth } from "../../lib/api";
 
 export default function WritersPage() {
   const { showToast } = useToast();
@@ -42,10 +45,7 @@ export default function WritersPage() {
   const fetchWriters = useCallback(async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("admin_token");
-      const res = await fetch("http://localhost:5000/api/admin/writers", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetchWithAuth("/admin/writers");
       if (res.ok) {
         const data = await res.json();
         setWriters(data);
@@ -81,18 +81,16 @@ export default function WritersPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const token = localStorage.getItem("admin_token");
     const url = selectedWriter
-      ? `http://localhost:5000/api/admin/writers/${selectedWriter.id}`
-      : `http://localhost:5000/api/admin/writers`;
+      ? `/admin/writers/${selectedWriter.id}`
+      : `/admin/writers`;
     const method = selectedWriter ? "PUT" : "POST";
 
     try {
-      const res = await fetch(url, {
+      const res = await fetchWithAuth(url, {
         method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -122,11 +120,10 @@ export default function WritersPage() {
 
   const handleDelete = async () => {
     if (!selectedWriter) return;
+    setSaving(true);
     try {
-      const token = localStorage.getItem("admin_token");
-      const res = await fetch(`http://localhost:5000/api/admin/writers/${selectedWriter.id}`, {
+      const res = await fetchWithAuth(`/admin/writers/${selectedWriter.id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         showToast("Writer account deactivated", "warning");
@@ -135,26 +132,22 @@ export default function WritersPage() {
       }
     } catch (err) {
       showToast("Failed to deactivate writer", "error");
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleRestore = async (writer: any) => {
     try {
-      const token = localStorage.getItem("admin_token");
-      const res = await fetch(`http://localhost:5000/api/admin/writers/${writer.id}`, {
+      const res = await fetchWithAuth(`/admin/writers/${writer.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          name: writer.name,
-          phone_number: writer.phone_number,
-          is_active: true,
-        }),
+        body: JSON.stringify({ ...writer, is_active: true }),
       });
       if (res.ok) {
-        showToast("Writer account restored!", "success");
+        showToast("Writer restored successfully!", "success");
         fetchWriters();
       }
     } catch (err) {
@@ -162,12 +155,11 @@ export default function WritersPage() {
     }
   };
 
-  const filteredWriters =
-    statusFilter === "ALL"
-      ? writers
-      : statusFilter === "ACTIVE"
-      ? writers.filter((w) => w.is_active)
-      : writers.filter((w) => !w.is_active);
+  const filteredWriters = writers.filter((w) => {
+    if (statusFilter === "ACTIVE") return w.is_active !== false;
+    if (statusFilter === "INACTIVE") return w.is_active === false;
+    return true;
+  });
 
   const columns: Column<any>[] = [
     {
@@ -175,22 +167,22 @@ export default function WritersPage() {
       header: "Writer Name",
       sortable: true,
       render: (row) => (
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2.5">
           <div
-            className={`w-9 h-9 rounded-2xl border flex items-center justify-center font-bold shrink-0 ${
+            className={`w-8 h-8 rounded-full border flex items-center justify-center font-bold text-xs shrink-0 ${
               isDark
-                ? "bg-pink-500/10 border-pink-500/20 text-pink-400"
+                ? "bg-pink-950/60 border-pink-800/60 text-pink-300"
                 : "bg-pink-100 border-pink-200 text-pink-700"
             }`}
           >
-            {row.name.charAt(0).toUpperCase()}
+            {row.name ? row.name[0].toUpperCase() : "W"}
           </div>
           <div>
-            <div className={`font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
+            <div className={`font-semibold text-xs ${isDark ? "text-slate-100" : "text-slate-900"}`}>
               {row.name}
             </div>
-            <div className={`text-xs ${isDark ? "text-gray-500" : "text-slate-400"}`}>
-              Writer ID: {row.id.substring(0, 8)}...
+            <div className={`text-[11px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              {row.user?.email || "No Login Email"}
             </div>
           </div>
         </div>
@@ -198,45 +190,22 @@ export default function WritersPage() {
     },
     {
       key: "phone_number",
-      header: "Phone Number",
+      header: "Phone Contact",
       sortable: true,
       render: (row) => (
-        <div
-          className={`flex items-center space-x-1.5 font-mono text-xs ${
-            isDark ? "text-gray-300" : "text-slate-700"
-          }`}
-        >
-          <Call02Icon size={14} className="text-purple-500" />
+        <div className="flex items-center space-x-1.5 font-mono text-xs">
+          <Phone size={13} className="text-slate-400 shrink-0" />
           <span>{row.phone_number}</span>
         </div>
       ),
     },
     {
-      key: "email",
-      header: "Login Email",
+      key: "assignmentsCount",
+      header: "Allocated Tasks",
       sortable: true,
       render: (row) => (
-        <div
-          className={`flex items-center space-x-1.5 text-xs ${
-            isDark ? "text-gray-300" : "text-slate-700"
-          }`}
-        >
-          <Mail01Icon size={14} className="text-blue-500" />
-          <span>{row.user?.email || "No Email"}</span>
-        </div>
-      ),
-    },
-    {
-      key: "password_hash",
-      header: "Password Hash",
-      render: (row) => (
-        <span
-          className={`text-xs font-mono truncate max-w-[120px] block ${
-            isDark ? "text-gray-500" : "text-slate-400"
-          }`}
-          title={row.user?.password_hash}
-        >
-          {row.user?.password_hash || "N/A"}
+        <span className="font-semibold text-xs">
+          {row._count?.assignments || row.assignments?.length || 0} active
         </span>
       ),
     },
@@ -245,8 +214,8 @@ export default function WritersPage() {
       header: "Status",
       sortable: true,
       render: (row) => (
-        <Badge variant={row.is_active ? "success" : "danger"}>
-          {row.is_active ? "Active" : "Inactive"}
+        <Badge variant={row.is_active !== false ? "success" : "neutral"}>
+          {row.is_active !== false ? "Active" : "Inactive"}
         </Badge>
       ),
     },
@@ -255,33 +224,32 @@ export default function WritersPage() {
       header: "Actions",
       align: "right",
       render: (row) => (
-        <div className="flex items-center justify-end space-x-2">
-          <button
-            onClick={() => handleOpenModal(row)}
-            className={`p-2 rounded-xl border transition-colors ${
-              isDark
-                ? "bg-white/5 hover:bg-white/10 border-white/10 text-purple-400"
-                : "bg-slate-100 hover:bg-slate-200 border-slate-200 text-purple-600"
-            }`}
-            title="Edit Writer"
-          >
-            <PencilEdit02Icon size={16} />
-          </button>
-          {row.is_active ? (
-            <button
-              onClick={() => confirmDelete(row)}
-              className="p-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded-xl text-rose-500 transition-colors"
-              title="Deactivate Writer"
-            >
-              <Delete02Icon size={16} />
-            </button>
+        <div className="flex items-center justify-end space-x-1.5">
+          {row.is_active !== false ? (
+            <>
+              <button
+                onClick={() => handleOpenModal(row)}
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                title="Edit Writer"
+              >
+                <Pencil size={14} />
+              </button>
+              <button
+                onClick={() => confirmDelete(row)}
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                title="Deactivate Writer"
+              >
+                <Trash2 size={14} />
+              </button>
+            </>
           ) : (
             <button
               onClick={() => handleRestore(row)}
-              className="p-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-xl text-emerald-500 transition-colors"
+              className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors flex items-center space-x-1 text-xs"
               title="Restore Writer"
             >
-              <RefreshIcon size={16} />
+              <RotateCcw size={14} />
+              <span>Restore</span>
             </button>
           )}
         </div>
@@ -290,205 +258,150 @@ export default function WritersPage() {
   ];
 
   const inputClass = isDark
-    ? "w-full bg-black/40 border border-white/10 rounded-2xl py-2.5 px-4 text-white focus:outline-none focus:border-pink-500 transition-all text-sm"
-    : "w-full bg-slate-50 border border-slate-200 rounded-2xl py-2.5 px-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-pink-600 transition-all text-sm";
+    ? "w-full bg-white/[0.04] border border-white/10 rounded-xl py-2 px-3.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm"
+    : "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
+
+  const labelClass = `block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
+    isDark ? "text-slate-400" : "text-slate-600"
+  }`;
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1
-            className={`text-3xl font-extrabold tracking-tight ${
-              isDark ? "text-white" : "text-slate-900"
-            }`}
+      {/* Page Header */}
+      <PageHeader
+        title="Writer Team Management"
+        description="Register writers, allocate assignment workloads, and manage team profiles"
+        badge="Team"
+        actions={
+          <button
+            onClick={() => handleOpenModal()}
+            className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium text-xs sm:text-sm flex items-center space-x-1.5 shadow-2xs transition-colors"
           >
-            Writer Team
-          </h1>
-          <p className={`text-sm mt-1 ${isDark ? "text-gray-400" : "text-slate-600"}`}>
-            Manage writer accounts, contact details & credentials
-          </p>
-        </div>
+            <UserPlus size={16} />
+            <span>Register Writer</span>
+          </button>
+        }
+      />
 
-        <button
-          onClick={() => handleOpenModal()}
-          className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-semibold py-2.5 px-5 rounded-2xl flex items-center space-x-2 shadow-[0_0_20px_rgba(236,72,153,0.25)] transition-all text-sm"
-        >
-          <UserAdd01Icon size={18} />
-          <span>New Writer</span>
-        </button>
-      </div>
-
-      {/* Main DataTable */}
+      {/* Data Table */}
       <DataTable
         columns={columns}
         data={filteredWriters}
         loading={loading}
+        pageSize={10}
         searchPlaceholder="Search writer name, phone, or email..."
-        searchKeys={["name", "phone_number"]}
         filters={[
           {
-            key: "status",
+            key: "statusFilter",
             label: "Filter Status",
             value: statusFilter,
             onChange: (val) => setStatusFilter(val),
             options: [
               { label: "All Writers", value: "ALL" },
-              { label: "Active Only", value: "ACTIVE" },
-              { label: "Inactive Only", value: "INACTIVE" },
+              { label: "Active", value: "ACTIVE" },
+              { label: "Inactive", value: "INACTIVE" },
             ],
           },
         ]}
-        emptyTitle="No writers found"
-        emptySubtitle="No writer profiles match your current search parameter."
+        emptyTitle="No writers registered"
+        emptySubtitle="Click Register Writer to add a writer team member."
       />
 
-      {/* Add / Edit Writer Modal */}
+      {/* Add / Edit Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selectedWriter ? "Edit Writer Profile" : "Add New Writer"}
-        subtitle={selectedWriter ? selectedWriter.name : "Register a new writer in the system"}
-        icon={QuillWrite01Icon}
+        title={selectedWriter ? "Edit Writer Profile" : "Register Writer Account"}
+        subtitle="Set writer details and account login credentials."
+        icon={PenTool}
         size="md"
+        footer={
+          <>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold flex items-center space-x-1.5 transition-colors shadow-2xs"
+            >
+              {saving && (
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1" />
+              )}
+              <span>{selectedWriter ? "Save Changes" : "Register Writer"}</span>
+            </button>
+          </>
+        }
       >
         <form onSubmit={handleSave} className="space-y-4">
           <div>
-            <label
-              className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                isDark ? "text-gray-400" : "text-slate-600"
-              }`}
-            >
-              Full Name *
-            </label>
+            <label className={labelClass}>Writer Full Name *</label>
             <input
-              required
               type="text"
-              placeholder="e.g. Sarah Jenkins"
+              placeholder="e.g. Tanvir Hossain"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className={inputClass}
+              required
             />
           </div>
 
           <div>
-            <label
-              className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                isDark ? "text-gray-400" : "text-slate-600"
-              }`}
-            >
-              Phone Number *
-            </label>
+            <label className={labelClass}>Phone Number *</label>
             <input
-              required
               type="text"
-              placeholder="e.g. +8801700000000"
+              placeholder="e.g. 01712345678"
               value={formData.phone_number}
               onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
-              className={`${inputClass} font-mono`}
+              className={inputClass}
+              required
             />
           </div>
 
           {!selectedWriter && (
-            <div>
-              <label
-                className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-gray-400" : "text-slate-600"
-                }`}
-              >
-                Login Email *
-              </label>
-              <input
-                required
-                type="email"
-                placeholder="writer@example.com"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className={inputClass}
-              />
-            </div>
+            <>
+              <div>
+                <label className={labelClass}>Writer Login Email *</label>
+                <input
+                  type="email"
+                  placeholder="e.g. writer@assignmenthelper.com"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className={inputClass}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Password *</label>
+                <input
+                  type="password"
+                  placeholder="Set initial password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className={inputClass}
+                  required
+                />
+              </div>
+            </>
           )}
-
-          <div>
-            <label
-              className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-                isDark ? "text-gray-400" : "text-slate-600"
-              }`}
-            >
-              {selectedWriter ? "Reset Password (Optional)" : "Login Password *"}
-            </label>
-            <input
-              required={!selectedWriter}
-              type="password"
-              placeholder={selectedWriter ? "Leave blank to keep current password" : "••••••••"}
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className={inputClass}
-            />
-          </div>
-
-          <div
-            className={`pt-4 flex justify-end space-x-3 border-t ${
-              isDark ? "border-white/10" : "border-slate-200"
-            }`}
-          >
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(false)}
-              className={`px-5 py-2.5 rounded-2xl font-medium text-sm transition-colors ${
-                isDark
-                  ? "bg-white/5 hover:bg-white/10 text-white"
-                  : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-              }`}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-semibold text-sm shadow-[0_0_20px_rgba(236,72,153,0.25)] disabled:opacity-50 transition-all"
-            >
-              {saving ? "Saving..." : selectedWriter ? "Update Writer" : "Register Writer"}
-            </button>
-          </div>
         </form>
       </Modal>
 
-      {/* Delete Confirmation Modal */}
-      <Modal
+      {/* Confirmation Dialog */}
+      <ConfirmDialog
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title="Deactivate Writer Account"
-        subtitle="Confirmation required"
-        icon={Delete02Icon}
-        size="sm"
-      >
-        <div className="space-y-4">
-          <p className={`text-sm leading-relaxed ${isDark ? "text-gray-300" : "text-slate-600"}`}>
-            Are you sure you want to deactivate{" "}
-            <span className={`font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
-              {selectedWriter?.name}
-            </span>
-            ? This will prevent them from logging in and accessing writer assignments.
-          </p>
-          <div className="flex justify-end space-x-3 pt-2">
-            <button
-              onClick={() => setIsDeleteModalOpen(false)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium ${
-                isDark ? "bg-white/5 hover:bg-white/10 text-white" : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-              }`}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleDelete}
-              className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-semibold shadow-md shadow-rose-600/20"
-            >
-              Deactivate Writer
-            </button>
-          </div>
-        </div>
-      </Modal>
+        onConfirm={handleDelete}
+        isLoading={saving}
+        title="Deactivate Writer Profile?"
+        message={`Are you sure you want to deactivate ${selectedWriter?.name}? This writer will no longer receive new task assignments.`}
+        confirmText="Deactivate Writer"
+        variant="warning"
+      />
     </div>
   );
 }

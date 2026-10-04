@@ -2,21 +2,28 @@
 
 import { useEffect, useState, useCallback } from "react";
 import {
-  Money01Icon,
-  Add01Icon,
-  PencilEdit02Icon,
-  Delete02Icon,
-  File01Icon,
-  Tag01Icon,
-  AlertCircleIcon,
-  CheckmarkCircle01Icon,
-} from "hugeicons-react";
+  CreditCard,
+  Plus,
+  Pencil,
+  Trash2,
+  FileText,
+  Tag,
+  DollarSign,
+  TrendingUp,
+  Search,
+  ChevronDown,
+  X,
+  CheckCircle2,
+} from "lucide-react";
 import { DataTable, Column } from "../../components/ui/Table";
 import { Modal } from "../../components/ui/Modal";
+import { ConfirmDialog } from "../../components/ui/ConfirmDialog";
 import { Badge } from "../../components/ui/Badge";
 import { StatCard } from "../../components/ui/StatCard";
+import { PageHeader } from "../../components/ui/PageHeader";
 import { useToast } from "../../components/ui/ToastContext";
 import { useTheme } from "../../components/ui/ThemeContext";
+import { fetchWithAuth } from "../../lib/api";
 
 export default function CostsPage() {
   const { showToast } = useToast();
@@ -33,12 +40,19 @@ export default function CostsPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedCost, setSelectedCost] = useState<any>(null);
 
+  // Searchable assignment combobox states
+  const [createAssignmentSearch, setCreateAssignmentSearch] = useState("");
+  const [createAssignmentDropdownOpen, setCreateAssignmentDropdownOpen] = useState(false);
+  const [editAssignmentSearch, setEditAssignmentSearch] = useState("");
+  const [editAssignmentDropdownOpen, setEditAssignmentDropdownOpen] = useState(false);
+
   // Form States
   const [formData, setFormData] = useState({
     assignment_id: "",
     name: "",
     description: "",
     price: "",
+    status: "PENDING",
   });
 
   const [editFormData, setEditFormData] = useState({
@@ -47,7 +61,7 @@ export default function CostsPage() {
     name: "",
     description: "",
     price: "",
-    status: "ACTIVE",
+    status: "PENDING",
   });
 
   const [saving, setSaving] = useState(false);
@@ -56,14 +70,9 @@ export default function CostsPage() {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("admin_token");
       const [costsRes, assignmentsRes] = await Promise.all([
-        fetch("http://localhost:5000/api/admin/costs", {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        fetch("http://localhost:5000/api/admin/assignments", {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
+        fetchWithAuth("/admin/costs"),
+        fetchWithAuth("/admin/assignments"),
       ]);
 
       if (costsRes.ok) {
@@ -92,7 +101,10 @@ export default function CostsPage() {
       name: "",
       description: "",
       price: "",
+      status: "PENDING",
     });
+    setCreateAssignmentSearch("");
+    setCreateAssignmentDropdownOpen(false);
     setIsCreateModalOpen(true);
   };
 
@@ -104,8 +116,10 @@ export default function CostsPage() {
       name: cost.name || "",
       description: cost.description || "",
       price: cost.price ? String(cost.price) : "",
-      status: cost.status || "ACTIVE",
+      status: cost.status || "PENDING",
     });
+    setEditAssignmentSearch("");
+    setEditAssignmentDropdownOpen(false);
     setIsEditModalOpen(true);
   };
 
@@ -131,12 +145,10 @@ export default function CostsPage() {
 
     setSaving(true);
     try {
-      const token = localStorage.getItem("admin_token");
-      const res = await fetch("http://localhost:5000/api/admin/costs", {
+      const res = await fetchWithAuth("/admin/costs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -170,12 +182,10 @@ export default function CostsPage() {
 
     setSaving(true);
     try {
-      const token = localStorage.getItem("admin_token");
-      const res = await fetch(`http://localhost:5000/api/admin/costs/${editFormData.id}`, {
+      const res = await fetchWithAuth(`/admin/costs/${editFormData.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(editFormData),
       });
@@ -200,10 +210,8 @@ export default function CostsPage() {
     if (!selectedCost) return;
     setSaving(true);
     try {
-      const token = localStorage.getItem("admin_token");
-      const res = await fetch(`http://localhost:5000/api/admin/costs/${selectedCost.id}`, {
+      const res = await fetchWithAuth(`/admin/costs/${selectedCost.id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (res.ok) {
@@ -222,9 +230,10 @@ export default function CostsPage() {
   };
 
   // Metrics
-  const activeCosts = costs.filter((c) => c.status === "ACTIVE");
-  const totalCostAmount = activeCosts.reduce((acc, c) => acc + Number(c.price || 0), 0);
-  const avgCost = activeCosts.length > 0 ? totalCostAmount / activeCosts.length : 0;
+  const totalCostAmount = costs.reduce((acc, c) => acc + Number(c.price || 0), 0);
+  const paidCount = costs.filter((c) => c.status === "PAID").length;
+  const pendingCount = costs.filter((c) => c.status === "PENDING").length;
+  const avgCost = costs.length > 0 ? totalCostAmount / costs.length : 0;
 
   const filteredCosts = costs.filter((c) => {
     if (statusFilter === "ALL") return true;
@@ -236,548 +245,639 @@ export default function CostsPage() {
       key: "assignment",
       header: "Assigned Assignment",
       render: (row: any) => (
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2.5">
           <div
-            className={`p-2 rounded-xl border ${
+            className={`p-1.5 rounded-lg border shrink-0 ${
               isDark
-                ? "bg-purple-500/10 border-white/10 text-purple-400"
+                ? "bg-purple-950/60 border-purple-800/60 text-purple-400"
                 : "bg-purple-50 border-purple-200 text-purple-600"
             }`}
           >
-            <File01Icon size={18} />
+            <FileText size={14} />
           </div>
           <div>
-            <div className={`font-semibold text-sm ${isDark ? "text-white" : "text-slate-900"}`}>
-              {row.assignment?.reference || "N/A"}
+            <div className={`font-semibold text-xs ${isDark ? "text-slate-100" : "text-slate-900"}`}>
+              {row.assignment?.title || row.assignment?.course_code || "Assignment Record"}
             </div>
-            <div className={`text-xs ${isDark ? "text-gray-400" : "text-slate-500"}`}>
-              {row.assignment?.course_code} • {row.assignment?.assignment_no || "Assignment"}
+            <div className={`text-[11px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              Ref: {row.assignment?.reference || "N/A"}
             </div>
           </div>
         </div>
       ),
-      sortable: true,
     },
     {
       key: "name",
-      header: "Cost Name",
-      render: (row: any) => (
-        <div className="flex items-center space-x-2">
-          <Tag01Icon size={14} className={isDark ? "text-purple-400" : "text-purple-600"} />
-          <span className={`font-medium text-sm ${isDark ? "text-gray-200" : "text-slate-800"}`}>
-            {row.name}
-          </span>
-        </div>
-      ),
+      header: "Cost Item Name",
       sortable: true,
-    },
-    {
-      key: "description",
-      header: "Description (Optional)",
       render: (row: any) => (
-        <span className={`text-xs ${isDark ? "text-gray-400" : "text-slate-500"}`}>
-          {row.description || "—"}
-        </span>
+        <div className="flex items-center space-x-1.5">
+          <Tag size={13} className="text-slate-400 shrink-0" />
+          <span className="font-semibold text-xs">{row.name}</span>
+        </div>
       ),
     },
     {
       key: "price",
-      header: "Amount",
+      header: "Amount (BDT)",
+      sortable: true,
       render: (row: any) => (
-        <span className="font-bold text-sm text-emerald-500">
-          ৳ {Number(row.price || 0).toLocaleString()} BDT
+        <span className="font-semibold text-xs text-emerald-600 dark:text-emerald-400 font-mono">
+          BDT {Number(row.price || 0).toLocaleString()}
         </span>
       ),
-      sortable: true,
-    },
-    {
-      key: "incurred_at",
-      header: "Incurred Date",
-      render: (row: any) => (
-        <span className={`text-xs ${isDark ? "text-gray-400" : "text-slate-500"}`}>
-          {new Date(row.incurred_at || row.createdAt).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </span>
-      ),
-      sortable: true,
     },
     {
       key: "status",
       header: "Status",
+      sortable: true,
+      render: (row: any) => {
+        const isPaid = row.status === "PAID";
+        const isPending = row.status === "PENDING";
+        return (
+          <Badge variant={isPaid ? "success" : isPending ? "warning" : "neutral"}>
+            {row.status || "PENDING"}
+          </Badge>
+        );
+      },
+    },
+    {
+      key: "createdAt",
+      header: "Recorded Date",
+      sortable: true,
       render: (row: any) => (
-        <Badge
-          variant={row.status === "ACTIVE" ? "success" : "neutral"}
-          dot
-        >
-          {row.status}
-        </Badge>
+        <span className="text-xs text-slate-400">
+          {new Date(row.createdAt).toLocaleDateString()}
+        </span>
       ),
     },
     {
       key: "actions",
       header: "Actions",
+      align: "right",
       render: (row: any) => (
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center justify-end space-x-1.5">
           <button
             onClick={() => handleOpenEditModal(row)}
-            className={`p-2 rounded-xl border transition-all ${
-              isDark
-                ? "bg-white/5 hover:bg-white/10 border-white/10 text-purple-400"
-                : "bg-slate-100 hover:bg-slate-200 border-slate-200 text-purple-600"
-            }`}
+            className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
             title="Edit Cost"
           >
-            <PencilEdit02Icon size={16} />
+            <Pencil size={14} />
           </button>
           <button
             onClick={() => handleOpenDeleteModal(row)}
-            className={`p-2 rounded-xl border transition-all ${
-              isDark
-                ? "bg-red-500/10 hover:bg-red-500/20 border-red-500/20 text-red-400"
-                : "bg-red-50 hover:bg-red-100 border-red-200 text-red-600"
-            }`}
-            title="Delete Cost"
+            className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+            title="Delete Record"
           >
-            <Delete02Icon size={16} />
+            <Trash2 size={14} />
           </button>
         </div>
       ),
     },
   ];
 
+  const inputClass = isDark
+    ? "w-full bg-white/[0.04] border border-white/10 rounded-xl py-2 px-3.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm"
+    : "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
+
+  const labelClass = `block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
+    isDark ? "text-slate-400" : "text-slate-600"
+  }`;
+
   return (
-    <div className="space-y-8">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className={`text-2xl font-bold tracking-tight ${isDark ? "text-white" : "text-slate-900"}`}>
-            Cost Management Panel
-          </h1>
-          <p className={`text-xs mt-1 ${isDark ? "text-gray-400" : "text-slate-500"}`}>
-            Track and record operational costs, writer expenses, and tools per assignment
-          </p>
-        </div>
+    <div className="space-y-6">
+      {/* Page Header */}
+      <PageHeader
+        title="Cost & Revenue Management"
+        description="Track expenses, assignment costs, and calculate net profitability"
+        badge="Financials"
+        actions={
+          <button
+            onClick={handleOpenCreateModal}
+            className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium text-xs sm:text-sm flex items-center space-x-1.5 shadow-2xs transition-colors"
+          >
+            <Plus size={16} />
+            <span>Add Cost Item</span>
+          </button>
+        }
+      />
 
-        <button
-          onClick={handleOpenCreateModal}
-          className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium text-sm shadow-lg shadow-purple-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-        >
-          <Add01Icon size={18} />
-          <span>Record New Cost</span>
-        </button>
-      </div>
-
-      {/* Overview StatCards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {/* Summary Metric Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatCard
-          title="Total Cost Incurred"
-          value={`৳ ${totalCostAmount.toLocaleString()} BDT`}
-          trend="+ Active Costs"
-          trendUp={true}
-          icon={Money01Icon}
+          title="Total Costs"
+          value={`BDT ${totalCostAmount.toLocaleString()}`}
+          icon={CreditCard}
+          colorScheme="emerald"
+        />
+        <StatCard
+          title="Payment Breakdown"
+          value={`${paidCount} Paid / ${pendingCount} Pending`}
+          icon={Tag}
           colorScheme="purple"
         />
         <StatCard
-          title="Active Cost Entries"
-          value={activeCosts.length}
-          icon={Tag01Icon}
+          title="Average Cost / Task"
+          value={`BDT ${Math.round(avgCost).toLocaleString()}`}
+          icon={TrendingUp}
           colorScheme="blue"
         />
-        <StatCard
-          title="Average Cost per Record"
-          value={`৳ ${Math.round(avgCost).toLocaleString()} BDT`}
-          icon={CheckmarkCircle01Icon}
-          colorScheme="emerald"
-        />
       </div>
 
-      {/* Main Costs Table Panel */}
-      <div
-        className={`p-6 rounded-3xl border transition-all ${
-          isDark ? "bg-white/[0.02] border-white/10" : "bg-white border-slate-200 shadow-xl"
-        }`}
-      >
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div className="flex items-center space-x-3">
-            <div
-              className={`p-2.5 rounded-xl border ${
-                isDark ? "bg-purple-500/10 border-white/10 text-purple-400" : "bg-purple-50 border-purple-200 text-purple-600"
-              }`}
-            >
-              <Money01Icon size={20} />
-            </div>
-            <div>
-              <h2 className={`font-semibold text-lg ${isDark ? "text-white" : "text-slate-900"}`}>
-                Cost & Expense Records
-              </h2>
-              <p className={`text-xs ${isDark ? "text-gray-400" : "text-slate-500"}`}>
-                Manage and view cost breakdowns across assigned assignments
-              </p>
-            </div>
-          </div>
+      {/* Data Table Component */}
+      <DataTable
+        columns={columns}
+        data={filteredCosts}
+        loading={loading}
+        pageSize={8}
+        searchPlaceholder="Search cost name or assignment reference..."
+        filters={[
+          {
+            key: "statusFilter",
+            label: "Filter Status",
+            value: statusFilter,
+            onChange: (val) => setStatusFilter(val),
+            options: [
+              { label: "All Records", value: "ALL" },
+              { label: "Pending", value: "PENDING" },
+              { label: "Paid", value: "PAID" },
+            ],
+          },
+        ]}
+        emptyTitle="No cost items recorded"
+        emptySubtitle="Click Add Cost Item to log assignment expenses or payouts."
+      />
 
-          {/* Status Filter */}
-          <div className="flex items-center space-x-2">
-            {["ALL", "ACTIVE", "VOID"].map((status) => (
-              <button
-                key={status}
-                onClick={() => setStatusFilter(status)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
-                  statusFilter === status
-                    ? "bg-purple-600 text-white shadow-md shadow-purple-500/20"
-                    : isDark
-                    ? "bg-white/5 text-gray-400 hover:text-white border border-white/5"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200"
-                }`}
-              >
-                {status}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <DataTable
-          data={filteredCosts}
-          columns={columns}
-          loading={loading}
-          searchPlaceholder="Search by assignment ref, cost name, description..."
-        />
-      </div>
-
-      {/* Record New Cost Modal */}
+      {/* Create Modal */}
       <Modal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        title="Record New Assignment Cost"
-        subtitle="Specify assigned assignment, cost name, optional description, and amount"
-        icon={Money01Icon}
+        title="Add New Cost Record"
+        subtitle="Associate an expense or payout item with an assignment."
+        icon={CreditCard}
         size="md"
         footer={
           <>
             <button
-              type="button"
               onClick={() => setIsCreateModalOpen(false)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium border transition-colors ${
-                isDark
-                  ? "border-white/10 text-gray-400 hover:bg-white/5"
-                  : "border-slate-200 text-slate-600 hover:bg-slate-100"
-              }`}
+              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
             >
               Cancel
             </button>
             <button
-              type="submit"
-              form="create-cost-form"
+              onClick={handleCreateCost}
               disabled={saving}
-              className="px-5 py-2 rounded-xl text-sm font-medium bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-500/20 transition-all flex items-center space-x-2 disabled:opacity-50"
+              className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold flex items-center space-x-1.5 transition-colors shadow-2xs"
             >
-              {saving ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Saving...</span>
-                </>
-              ) : (
-                <>
-                  <Add01Icon size={16} />
-                  <span>Save Cost Record</span>
-                </>
+              {saving && (
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1" />
               )}
+              <span>Save Record</span>
             </button>
           </>
         }
       >
-        <form id="create-cost-form" onSubmit={handleCreateCost} className="space-y-4">
-          {/* Assigned Assignment Dropdown */}
+        <form onSubmit={handleCreateCost} className="space-y-4">
           <div>
-            <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-              Assigned Assignment *
-            </label>
-            <select
-              value={formData.assignment_id}
-              onChange={(e) => setFormData({ ...formData, assignment_id: e.target.value })}
-              required
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-all ${
-                isDark
-                  ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                  : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-600"
-              }`}
-            >
-              {assignments.length === 0 ? (
-                <option value="" disabled className={isDark ? "bg-[#0b0628]" : ""}>
-                  No assignments available
-                </option>
-              ) : (
-                assignments.map((assignment) => (
-                  <option
-                    key={assignment.id}
-                    value={assignment.id}
-                    className={isDark ? "bg-[#0b0628] text-white" : "bg-white text-slate-900"}
-                  >
-                    {assignment.reference} — {assignment.course_code} ({assignment.assignment_no || "Assignment"})
-                  </option>
-                ))
+            <label className={labelClass}>Select Assignment *</label>
+            <div className="relative">
+              {/* Trigger Button */}
+              <div
+                onClick={() => setCreateAssignmentDropdownOpen(!createAssignmentDropdownOpen)}
+                className={`w-full p-2.5 rounded-xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
+                  isDark
+                    ? "bg-[#0c082b] border-white/10 text-slate-100 hover:border-purple-500/50"
+                    : "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
+                }`}
+              >
+                {(() => {
+                  const selected = assignments.find((a) => a.id === formData.assignment_id);
+                  if (selected) {
+                    return (
+                      <div className="flex items-center space-x-2 truncate min-w-0">
+                        <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 font-semibold shrink-0">
+                          {selected.reference}
+                        </span>
+                        <span className="font-bold text-slate-900 dark:text-white truncate">
+                          {selected.course_code || selected.title || "Assignment"}
+                        </span>
+                        {selected.client?.name && (
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate shrink">
+                            • {selected.client.name} ({selected.client.student_id})
+                          </span>
+                        )}
+                      </div>
+                    );
+                  }
+                  return (
+                    <span className="text-slate-400 font-normal">
+                      Click or search assignment by ref, course, or client...
+                    </span>
+                  );
+                })()}
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 shrink-0 ml-2 transition-transform duration-200 ${
+                    createAssignmentDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </div>
+
+              {/* Dropdown Overlay */}
+              {createAssignmentDropdownOpen && (
+                <div
+                  className={`absolute z-50 left-0 right-0 mt-1 rounded-xl border shadow-2xl p-2.5 space-y-2 ${
+                    isDark
+                      ? "bg-[#0b0826] border-white/15 text-slate-100"
+                      : "bg-white border-slate-200 text-slate-900"
+                  }`}
+                >
+                  {/* Live Search Input Box */}
+                  <div className="relative">
+                    <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
+                    <input
+                      type="text"
+                      autoFocus
+                      placeholder="Search by reference, course code, title, or client..."
+                      value={createAssignmentSearch}
+                      onChange={(e) => setCreateAssignmentSearch(e.target.value)}
+                      className={`w-full pl-8 pr-8 py-2 rounded-lg border text-xs outline-none transition-colors ${
+                        isDark
+                          ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
+                          : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
+                      }`}
+                    />
+                    {createAssignmentSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setCreateAssignmentSearch("")}
+                        className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                      >
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Scrollable Filtered Assignments List */}
+                  <div className="max-h-52 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                    {(() => {
+                      const filtered = assignments.filter((a) => {
+                        if (!createAssignmentSearch.trim()) return true;
+                        const q = createAssignmentSearch.toLowerCase();
+                        return (
+                          a.reference?.toLowerCase().includes(q) ||
+                          a.course_code?.toLowerCase().includes(q) ||
+                          a.title?.toLowerCase().includes(q) ||
+                          a.client?.name?.toLowerCase().includes(q) ||
+                          a.client?.student_id?.toLowerCase().includes(q)
+                        );
+                      });
+
+                      if (filtered.length === 0) {
+                        return (
+                          <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                            No assignments found matching "{createAssignmentSearch}"
+                          </div>
+                        );
+                      }
+
+                      return filtered.map((a) => {
+                        const isSelected = formData.assignment_id === a.id;
+                        return (
+                          <div
+                            key={a.id}
+                            onClick={() => {
+                              setFormData({ ...formData, assignment_id: a.id });
+                              setCreateAssignmentDropdownOpen(false);
+                            }}
+                            className={`p-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors text-xs ${
+                              isSelected
+                                ? isDark
+                                  ? "bg-purple-900/50 text-purple-200 font-semibold border border-purple-700/50"
+                                  : "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
+                                : isDark
+                                ? "hover:bg-white/5 text-slate-200"
+                                : "hover:bg-slate-100 text-slate-800"
+                            }`}
+                          >
+                            <div className="flex flex-col min-w-0 pr-2">
+                              <div className="flex items-center space-x-2">
+                                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-semibold shrink-0">
+                                  {a.reference}
+                                </span>
+                                <span className="font-bold truncate">{a.course_code || a.title}</span>
+                              </div>
+                              {a.client?.name && (
+                                <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                                  Client: {a.client.name} ({a.client.student_id})
+                                </span>
+                              )}
+                            </div>
+                            {isSelected && (
+                              <CheckCircle2
+                                size={16}
+                                className="text-purple-600 dark:text-purple-400 shrink-0 ml-2"
+                              />
+                            )}
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
               )}
+            </div>
+          </div>
+
+          <div>
+            <label className={labelClass}>Cost Item Name *</label>
+            <input
+              type="text"
+              placeholder="e.g. Proofreading Fee / Platform Charge"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className={inputClass}
+              required
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Status</label>
+            <select
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              className={inputClass}
+            >
+              <option value="PENDING">PENDING</option>
+              <option value="PAID">PAID</option>
             </select>
           </div>
 
-          {/* Name */}
           <div>
-            <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-              Cost Name *
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. Writer Base Fee, Plagiarism Checker Fee, Research Tool"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-all ${
-                isDark
-                  ? "bg-white/5 border-white/10 text-white placeholder-gray-500 focus:border-purple-500"
-                  : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-purple-600"
-              }`}
-            />
-          </div>
-
-          {/* Description (Optional) */}
-          <div>
-            <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-              Description (Optional)
-            </label>
-            <textarea
-              rows={3}
-              placeholder="Additional details regarding this cost..."
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-all ${
-                isDark
-                  ? "bg-white/5 border-white/10 text-white placeholder-gray-500 focus:border-purple-500"
-                  : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-purple-600"
-              }`}
-            />
-          </div>
-
-          {/* Amount */}
-          <div>
-            <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-              Amount (BDT ৳) *
-            </label>
+            <label className={labelClass}>Amount in BDT *</label>
             <input
               type="number"
               step="0.01"
-              placeholder="e.g. 1500"
+              placeholder="500"
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              className={inputClass}
               required
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-all ${
-                isDark
-                  ? "bg-white/5 border-white/10 text-white placeholder-gray-500 focus:border-purple-500"
-                  : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-purple-600"
-              }`}
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Description / Notes</label>
+            <textarea
+              rows={3}
+              placeholder="Optional notes regarding this cost item..."
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className={inputClass}
             />
           </div>
         </form>
       </Modal>
 
-      {/* Edit Cost Modal */}
+      {/* Edit Modal */}
       <Modal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         title="Edit Cost Record"
-        subtitle="Modify assignment cost details and status"
-        icon={PencilEdit02Icon}
+        subtitle="Update cost details or update status."
+        icon={Pencil}
         size="md"
         footer={
           <>
             <button
-              type="button"
               onClick={() => setIsEditModalOpen(false)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium border transition-colors ${
-                isDark
-                  ? "border-white/10 text-gray-400 hover:bg-white/5"
-                  : "border-slate-200 text-slate-600 hover:bg-slate-100"
-              }`}
+              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
             >
               Cancel
             </button>
             <button
-              type="submit"
-              form="edit-cost-form"
+              onClick={handleUpdateCost}
               disabled={saving}
-              className="px-5 py-2 rounded-xl text-sm font-medium bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-500/20 transition-all flex items-center space-x-2 disabled:opacity-50"
+              className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold flex items-center space-x-1.5 transition-colors shadow-2xs"
             >
-              {saving ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Updating...</span>
-                </>
-              ) : (
-                <>
-                  <PencilEdit02Icon size={16} />
-                  <span>Update Cost</span>
-                </>
+              {saving && (
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1" />
               )}
+              <span>Save Changes</span>
             </button>
           </>
         }
       >
-        <form id="edit-cost-form" onSubmit={handleUpdateCost} className="space-y-4">
-          {/* Assigned Assignment Dropdown */}
+        <form onSubmit={handleUpdateCost} className="space-y-4">
           <div>
-            <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-              Assigned Assignment *
-            </label>
-            <select
-              value={editFormData.assignment_id}
-              onChange={(e) => setEditFormData({ ...editFormData, assignment_id: e.target.value })}
-              required
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-all ${
-                isDark
-                  ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                  : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-600"
-              }`}
-            >
-              {assignments.map((assignment) => (
-                <option
-                  key={assignment.id}
-                  value={assignment.id}
-                  className={isDark ? "bg-[#0b0628] text-white" : "bg-white text-slate-900"}
+            <label className={labelClass}>Select Assignment *</label>
+            <div className="relative">
+              {/* Trigger Button */}
+              <div
+                onClick={() => setEditAssignmentDropdownOpen(!editAssignmentDropdownOpen)}
+                className={`w-full p-2.5 rounded-xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
+                  isDark
+                    ? "bg-[#0c082b] border-white/10 text-slate-100 hover:border-purple-500/50"
+                    : "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
+                }`}
+              >
+                {(() => {
+                  const selected = assignments.find((a) => a.id === editFormData.assignment_id);
+                  if (selected) {
+                    return (
+                      <div className="flex items-center space-x-2 truncate min-w-0">
+                        <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 font-semibold shrink-0">
+                          {selected.reference}
+                        </span>
+                        <span className="font-bold text-slate-900 dark:text-white truncate">
+                          {selected.course_code || selected.title || "Assignment"}
+                        </span>
+                        {selected.client?.name && (
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate shrink">
+                            • {selected.client.name} ({selected.client.student_id})
+                          </span>
+                        )}
+                      </div>
+                    );
+                  }
+                  return (
+                    <span className="text-slate-400 font-normal">
+                      Click or search assignment by ref, course, or client...
+                    </span>
+                  );
+                })()}
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 shrink-0 ml-2 transition-transform duration-200 ${
+                    editAssignmentDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </div>
+
+              {/* Dropdown Overlay */}
+              {editAssignmentDropdownOpen && (
+                <div
+                  className={`absolute z-50 left-0 right-0 mt-1 rounded-xl border shadow-2xl p-2.5 space-y-2 ${
+                    isDark
+                      ? "bg-[#0b0826] border-white/15 text-slate-100"
+                      : "bg-white border-slate-200 text-slate-900"
+                  }`}
                 >
-                  {assignment.reference} — {assignment.course_code} ({assignment.assignment_no || "Assignment"})
-                </option>
-              ))}
+                  {/* Live Search Input Box */}
+                  <div className="relative">
+                    <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
+                    <input
+                      type="text"
+                      autoFocus
+                      placeholder="Search by reference, course code, title, or client..."
+                      value={editAssignmentSearch}
+                      onChange={(e) => setEditAssignmentSearch(e.target.value)}
+                      className={`w-full pl-8 pr-8 py-2 rounded-lg border text-xs outline-none transition-colors ${
+                        isDark
+                          ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
+                          : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
+                      }`}
+                    />
+                    {editAssignmentSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setEditAssignmentSearch("")}
+                        className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                      >
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Scrollable Filtered Assignments List */}
+                  <div className="max-h-52 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                    {(() => {
+                      const filtered = assignments.filter((a) => {
+                        if (!editAssignmentSearch.trim()) return true;
+                        const q = editAssignmentSearch.toLowerCase();
+                        return (
+                          a.reference?.toLowerCase().includes(q) ||
+                          a.course_code?.toLowerCase().includes(q) ||
+                          a.title?.toLowerCase().includes(q) ||
+                          a.client?.name?.toLowerCase().includes(q) ||
+                          a.client?.student_id?.toLowerCase().includes(q)
+                        );
+                      });
+
+                      if (filtered.length === 0) {
+                        return (
+                          <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                            No assignments found matching "{editAssignmentSearch}"
+                          </div>
+                        );
+                      }
+
+                      return filtered.map((a) => {
+                        const isSelected = editFormData.assignment_id === a.id;
+                        return (
+                          <div
+                            key={a.id}
+                            onClick={() => {
+                              setEditFormData({ ...editFormData, assignment_id: a.id });
+                              setEditAssignmentDropdownOpen(false);
+                            }}
+                            className={`p-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors text-xs ${
+                              isSelected
+                                ? isDark
+                                  ? "bg-purple-900/50 text-purple-200 font-semibold border border-purple-700/50"
+                                  : "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
+                                : isDark
+                                ? "hover:bg-white/5 text-slate-200"
+                                : "hover:bg-slate-100 text-slate-800"
+                            }`}
+                          >
+                            <div className="flex flex-col min-w-0 pr-2">
+                              <div className="flex items-center space-x-2">
+                                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-semibold shrink-0">
+                                  {a.reference}
+                                </span>
+                                <span className="font-bold truncate">{a.course_code || a.title}</span>
+                              </div>
+                              {a.client?.name && (
+                                <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                                  Client: {a.client.name} ({a.client.student_id})
+                                </span>
+                              )}
+                            </div>
+                            {isSelected && (
+                              <CheckCircle2
+                                size={16}
+                                className="text-purple-600 dark:text-purple-400 shrink-0 ml-2"
+                              />
+                            )}
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label className={labelClass}>Status</label>
+            <select
+              value={editFormData.status}
+              onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
+              className={inputClass}
+            >
+              <option value="PENDING">PENDING</option>
+              <option value="PAID">PAID</option>
             </select>
           </div>
 
-          {/* Name */}
           <div>
-            <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-              Cost Name *
-            </label>
+            <label className={labelClass}>Cost Item Name *</label>
             <input
               type="text"
               value={editFormData.name}
               onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+              className={inputClass}
               required
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-all ${
-                isDark
-                  ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                  : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-600"
-              }`}
             />
           </div>
 
-          {/* Description (Optional) */}
           <div>
-            <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-              Description (Optional)
-            </label>
-            <textarea
-              rows={3}
-              value={editFormData.description}
-              onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-all ${
-                isDark
-                  ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                  : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-600"
-              }`}
-            />
-          </div>
-
-          {/* Amount */}
-          <div>
-            <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-              Amount (BDT ৳) *
-            </label>
+            <label className={labelClass}>Amount in BDT *</label>
             <input
               type="number"
               step="0.01"
               value={editFormData.price}
               onChange={(e) => setEditFormData({ ...editFormData, price: e.target.value })}
+              className={inputClass}
               required
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-all ${
-                isDark
-                  ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                  : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-600"
-              }`}
             />
           </div>
 
-          {/* Status */}
           <div>
-            <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-gray-300" : "text-slate-700"}`}>
-              Status
-            </label>
-            <select
-              value={editFormData.status}
-              onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-all ${
-                isDark
-                  ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                  : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-600"
-              }`}
-            >
-              <option value="ACTIVE" className={isDark ? "bg-[#0b0628]" : ""}>
-                ACTIVE
-              </option>
-              <option value="VOID" className={isDark ? "bg-[#0b0628]" : ""}>
-                VOID
-              </option>
-            </select>
+            <label className={labelClass}>Description / Notes</label>
+            <textarea
+              rows={3}
+              value={editFormData.description}
+              onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+              className={inputClass}
+            />
           </div>
         </form>
       </Modal>
 
-      {/* Delete Confirmation Modal */}
-      <Modal
+      {/* Confirmation Dialog for Destructive Delete */}
+      <ConfirmDialog
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title="Confirm Delete Cost Record"
-        subtitle="Are you sure you want to delete this cost entry? This action cannot be undone."
-        icon={AlertCircleIcon}
-        size="sm"
-        footer={
-          <>
-            <button
-              onClick={() => setIsDeleteModalOpen(false)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium border transition-colors ${
-                isDark
-                  ? "border-white/10 text-gray-400 hover:bg-white/5"
-                  : "border-slate-200 text-slate-600 hover:bg-slate-100"
-              }`}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleDeleteCost}
-              disabled={saving}
-              className="px-5 py-2 rounded-xl text-sm font-medium bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-500/20 transition-all flex items-center space-x-2 disabled:opacity-50"
-            >
-              {saving ? (
-                <span>Deleting...</span>
-              ) : (
-                <>
-                  <Delete02Icon size={16} />
-                  <span>Delete Record</span>
-                </>
-              )}
-            </button>
-          </>
-        }
-      >
-        <div className={`text-sm p-4 rounded-2xl border ${isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"}`}>
-          <div className="font-semibold">{selectedCost?.name}</div>
-          <div className="text-xs mt-1 text-emerald-500 font-bold">
-            ৳ {Number(selectedCost?.price || 0).toLocaleString()} BDT
-          </div>
-          <div className={`text-xs mt-1 ${isDark ? "text-gray-400" : "text-slate-500"}`}>
-            Assignment: {selectedCost?.assignment?.reference || "N/A"}
-          </div>
-        </div>
-      </Modal>
+        onConfirm={handleDeleteCost}
+        isLoading={saving}
+        title="Delete Cost Record?"
+        message={`Are you sure you want to delete "${selectedCost?.name}"? This action cannot be undone.`}
+        confirmText="Delete Record"
+        variant="danger"
+      />
     </div>
   );
 }

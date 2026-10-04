@@ -98,6 +98,22 @@ body {
   height: 0;
 }
 
+/* Sidebar subtle custom scrollbar */
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(147, 51, 234, 0.25);
+  border-radius: 9999px;
+}
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(147, 51, 234, 0.5);
+}
+
+
 /* Accessible focus ring */
 :where(a, button, [role="button"], input, select, textarea):focus-visible {
   outline: 2px solid #a855f7;
@@ -374,4 +390,14 @@ body {
   .subject-marquee-track {
     animation: none !important;
   }
+}
+
+/* Hide Next.js Dev Overlay Indicator Logo */
+nextjs-portal,
+[data-nextjs-toast],
+[data-nextjs-portal],
+#next-logo-badge,
+div[class*="next-indicator"],
+div[class*="nextjs-toast"] {
+  display: none !important;
 }
