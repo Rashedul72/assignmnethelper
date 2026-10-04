@@ -250,7 +250,7 @@ export default function AdminDashboard() {
               }}
               className={`px-3 py-1.5 rounded-xl border text-xs outline-none font-semibold transition-colors ${
                 isDark
-                  ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
+                  ? "bg-[#0c082b] border-white/10 text-white focus:border-purple-500"
                   : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
               }`}
             />

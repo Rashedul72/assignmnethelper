@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { DataTable, Column } from "../../components/ui/Table";
 import { Badge } from "../../components/ui/Badge";
+import { StatCard } from "../../components/ui/StatCard";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { useToast } from "../../components/ui/ToastContext";
 import { useTheme } from "../../components/ui/ThemeContext";
@@ -393,69 +394,34 @@ export default function WriterEarningsPage() {
 
       {/* Summary Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total Done */}
-        <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-50/40 dark:bg-emerald-950/20 space-y-2">
-          <div className="flex justify-between items-center text-slate-600 dark:text-slate-300">
-            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
-              Assignments Done
-            </span>
-            <div className="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400">
-              <CheckCircle2 size={18} />
-            </div>
-          </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-            {summary.total_done}
-          </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">Completed & submitted tasks</p>
-        </div>
-
-        {/* Pending Tasks */}
-        <div className="p-4 rounded-2xl border border-amber-500/20 bg-amber-50/40 dark:bg-amber-950/20 space-y-2">
-          <div className="flex justify-between items-center text-slate-600 dark:text-slate-300">
-            <span className="text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">
-              Pending Tasks
-            </span>
-            <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400">
-              <Clock size={18} />
-            </div>
-          </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white font-mono">
-            {summary.pending_count}
-          </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">Currently in-progress</p>
-        </div>
-
-        {/* Total Earned */}
-        <div className="p-4 rounded-2xl border border-purple-500/20 bg-purple-50/40 dark:bg-purple-950/20 space-y-2">
-          <div className="flex justify-between items-center text-slate-600 dark:text-slate-300">
-            <span className="text-xs font-semibold uppercase tracking-wider text-purple-700 dark:text-purple-400">
-              Total Earned (Paid)
-            </span>
-            <div className="p-2 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400">
-              <DollarSign size={18} />
-            </div>
-          </div>
-          <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
-            BDT {summary.total_earned.toLocaleString()}
-          </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">Paid out commission earnings</p>
-        </div>
-
-        {/* Pending Payout */}
-        <div className="p-4 rounded-2xl border border-indigo-500/20 bg-indigo-50/40 dark:bg-indigo-950/20 space-y-2">
-          <div className="flex justify-between items-center text-slate-600 dark:text-slate-300">
-            <span className="text-xs font-semibold uppercase tracking-wider text-indigo-700 dark:text-indigo-400">
-              Pending Payout
-            </span>
-            <div className="p-2 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400">
-              <CreditCard size={18} />
-            </div>
-          </div>
-          <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400 font-mono">
-            BDT {summary.pending_commission.toLocaleString()}
-          </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">Commission pending payment</p>
-        </div>
+        <StatCard
+          title="Assignments Done"
+          value={summary.total_done}
+          icon={CheckCircle2}
+          subtext="Completed & submitted tasks"
+          colorScheme="emerald"
+        />
+        <StatCard
+          title="Pending Tasks"
+          value={summary.pending_count}
+          icon={Clock}
+          subtext="Currently in-progress"
+          colorScheme="amber"
+        />
+        <StatCard
+          title="Total Earned (Paid)"
+          value={`BDT ${summary.total_earned.toLocaleString()}`}
+          icon={DollarSign}
+          subtext="Paid out commission earnings"
+          colorScheme="purple"
+        />
+        <StatCard
+          title="Pending Payout"
+          value={`BDT ${summary.pending_commission.toLocaleString()}`}
+          icon={CreditCard}
+          subtext="Commission pending payment"
+          colorScheme="blue"
+        />
       </div>
 
       {/* Assignments & Earnings Table Section */}
@@ -484,13 +450,13 @@ export default function WriterEarningsPage() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className={`px-3 py-2 rounded-xl border text-xs font-medium outline-none transition-colors cursor-pointer ${
                 isDark
-                  ? "bg-white/5 border-white/10 text-slate-200 focus:border-purple-500"
+                  ? "bg-[#0c082b] border-white/10 text-slate-200 focus:border-purple-500"
                   : "bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500"
               }`}
             >
-              <option value="ALL">All Commission Statuses</option>
-              <option value="PAID">PAID Only</option>
-              <option value="PENDING">PENDING Only</option>
+              <option value="ALL" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">All Commission Statuses</option>
+              <option value="PAID" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PAID Only</option>
+              <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING Only</option>
             </select>
           </div>
         </div>

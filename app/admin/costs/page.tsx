@@ -337,7 +337,7 @@ export default function CostsPage() {
   ];
 
   const inputClass = isDark
-    ? "w-full bg-white/[0.04] border border-white/10 rounded-xl py-2 px-3.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm"
+    ? "w-full bg-[#0c082b] border border-white/10 rounded-xl py-2 px-3.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm"
     : "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
 
   const labelClass = `block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
@@ -608,8 +608,8 @@ export default function CostsPage() {
               onChange={(e) => setFormData({ ...formData, status: e.target.value })}
               className={inputClass}
             >
-              <option value="PENDING">PENDING</option>
-              <option value="PAID">PAID</option>
+              <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING</option>
+              <option value="PAID" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PAID</option>
             </select>
           </div>
 
@@ -827,8 +827,8 @@ export default function CostsPage() {
               onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
               className={inputClass}
             >
-              <option value="PENDING">PENDING</option>
-              <option value="PAID">PAID</option>
+              <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING</option>
+              <option value="PAID" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PAID</option>
             </select>
           </div>
 

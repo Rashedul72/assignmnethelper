@@ -190,7 +190,11 @@ export function DataTable<T extends Record<string, any>>({
                     }`}
                   >
                     {filter.options.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
+                      <option
+                        key={opt.value}
+                        value={opt.value}
+                        className="bg-white dark:bg-[#0b0826] text-slate-900 dark:text-slate-100"
+                      >
                         {opt.label}
                       </option>
                     ))}

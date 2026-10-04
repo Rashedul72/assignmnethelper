@@ -525,7 +525,7 @@ export default function AssignmentsPage() {
   ];
 
   const inputClass = isDark
-    ? "w-full bg-white/[0.04] border border-white/10 rounded-xl py-2 px-3.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm"
+    ? "w-full bg-[#0c082b] border border-white/10 rounded-xl py-2 px-3.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm"
     : "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
 
   const labelClass = `block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
@@ -834,9 +834,9 @@ export default function AssignmentsPage() {
                     onChange={(e) => setFormData({ ...formData, writer_id: e.target.value })}
                     className={inputClass}
                   >
-                    <option value="">-- Leave Unassigned --</option>
+                    <option value="" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">-- Leave Unassigned --</option>
                     {writers.map((w) => (
-                      <option key={w.id} value={w.id}>
+                      <option key={w.id} value={w.id} className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">
                         {w.name} ({w.phone_number})
                       </option>
                     ))}
@@ -1110,12 +1110,12 @@ export default function AssignmentsPage() {
               onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
               className={inputClass}
             >
-              <option value="NEW">NEW</option>
-              <option value="ASSIGNED">ASSIGNED</option>
-              <option value="IN_PROGRESS">IN PROGRESS</option>
-              <option value="SUBMITTED">SUBMITTED</option>
-              <option value="COMPLETED">COMPLETED</option>
-              <option value="CANCELLED">CANCELLED</option>
+              <option value="NEW" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">NEW</option>
+              <option value="ASSIGNED" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">ASSIGNED</option>
+              <option value="IN_PROGRESS" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">IN PROGRESS</option>
+              <option value="SUBMITTED" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">SUBMITTED</option>
+              <option value="COMPLETED" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">COMPLETED</option>
+              <option value="CANCELLED" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">CANCELLED</option>
             </select>
           </div>
 
@@ -1134,8 +1134,8 @@ export default function AssignmentsPage() {
                     onChange={(e) => setEditFormData({ ...editFormData, assigned_status: e.target.value })}
                     className={inputClass}
                   >
-                    <option value="PENDING">PENDING</option>
-                    <option value="SUBMITTED">SUBMITTED</option>
+                    <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING</option>
+                    <option value="SUBMITTED" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">SUBMITTED</option>
                   </select>
                 </div>
 
@@ -1146,8 +1146,8 @@ export default function AssignmentsPage() {
                     onChange={(e) => setEditFormData({ ...editFormData, payment_status: e.target.value })}
                     className={inputClass}
                   >
-                    <option value="PENDING">PENDING</option>
-                    <option value="PAID">PAID</option>
+                    <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING</option>
+                    <option value="PAID" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PAID</option>
                   </select>
                 </div>
 
@@ -1158,8 +1158,8 @@ export default function AssignmentsPage() {
                     onChange={(e) => setEditFormData({ ...editFormData, writer_commission_status: e.target.value })}
                     className={inputClass}
                   >
-                    <option value="PENDING">PENDING</option>
-                    <option value="PAID">PAID</option>
+                    <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING</option>
+                    <option value="PAID" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PAID</option>
                   </select>
                 </div>
               </div>
@@ -1322,9 +1322,9 @@ export default function AssignmentsPage() {
                 onChange={(e) => setEditFormData({ ...editFormData, writer_id: e.target.value })}
                 className={inputClass}
               >
-                <option value="">-- Unassigned --</option>
+                <option value="" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">-- Unassigned --</option>
                 {writers.map((w) => (
-                  <option key={w.id} value={w.id}>
+                  <option key={w.id} value={w.id} className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">
                     {w.name} ({w.phone_number})
                   </option>
                 ))}
