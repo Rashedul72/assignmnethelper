@@ -13,13 +13,10 @@ import { Modal } from "../../components/ui/Modal";
 import { Badge } from "../../components/ui/Badge";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { useToast } from "../../components/ui/ToastContext";
-import { useTheme } from "../../components/ui/ThemeContext";
 import { fetchWithAuth } from "../../lib/api";
 
 export default function StudentsPage() {
   const { showToast } = useToast();
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   const [students, setStudents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,8 +69,8 @@ export default function StudentsPage() {
     e.preventDefault();
     setSaving(true);
     const url = selectedStudent
-      ? `/admin/students/${selectedStudent.id}`
-      : `/admin/students`;
+      ? `/dashboard/students/${selectedStudent.id}`
+      : `/dashboard/students`;
     const method = selectedStudent ? "PUT" : "POST";
 
     try {
@@ -136,18 +133,16 @@ export default function StudentsPage() {
         <div className="flex items-center space-x-2.5">
           <div
             className={`w-8 h-8 rounded-full border flex items-center justify-center font-bold text-xs shrink-0 ${
-              isDark
-                ? "bg-purple-950/60 border-purple-800/60 text-purple-300"
-                : "bg-purple-100 border-purple-200 text-purple-700"
+              "bg-purple-100 border-purple-200 text-purple-700"
             }`}
           >
             {row.name ? row.name[0].toUpperCase() : "S"}
           </div>
           <div>
-            <div className={`font-semibold text-xs ${isDark ? "text-slate-100" : "text-slate-900"}`}>
+            <div className={`font-semibold text-xs ${"text-slate-900"}`}>
               {row.name}
             </div>
-            <div className={`text-[11px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+            <div className={`text-[11px] font-mono ${"text-slate-500"}`}>
               ID: {row.student_id}
             </div>
           </div>
@@ -161,7 +156,7 @@ export default function StudentsPage() {
       render: (row) => (
         <div className="flex items-center space-x-1.5">
           <GraduationCap size={14} className="text-slate-400 shrink-0" />
-          <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+          <span className="text-xs font-medium text-slate-700 ">
             {row.university || "Not specified"}
           </span>
         </div>
@@ -196,7 +191,7 @@ export default function StudentsPage() {
           {row.is_active !== false ? (
             <button
               onClick={() => handleOpenModal(row)}
-              className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+              className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors"
               title="Edit Student"
             >
               <Pencil size={14} />
@@ -204,7 +199,7 @@ export default function StudentsPage() {
           ) : (
             <button
               onClick={() => handleRestore(row)}
-              className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors flex items-center space-x-1 text-xs"
+              className="p-1.5 rounded-lg border border-slate-200 text-emerald-600 hover:bg-emerald-50 transition-colors flex items-center space-x-1 text-xs"
               title="Restore Student Profile"
             >
               <RotateCcw size={14} />
@@ -216,12 +211,10 @@ export default function StudentsPage() {
     },
   ];
 
-  const inputClass = isDark
-    ? "w-full bg-[#0c082b] border border-white/10 rounded-xl py-2 px-3.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm"
-    : "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
+  const inputClass = "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
 
   const labelClass = `block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-    isDark ? "text-slate-400" : "text-slate-600"
+    "text-slate-600"
   }`;
 
   return (
@@ -278,7 +271,7 @@ export default function StudentsPage() {
           <>
             <button
               onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition-colors"
             >
               Cancel
             </button>

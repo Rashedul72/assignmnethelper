@@ -69,7 +69,7 @@ export default function FAQSection() {
     <section
       id="faq"
       aria-labelledby="faq-heading"
-      className="section-shell bg-slate-50 scroll-mt-24 relative overflow-hidden"
+      className="section-shell bg-white scroll-mt-24"
     >
       <div className="content-shell max-w-4xl mx-auto">
         {/* Section Header */}

@@ -1,12 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#06021f" },
-    { media: "(prefers-color-scheme: dark)", color: "#06021f" },
-  ],
+  themeColor: "#f6f5f3",
   colorScheme: "light",
   width: "device-width",
   initialScale: 1,
@@ -241,10 +239,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="light" style={{ colorScheme: "light" }}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f6f5f3] text-[#1c1524]`}
       >
+        <Script id="force-light-mode" strategy="beforeInteractive">
+          {`try{localStorage.removeItem("admin_theme");document.documentElement.classList.remove("dark");document.documentElement.style.colorScheme="light";}catch(e){}`}
+        </Script>
         {/* Organization Schema */}
         <script
           type="application/ld+json"

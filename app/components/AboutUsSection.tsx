@@ -105,7 +105,7 @@ export default function AboutUsSection() {
     <section
       id="about"
       aria-labelledby="about-heading"
-      className="section-shell bg-gradient-to-b from-slate-50 via-white to-slate-50 scroll-mt-24 overflow-hidden"
+      className="section-shell bg-[#f6f5f3] scroll-mt-24"
     >
       <div className="content-shell">
         {/* Section Header */}
@@ -145,13 +145,9 @@ export default function AboutUsSection() {
             return (
               <motion.article
                 key={pillar.title}
-                className="modern-light-card p-6 sm:p-7 flex flex-col justify-between group relative overflow-hidden"
+                className="modern-light-card p-6 flex flex-col justify-between"
                 variants={itemVariants}
-                whileHover={{ y: -6 }}
               >
-                {/* Top decorative accent */}
-                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-purple-600 via-indigo-600 to-fuchsia-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-5">
                     <div className="w-12 h-12 rounded-2xl bg-purple-100 border border-purple-200/80 flex items-center justify-center text-[#620273] group-hover:bg-[#620273] group-hover:text-white transition-all duration-300 shadow-sm">
@@ -183,23 +179,21 @@ export default function AboutUsSection() {
 
         {/* The BDJHelper Standard Strip */}
         <motion.div
-          className="mt-14 sm:mt-16 bg-[#06021f] text-white rounded-3xl p-7 sm:p-10 border border-purple-500/20 shadow-2xl relative overflow-hidden"
+          className="mt-14 sm:mt-16 bg-white text-[#1c1524] rounded-2xl p-6 sm:p-8 border border-[#e6e2ea] shadow-sm"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
           {/* Subtle glow background */}
-          <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-purple-600/20 blur-3xl pointer-events-none" />
-
-          <div className="relative z-10">
+          <div>
             <div className="max-w-2xl mb-8">
-              <span className="text-xs font-bold uppercase tracking-widest text-purple-300 bg-purple-500/20 px-3 py-1 rounded-full border border-purple-400/30 inline-block mb-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#620273] bg-[#f6eef8] px-3 py-1 rounded-full border border-[#ead7ef] inline-block mb-3">
                 Why Students Prefer Us
               </span>
-              <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              <h3 className="text-2xl sm:text-3xl font-bold text-[#1c1524] tracking-tight">
                 Academic Integrity &amp; Guaranteed Precision
               </h3>
-              <p className="text-sm sm:text-base text-slate-300 mt-2">
+              <p className="text-sm sm:text-base text-[#5e5668] mt-2">
                 We do not compromise on research depth or formatting accuracy.
                 Every paper undergoes a rigorous multi-stage quality assurance
                 check before handover.
@@ -212,15 +206,15 @@ export default function AboutUsSection() {
                 return (
                   <div
                     key={adv.title}
-                    className="bg-white/[0.05] border border-white/10 rounded-2xl p-5 hover:bg-white/[0.08] hover:border-purple-400/40 transition-all duration-200"
+                    className="bg-[#f6f5f3] border border-[#e6e2ea] rounded-xl p-5"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300 mb-3.5">
+                    <div className="w-10 h-10 rounded-xl bg-white border border-[#ead7ef] flex items-center justify-center text-[#620273] mb-3.5">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <h4 className="text-base font-bold text-white mb-1.5">
+                    <h4 className="text-base font-semibold text-[#1c1524] mb-1.5">
                       {adv.title}
                     </h4>
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    <p className="text-sm text-[#5e5668] leading-relaxed">
                       {adv.desc}
                     </p>
                   </div>

@@ -30,40 +30,34 @@ export default function CTASection() {
   return (
     <section
       aria-labelledby="cta-heading"
-      className="section-shell section-dark relative overflow-hidden isolate text-white"
+      className="section-shell bg-white"
     >
-      {/* Background radial spotlights */}
-      <div
-        aria-hidden="true"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[45rem] h-[45rem] rounded-full bg-gradient-to-tr from-purple-700/20 via-fuchsia-600/20 to-indigo-600/15 blur-[160px] pointer-events-none -z-10"
-      />
-
-      <div className="max-w-4xl mx-auto text-center relative z-10">
+      <div className="max-w-4xl mx-auto text-center">
         {/* Glowing Pill */}
         <motion.div
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-200 text-xs sm:text-sm font-semibold mb-6"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#f6eef8] border border-[#ead7ef] text-[#620273] text-xs sm:text-sm font-semibold mb-6"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
           transition={{ duration: 0.5 }}
         >
-          <Sparkles className="w-4 h-4 text-purple-300" />
+          <Sparkles className="w-4 h-4" />
           <span>Get an Instant Free Quote in 2 Minutes</span>
         </motion.div>
 
         {/* Heading */}
         <motion.h2
           id="cta-heading"
-          className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight mb-5"
+          className="text-3xl sm:text-4xl md:text-[2.5rem] font-bold text-[#1c1524] tracking-tight leading-tight mb-5"
           initial={{ opacity: 0, y: 24 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
           transition={{ duration: 0.6 }}
         >
           Ready to Ace Your Next{" "}
-          <span className="gradient-text-hero">Assignment or Dissertation</span>?
+          <span className="text-[#620273]">Assignment or Dissertation</span>?
         </motion.h2>
 
         <motion.p
-          className="text-base sm:text-lg text-slate-200 max-w-2xl mx-auto mb-10 leading-relaxed font-normal"
+          className="text-base sm:text-lg text-[#5e5668] max-w-2xl mx-auto mb-10 leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.15 }}
@@ -155,15 +149,15 @@ export default function CTASection() {
             return (
               <div
                 key={p.title}
-                className="modern-dark-card p-5 flex flex-col items-center text-center group"
+                className="modern-light-card p-5 flex flex-col items-center text-center"
               >
-                <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300 mb-3 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-[#f6eef8] border border-[#ead7ef] flex items-center justify-center text-[#620273] mb-3">
                   <Icon className="w-5 h-5" />
                 </div>
-                <div className="font-bold text-sm text-white mb-1">
+                <div className="font-bold text-sm text-[#1c1524] mb-1">
                   {p.title}
                 </div>
-                <div className="text-xs text-slate-300 leading-relaxed">
+                <div className="text-xs text-[#5e5668] leading-relaxed">
                   {p.desc}
                 </div>
               </div>

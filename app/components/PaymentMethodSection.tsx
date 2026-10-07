@@ -46,7 +46,7 @@ export default function PaymentMethodSection() {
   return (
     <section
       aria-labelledby="payment-heading"
-      className="section-shell bg-gradient-to-b from-white via-slate-50 to-slate-100 relative overflow-hidden"
+      className="section-shell bg-white"
     >
       <div className="content-shell max-w-5xl mx-auto">
         {/* Section Header */}
@@ -84,7 +84,7 @@ export default function PaymentMethodSection() {
             <motion.article
               key={method.name}
               className="modern-light-card p-7 flex flex-col justify-between items-center text-center group bg-white relative overflow-hidden"
-              whileHover={{ y: -5 }}
+              whileHover={{ y: -2 }}
             >
               <div className="w-full flex flex-col items-center">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100 mb-4">

@@ -59,8 +59,8 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}): Pro
       headers.set("Authorization", `Bearer ${newToken}`);
       response = await fetch(targetUrl, { ...options, headers });
     } else {
-      if (typeof window !== "undefined" && window.location.pathname !== "/admin/login") {
-        window.location.href = "/admin/login";
+      if (typeof window !== "undefined" && window.location.pathname !== "/dashboard/login") {
+        window.location.href = "/dashboard/login";
       }
     }
   }

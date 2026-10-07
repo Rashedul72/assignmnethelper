@@ -16,25 +16,21 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   LogOut,
-  User,
   Search,
-  Sun,
-  Moon,
   Menu,
   X,
 } from "lucide-react";
 import { ToastProvider } from "../components/ui/ToastContext";
-import { ThemeProvider, useTheme } from "../components/ui/ThemeContext";
 import { refreshAdminToken, API_BASE_URL } from "../lib/api";
 
 const DEFAULT_MENUS = [
-  { id: "1", title: "Dashboard", href: "/admin", icon: "LayoutDashboard" },
-  { id: "2", title: "Assignments", href: "/admin/assignments", icon: "FileText" },
-  { id: "3", title: "Costs", href: "/admin/costs", icon: "CreditCard" },
-  { id: "4", title: "Students", href: "/admin/students", icon: "Users" },
-  { id: "5", title: "Writers", href: "/admin/writers", icon: "PenTool" },
-  { id: "6", title: "Access Control", href: "/admin/access", icon: "ShieldCheck" },
-  { id: "7", title: "Writer Earnings", href: "/admin/writer-earnings", icon: "DollarSign" },
+  { id: "1", title: "Dashboard", href: "/dashboard", icon: "LayoutDashboard" },
+  { id: "2", title: "Assignments", href: "/dashboard/assignments", icon: "FileText" },
+  { id: "3", title: "Costs", href: "/dashboard/costs", icon: "CreditCard" },
+  { id: "4", title: "Students", href: "/dashboard/students", icon: "Users" },
+  { id: "5", title: "Writers", href: "/dashboard/writers", icon: "PenTool" },
+  { id: "6", title: "Access Control", href: "/dashboard/access", icon: "ShieldCheck" },
+  { id: "7", title: "Writer Earnings", href: "/dashboard/writer-earnings", icon: "DollarSign" },
 ];
 
 const ICON_MAP: Record<string, any> = {
@@ -57,19 +53,15 @@ const ICON_MAP: Record<string, any> = {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        <AdminLayoutContent>{children}</AdminLayoutContent>
-      </ToastProvider>
-    </ThemeProvider>
+    <ToastProvider>
+      <AdminLayoutContent>{children}</AdminLayoutContent>
+    </ToastProvider>
   );
 }
 
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === "dark";
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState<string>("");
@@ -134,8 +126,8 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
     const checkAuthAndLoadMenus = async () => {
       let token = localStorage.getItem("admin_token");
-      if (!token && pathname !== "/admin/login") {
-        router.push("/admin/login");
+      if (!token && pathname !== "/dashboard/login") {
+        router.push("/dashboard/login");
         if (isSubscribed) setLoading(false);
         return;
       }
@@ -162,7 +154,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
               });
             } else {
               localStorage.removeItem("admin_token");
-              if (pathname !== "/admin/login") router.push("/admin/login");
+              if (pathname !== "/dashboard/login") router.push("/dashboard/login");
               if (isSubscribed) setLoading(false);
               return;
             }
@@ -176,7 +168,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
           }
         } catch (e) {
           localStorage.removeItem("admin_token");
-          if (pathname !== "/admin/login") router.push("/admin/login");
+          if (pathname !== "/dashboard/login") router.push("/dashboard/login");
         } finally {
           if (isSubscribed) setLoading(false);
         }
@@ -194,11 +186,11 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
   // Instant route permission check on route changes without resetting loading state
   useEffect(() => {
-    if (!loading && isAuthenticated && dynamicMenus.length > 0 && pathname !== "/admin/login") {
+    if (!loading && isAuthenticated && dynamicMenus.length > 0 && pathname !== "/dashboard/login") {
       const isAllowed = dynamicMenus.some(
         (item: any) =>
           pathname === item.href ||
-          (pathname.startsWith(item.href) && item.href !== "/admin")
+          (pathname.startsWith(item.href) && item.href !== "/dashboard")
       );
       if (!isAllowed) {
         router.push(dynamicMenus[0].href);
@@ -211,7 +203,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     setMobileSidebarOpen(false);
   }, [pathname]);
 
-  if (pathname === "/admin/login") {
+  if (pathname === "/dashboard/login") {
     return <>{children}</>;
   }
 
@@ -219,11 +211,11 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     return (
       <div
         className={`h-screen w-full flex flex-col items-center justify-center space-y-4 ${
-          isDark ? "bg-[#08061a] text-white" : "bg-slate-50 text-slate-900"
+          "bg-[#f6f5f3] text-[#1c1524]"
         }`}
       >
         <div className="w-10 h-10 border-3 border-purple-500/30 border-t-purple-600 rounded-full animate-spin" />
-        <p className={`font-medium text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+        <p className={`font-medium text-xs ${"text-slate-500"}`}>
           Authenticating admin portal...
         </p>
       </div>
@@ -233,7 +225,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   if (!isAuthenticated) return null;
 
   const getPageTitle = () => {
-    if (pathname === "/admin") return "Dashboard Overview";
+    if (pathname === "/dashboard") return "Dashboard Overview";
     if (pathname.includes("/assignments")) return "Assignments Management";
     if (pathname.includes("/costs")) return "Cost Management";
     if (pathname.includes("/students")) return "Student Clients";
@@ -244,9 +236,9 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
   // Group dynamic menus into logical sections
   const getGroupedMenus = () => {
-    const mainHrefs = ["/admin", "/admin/assignments"];
-    const mgmtHrefs = ["/admin/costs", "/admin/students", "/admin/writers"];
-    const systemHrefs = ["/admin/access"];
+    const mainHrefs = ["/dashboard", "/dashboard/assignments"];
+    const mgmtHrefs = ["/dashboard/costs", "/dashboard/students", "/dashboard/writers"];
+    const systemHrefs = ["/dashboard/access"];
 
     const main = dynamicMenus.filter((m) => mainHrefs.includes(m.href));
     const mgmt = dynamicMenus.filter((m) => mgmtHrefs.includes(m.href));
@@ -273,7 +265,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div
       className={`h-screen w-full flex overflow-hidden font-sans selection:bg-purple-600 selection:text-white transition-colors duration-200 ${
-        isDark ? "bg-[#08061a] text-slate-100" : "bg-slate-50 text-slate-900"
+        "bg-[#f6f5f3] text-[#1c1524]"
       }`}
     >
       {/* Mobile Sidebar Overlay */}
@@ -292,9 +284,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
       {/* Sidebar Component - Minimal SaaS Design */}
       <aside
         className={`fixed lg:sticky top-0 h-screen z-30 shrink-0 border-r flex flex-col transition-all duration-200 ease-in-out ${
-          isDark
-            ? "bg-[#0b0826] border-white/[0.08] text-slate-200"
-            : "bg-white border-slate-200/80 text-black shadow-[1px_0_3px_0_rgba(0,0,0,0.02)]"
+          "bg-white border-slate-200/80 text-black shadow-[1px_0_3px_0_rgba(0,0,0,0.02)]"
         } ${isCollapsed ? "lg:w-[72px] w-64" : "w-64"} ${
           mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
@@ -303,9 +293,9 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
         <div
           className={`h-14 px-4 border-b flex items-center shrink-0 relative transition-all duration-200 ${
             isCollapsed ? "lg:justify-center justify-between" : "justify-between"
-          } ${isDark ? "border-white/[0.08]" : "border-slate-200/80"}`}
+          } ${"border-slate-200/80"}`}
         >
-          <Link href="/admin" className="flex items-center space-x-2.5 group min-w-0 overflow-hidden">
+          <Link href="/dashboard" className="flex items-center space-x-2.5 group min-w-0 overflow-hidden">
             <div className="relative shrink-0 flex items-center justify-center">
               <Image
                 src="/logo_notext.png"
@@ -318,7 +308,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             </div>
             {!isCollapsed && (
               <div className="overflow-hidden whitespace-nowrap min-w-0 flex items-center space-x-2">
-                <span className="text-[10px] font-semibold tracking-wider text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 px-1.5 py-0.5 rounded border border-purple-200/60 dark:border-purple-800/60 uppercase shrink-0">
+                <span className="text-[10px] font-semibold tracking-wider text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200/60 uppercase shrink-0">
                   {userRole === "ADMIN" ? "Admin" : "Writer"}
                 </span>
               </div>
@@ -330,7 +320,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             <button
               onClick={toggleCollapse}
               title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-              className="hidden lg:flex p-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
+              className="hidden lg:flex p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
             >
               {isCollapsed ? <PanelLeftOpen size={17} /> : <PanelLeftClose size={17} />}
             </button>
@@ -338,7 +328,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             {/* Mobile Close Button */}
             <button
               onClick={() => setMobileSidebarOpen(false)}
-              className="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
+              className="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
             >
               <X size={17} />
             </button>
@@ -353,18 +343,18 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             return (
               <div key={group.title || gIdx} className="space-y-1">
                 {showHeader ? (
-                  <div className="px-2.5 mb-1.5 text-[11px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400">
+                  <div className="px-2.5 mb-1.5 text-[11px] font-bold tracking-wider uppercase text-slate-500 ">
                     {group.title}
                   </div>
                 ) : isCollapsed && gIdx > 0 ? (
-                  <div className="my-2 border-t border-slate-100 dark:border-white/[0.06] mx-2" />
+                  <div className="my-2 border-t border-slate-100 mx-2" />
                 ) : null}
 
                 {group.items.map((item: any) => {
                   const IconComponent = ICON_MAP[item.icon] || LayoutDashboard;
                   const isActive =
                     pathname === item.href ||
-                    (pathname.startsWith(item.href) && item.href !== "/admin");
+                    (pathname.startsWith(item.href) && item.href !== "/dashboard");
 
                   return (
                     <Link
@@ -377,9 +367,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                           : "space-x-3 px-3"
                       } ${
                         isActive
-                          ? "bg-purple-600 text-white font-bold shadow-sm"
-                          : isDark
-                          ? "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
+                          ? "bg-[#620273] text-white font-semibold shadow-sm"
                           : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
                       }`}
                     >
@@ -388,8 +376,6 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                         className={`shrink-0 transition-colors ${
                           isActive
                             ? "text-white"
-                            : isDark
-                            ? "text-slate-400 group-hover:text-slate-200"
                             : "text-slate-600 group-hover:text-slate-900"
                         }`}
                       />
@@ -399,8 +385,6 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                           className={`truncate text-[13.5px] font-semibold leading-none ${
                             isActive
                               ? "text-white"
-                              : isDark
-                              ? "text-slate-300 group-hover:text-slate-100"
                               : "text-slate-800 group-hover:text-slate-900"
                           }`}
                         >
@@ -418,7 +402,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
         {/* Sidebar Footer - User Profile */}
         <div
           className={`p-3 border-t shrink-0 ${
-            isDark ? "border-white/[0.08] bg-[#08061f]/50" : "border-slate-200/80 bg-slate-50/50"
+            "border-slate-200/80 bg-slate-50/50"
           }`}
         >
 
@@ -426,7 +410,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             <div className="flex flex-col items-center space-y-2 py-1">
               <div
                 title={`${userName || userEmail || "User"} (${userRole.toLowerCase()})`}
-                className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800/60 text-purple-700 dark:text-purple-300 flex items-center justify-center text-xs font-bold shrink-0 shadow-2xs"
+                className="w-8 h-8 rounded-full bg-purple-100 border border-purple-200 text-purple-700 flex items-center justify-center text-xs font-bold shrink-0 shadow-2xs"
               >
                 {getUserInitials(userName, userEmail)}
               </div>
@@ -434,25 +418,25 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
               <button
                 onClick={() => {
                   localStorage.removeItem("admin_token");
-                  router.push("/admin/login");
+                  router.push("/dashboard/login");
                 }}
                 title="Sign Out"
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:text-slate-400 dark:hover:bg-rose-950/30 dark:hover:text-rose-400 transition-colors"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-colors"
               >
                 <LogOut size={16} />
               </button>
             </div>
           ) : (
-            <div className="flex items-center justify-between p-1.5 rounded-lg hover:bg-slate-100/80 dark:hover:bg-white/[0.04] transition-colors group">
+            <div className="flex items-center justify-between p-1.5 rounded-lg hover:bg-slate-100/80 transition-colors group">
               <div className="flex items-center space-x-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800/60 text-purple-700 dark:text-purple-300 flex items-center justify-center text-xs font-bold shrink-0 shadow-2xs">
+                <div className="w-8 h-8 rounded-full bg-purple-100 border border-purple-200 text-purple-700 flex items-center justify-center text-xs font-bold shrink-0 shadow-2xs">
                   {getUserInitials(userName, userEmail)}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-bold text-slate-900 dark:text-slate-100 truncate leading-tight">
+                  <p className="text-[13px] font-bold text-slate-900 truncate leading-tight">
                     {userName || userEmail || "User"}
                   </p>
-                  <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 capitalize truncate leading-tight mt-0.5">
+                  <p className="text-[11px] font-semibold text-slate-500 capitalize truncate leading-tight mt-0.5">
                     {userRole.toLowerCase()}
                   </p>
                 </div>
@@ -461,10 +445,10 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
               <button
                 onClick={() => {
                   localStorage.removeItem("admin_token");
-                  router.push("/admin/login");
+                  router.push("/dashboard/login");
                 }}
                 title="Sign Out"
-                className="p-1.5 rounded-md text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:text-slate-400 dark:hover:bg-rose-950/30 dark:hover:text-rose-400 transition-colors shrink-0"
+                className="p-1.5 rounded-md text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-colors shrink-0"
               >
                 <LogOut size={16} />
               </button>
@@ -478,22 +462,20 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
         {/* Top Navbar Header */}
         <header
           className={`h-14 border-b px-6 flex items-center justify-between shrink-0 transition-colors duration-200 ${
-            isDark
-              ? "bg-[#0b0826]/80 border-white/[0.08]"
-              : "bg-white/80 border-slate-200/80 shadow-2xs"
+            "bg-white/80 border-slate-200/80 shadow-2xs"
           }`}
         >
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setMobileSidebarOpen(true)}
-              className="lg:hidden p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"
+              className="lg:hidden p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-100 "
             >
               <Menu size={18} />
             </button>
             <div>
               <h2
                 className={`text-base font-bold tracking-tight ${
-                  isDark ? "text-slate-100" : "text-slate-900"
+                  "text-slate-900"
                 }`}
               >
                 {getPageTitle()}
@@ -505,38 +487,20 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
           <div className="flex items-center space-x-2.5">
             <div
               className={`hidden md:flex items-center space-x-2 border rounded-lg px-3 py-1 text-xs ${
-                isDark
-                  ? "bg-white/[0.04] border-white/10 text-slate-400"
-                  : "bg-slate-100/70 border-slate-200 text-slate-500"
+                "bg-slate-100/70 border-slate-200 text-slate-500"
               }`}
             >
-              <Search size={14} className={isDark ? "text-slate-400" : "text-slate-400"} />
+              <Search size={14} className={"text-slate-400"} />
               <span>Search...</span>
               <kbd
                 className={`px-1.5 py-0.5 rounded text-[10px] ${
-                  isDark ? "bg-white/10 text-slate-300" : "bg-white text-slate-600 shadow-2xs"
+                  "bg-white text-slate-600 shadow-2xs"
                 }`}
               >
                 ⌘K
               </kbd>
             </div>
 
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className={`p-2 rounded-lg border transition-colors flex items-center space-x-1.5 text-xs font-medium ${
-                isDark
-                  ? "bg-white/[0.04] border-white/10 text-amber-300 hover:bg-white/[0.08]"
-                  : "bg-slate-100/70 border-slate-200 text-slate-700 hover:bg-slate-200/70"
-              }`}
-              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-            >
-              {isDark ? (
-                <Sun size={16} className="text-amber-400" />
-              ) : (
-                <Moon size={16} className="text-purple-600" />
-              )}
-            </button>
           </div>
         </header>
 

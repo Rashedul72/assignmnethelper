@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
       "Expert assignment help, dissertation writing, research papers, proposals, posters, and reports. Free Turnitin AI & similarity reports.",
     start_url: "/",
     display: "standalone",
-    background_color: "#ffffff",
-    theme_color: "#06021f",
+    background_color: "#f6f5f3",
+    theme_color: "#f6f5f3",
     orientation: "portrait",
     categories: ["education", "productivity", "business"],
     icons: [

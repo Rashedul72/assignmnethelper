@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { FaWhatsapp } from "react-icons/fa";
 import {
   ShieldCheck,
@@ -28,32 +28,20 @@ const TRUST_PILLS = [
 ];
 
 export default function HeroSection() {
-  const prefersReducedMotion = useReducedMotion();
-
   return (
     <section
       id="home"
       aria-labelledby="hero-heading"
-      className="section-dark relative text-white pt-28 sm:pt-36 md:pt-40 pb-16 sm:pb-20 md:pb-28 px-4 overflow-hidden isolate"
+      className="relative bg-[#f6f5f3] text-[#1c1524] pt-28 sm:pt-32 md:pt-36 pb-16 sm:pb-20 md:pb-24 px-4 overflow-hidden"
     >
-      {/* Dynamic Background Mesh Gradients */}
       <div
         aria-hidden="true"
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[550px] overflow-hidden pointer-events-none -z-10"
-      >
-        <div className="absolute top-[-10%] left-[15%] w-[420px] h-[420px] rounded-full bg-purple-600/25 blur-[120px]" />
-        <div className="absolute top-[20%] right-[10%] w-[380px] h-[380px] rounded-full bg-fuchsia-700/20 blur-[130px]" />
-        <div className="absolute bottom-0 left-[35%] w-[320px] h-[320px] rounded-full bg-indigo-600/15 blur-[100px]" />
-        {/* Subtle grid pattern for modern tech/academic touch */}
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
-      </div>
+        className="absolute inset-x-0 top-0 h-72 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 80% at 70% 0%, rgba(98,2,115,0.08), transparent 70%)",
+        }}
+      />
 
       <div className="content-shell relative z-10">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
@@ -66,7 +54,7 @@ export default function HeroSection() {
           >
             {/* Live Availability Eyebrow */}
             <motion.div
-              className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-purple-500/15 border border-purple-400/30 text-purple-200 text-xs sm:text-sm font-semibold mb-6 shadow-inner"
+              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white border border-[#ead7ef] text-[#620273] text-xs sm:text-sm font-semibold mb-6 shadow-sm"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.1 }}
@@ -75,28 +63,27 @@ export default function HeroSection() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
               </span>
-              <span className="text-white font-medium">
+              <span className="text-[#1c1524] font-medium">
                 Accepting Orders 24/7
               </span>
-              <span className="text-purple-400 font-bold">•</span>
-              <span className="text-purple-200">Instant WhatsApp Quote</span>
+              <span className="text-[#c4b0cc] font-bold">•</span>
+              <span>Instant WhatsApp Quote</span>
             </motion.div>
 
             {/* Main Headline */}
             <h1
               id="hero-heading"
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold leading-[1.12] tracking-tight max-w-2xl"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold leading-[1.15] tracking-tight max-w-2xl text-[#1c1524]"
             >
               Master Your Grades With{" "}
-              <span className="gradient-text-hero">Expert Academic</span>{" "}
-              <span className="gradient-text-accent">Writing Help</span>
+              <span className="text-[#620273]">Expert Academic Writing Help</span>
             </h1>
 
             {/* Value Proposition Description */}
-            <p className="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-slate-200 max-w-2xl leading-relaxed font-normal">
+            <p className="mt-5 sm:mt-6 text-base sm:text-lg text-[#5e5668] max-w-2xl leading-relaxed font-normal">
               High-distinction assignment help, dissertations, research papers,
               and proposals tailored to your university guidelines. Includes{" "}
-              <strong className="text-white font-semibold underline decoration-purple-400 decoration-2 underline-offset-4">
+              <strong className="text-[#1c1524] font-semibold underline decoration-[#620273] decoration-2 underline-offset-4">
                 free Turnitin AI &amp; similarity reports
               </strong>{" "}
               and 3 revisions.
@@ -109,9 +96,9 @@ export default function HeroSection() {
                 return (
                   <span
                     key={pill.text}
-                    className="pill-dark text-xs sm:text-sm text-slate-100 bg-white/[0.07] border-white/15"
+                    className="pill-dark text-xs sm:text-sm"
                   >
-                    <Icon className="w-4 h-4 text-purple-300 shrink-0" />
+                    <Icon className="w-4 h-4 text-[#620273] shrink-0" />
                     <span>{pill.text}</span>
                   </span>
                 );
@@ -120,8 +107,8 @@ export default function HeroSection() {
 
             {/* WhatsApp CTA Action Cards */}
             <div className="mt-8 sm:mt-10 w-full max-w-xl">
-              <div className="text-xs font-bold uppercase tracking-widest text-purple-300/90 mb-3 text-center lg:text-left flex items-center justify-center lg:justify-start gap-2">
-                <Zap className="w-3.5 h-3.5 text-amber-400" />
+              <div className="text-xs font-bold uppercase tracking-widest text-[#620273] mb-3 text-center lg:text-left flex items-center justify-center lg:justify-start gap-2">
+                <Zap className="w-3.5 h-3.5" />
                 <span>Select Your Region to Chat Directly</span>
               </div>
 
@@ -201,11 +188,11 @@ export default function HeroSection() {
               </div>
 
               {/* Instant response guarantee text */}
-              <p className="mt-3 text-xs text-slate-300 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 inline shrink-0" />
+              <p className="mt-3 text-xs text-[#5e5668] text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 inline shrink-0" />
                 <span>
                   Average WhatsApp response time:{" "}
-                  <strong className="text-white font-semibold">
+                  <strong className="text-[#1c1524] font-semibold">
                     Under 2 minutes
                   </strong>
                   . 100% confidential.
@@ -221,29 +208,25 @@ export default function HeroSection() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           >
-            {/* Outer Glow Halo */}
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-3xl blur-2xl transform -rotate-1 pointer-events-none" />
-            {/* Glass Showcase Card */}
-            <div className="relative bg-[#0d0630]/90 border border-purple-500/30 rounded-3xl p-6 sm:p-8 shadow-[0_25px_60px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
-              {/* Card Header */}
-              <div className="flex items-center justify-between pb-5 border-b border-white/10">
+            <div className="relative bg-white border border-[#e6e2ea] rounded-2xl p-6 sm:p-7 shadow-[0_1px_2px_rgba(28,21,36,0.04),0_16px_40px_-20px_rgba(28,21,36,0.2)]">
+              <div className="flex items-center justify-between pb-5 border-b border-[#eeeaf1]">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/30">
+                  <div className="w-10 h-10 rounded-xl bg-[#f6eef8] border border-[#ead7ef] flex items-center justify-center text-[#620273]">
                     <Sparkles className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="font-bold text-base sm:text-lg text-white">
+                    <h2 className="font-bold text-base sm:text-lg text-[#1c1524]">
                       Quality Guarantee
                     </h2>
-                    <p className="text-xs text-purple-200">
+                    <p className="text-xs text-[#5e5668]">
                       Standard with every assignment
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 bg-amber-400/15 border border-amber-400/30 px-2.5 py-1 rounded-full">
-                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  <span className="text-xs font-bold text-amber-300">
+                <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full">
+                  <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                  <span className="text-xs font-bold text-amber-800">
                     4.9 / 5.0
                   </span>
                 </div>
@@ -251,45 +234,45 @@ export default function HeroSection() {
 
               {/* Feature Checklist */}
               <div className="mt-5 space-y-3.5">
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04] border border-white/5">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center shrink-0 mt-0.5">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-[#f6f5f3] border border-[#eeeaf1]">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0 mt-0.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-700" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white">
+                    <h3 className="text-sm font-semibold text-[#1c1524]">
                       Free Turnitin AI &amp; Similarity Report
                     </h3>
-                    <p className="text-xs text-slate-300 mt-0.5">
+                    <p className="text-xs text-[#5e5668] mt-0.5">
                       Verifiable 0% AI detection and &lt;10% similarity score
                       included.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04] border border-white/5">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-400/30 flex items-center justify-center shrink-0 mt-0.5">
-                    <Award className="w-4 h-4 text-purple-300" />
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-[#f6f5f3] border border-[#eeeaf1]">
+                  <div className="w-8 h-8 rounded-lg bg-[#f6eef8] border border-[#ead7ef] flex items-center justify-center shrink-0 mt-0.5">
+                    <Award className="w-4 h-4 text-[#620273]" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white">
+                    <h3 className="text-sm font-semibold text-[#1c1524]">
                       Subject-Specific Specialists
                     </h3>
-                    <p className="text-xs text-slate-300 mt-0.5">
+                    <p className="text-xs text-[#5e5668] mt-0.5">
                       Assigned to experienced scholars in CSE, BBA, BSS, MA,
                       MSC, and Law.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04] border border-white/5">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center shrink-0 mt-0.5">
-                    <FileText className="w-4 h-4 text-indigo-300" />
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-[#f6f5f3] border border-[#eeeaf1]">
+                  <div className="w-8 h-8 rounded-lg bg-[#f6eef8] border border-[#ead7ef] flex items-center justify-center shrink-0 mt-0.5">
+                    <FileText className="w-4 h-4 text-[#620273]" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white">
+                    <h3 className="text-sm font-semibold text-[#1c1524]">
                       Formatted &amp; Referenced
                     </h3>
-                    <p className="text-xs text-slate-300 mt-0.5">
+                    <p className="text-xs text-[#5e5668] mt-0.5">
                       APA 7th, Harvard, IEEE, MLA, Chicago formatting +
                       citations included.
                     </p>
@@ -298,14 +281,14 @@ export default function HeroSection() {
               </div>
 
               {/* Live Order Indicator Banner */}
-              <div className="mt-5 p-3.5 rounded-2xl bg-gradient-to-r from-purple-900/50 to-indigo-900/50 border border-purple-400/30 flex items-center justify-between">
+              <div className="mt-5 p-3.5 rounded-xl bg-[#f6eef8] border border-[#ead7ef] flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-xs font-semibold text-white">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-xs font-semibold text-[#1c1524]">
                     14 Active Tasks in Progress
                   </span>
                 </div>
-                <span className="text-xs font-bold text-purple-200">
+                <span className="text-xs font-bold text-[#620273]">
                   98.6% On-Time
                 </span>
               </div>
@@ -315,24 +298,24 @@ export default function HeroSection() {
 
         {/* Bottom Hero Stats Ribbon */}
         <motion.div
-          className="mt-14 sm:mt-18 pt-10 border-t border-white/10"
+          className="mt-12 sm:mt-16 pt-8 border-t border-[#e6e2ea]"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.4 }}
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-            {STATS.map((stat, i) => (
+            {STATS.map((stat) => (
               <div
                 key={stat.label}
-                className="bg-white/[0.04] hover:bg-white/[0.07] border border-white/10 hover:border-purple-500/40 rounded-2xl p-4 sm:p-5 text-center transition-all duration-300"
+                className="bg-white border border-[#e6e2ea] hover:border-[#d8c4df] rounded-xl p-4 sm:p-5 text-center transition-colors duration-200"
               >
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight bg-gradient-to-r from-white via-purple-100 to-purple-300 bg-clip-text text-transparent">
+                <div className="text-2xl sm:text-3xl font-bold text-[#620273] tracking-tight">
                   {stat.value}
                 </div>
-                <div className="text-sm font-semibold text-slate-100 mt-1">
+                <div className="text-sm font-semibold text-[#1c1524] mt-1">
                   {stat.label}
                 </div>
-                <div className="text-xs text-purple-200/70 mt-0.5">
+                <div className="text-xs text-[#5e5668] mt-0.5">
                   {stat.sub}
                 </div>
               </div>

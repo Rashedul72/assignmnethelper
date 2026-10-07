@@ -17,7 +17,6 @@ import { Modal } from "../../components/ui/Modal";
 import { Badge } from "../../components/ui/Badge";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { useToast } from "../../components/ui/ToastContext";
-import { useTheme } from "../../components/ui/ThemeContext";
 import { fetchWithAuth } from "../../lib/api";
 
 const MENU_ICON_MAP: Record<string, any> = {
@@ -38,8 +37,6 @@ const MENU_ICON_MAP: Record<string, any> = {
 
 export default function AccessControlPage() {
   const { showToast } = useToast();
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   const [users, setUsers] = useState<any[]>([]);
   const [menus, setMenus] = useState<any[]>([]);
@@ -108,7 +105,7 @@ export default function AccessControlPage() {
     setSaving(true);
     try {
       const res = await fetchWithAuth(
-        `/admin/users/${selectedUser.id}/menus`,
+        `/dashboard/users/${selectedUser.id}/menus`,
         {
           method: "PUT",
           headers: {
@@ -143,18 +140,16 @@ export default function AccessControlPage() {
         <div className="flex items-center space-x-2.5">
           <div
             className={`w-8 h-8 rounded-full border flex items-center justify-center font-bold text-xs shrink-0 ${
-              isDark
-                ? "bg-purple-950/60 border-purple-800/60 text-purple-300"
-                : "bg-purple-100 border-purple-200 text-purple-700"
+              "bg-purple-100 border-purple-200 text-purple-700"
             }`}
           >
             <User size={14} />
           </div>
           <div>
-            <div className={`font-semibold text-xs ${isDark ? "text-slate-100" : "text-slate-900"}`}>
+            <div className={`font-semibold text-xs ${"text-slate-900"}`}>
               {row.writerProfile?.name || row.email || "Admin User"}
             </div>
-            <div className={`text-[11px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+            <div className={`text-[11px] font-mono ${"text-slate-500"}`}>
               {row.email}
             </div>
           </div>
@@ -183,9 +178,7 @@ export default function AccessControlPage() {
                 <span
                   key={m.id}
                   className={`border text-[11px] px-2 py-0.5 rounded-lg font-medium inline-flex items-center space-x-1 ${
-                    isDark
-                      ? "bg-white/[0.04] border-white/10 text-slate-300"
-                      : "bg-slate-100 border-slate-200 text-slate-700"
+                    "bg-slate-100 border-slate-200 text-slate-700"
                   }`}
                 >
                   <span>{m.title}</span>
@@ -205,7 +198,7 @@ export default function AccessControlPage() {
       render: (row) => (
         <button
           onClick={() => handleOpenModal(row)}
-          className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-colors inline-flex items-center space-x-1 text-xs font-semibold"
+          className="p-1.5 rounded-lg border border-slate-200 text-purple-600 hover:bg-purple-50 transition-colors inline-flex items-center space-x-1 text-xs font-semibold"
         >
           <Pencil size={14} />
           <span>Edit Permissions</span>
@@ -247,7 +240,7 @@ export default function AccessControlPage() {
           <>
             <button
               onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition-colors"
             >
               Cancel
             </button>
@@ -267,7 +260,7 @@ export default function AccessControlPage() {
       >
         {selectedUser && (
           <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 ">
               Select allowed sidebar menus:
             </p>
 
@@ -281,11 +274,7 @@ export default function AccessControlPage() {
                     key={menu.id}
                     className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${
                       isChecked
-                        ? isDark
-                          ? "bg-purple-950/40 border-purple-800/60 text-slate-100 font-medium"
-                          : "bg-purple-50 border-purple-200 text-purple-950 font-medium"
-                        : isDark
-                        ? "bg-white/[0.02] border-white/5 text-slate-400 hover:bg-white/[0.04]"
+                        ? "bg-purple-50 border-purple-200 text-purple-950 font-medium"
                         : "bg-slate-50/50 border-slate-200/60 text-slate-700 hover:bg-slate-100/70"
                     }`}
                   >
@@ -293,11 +282,7 @@ export default function AccessControlPage() {
                       <div
                         className={`p-1.5 rounded-lg border ${
                           isChecked
-                            ? isDark
-                              ? "bg-purple-900/40 border-purple-700/50 text-purple-300"
-                              : "bg-purple-100 border-purple-300 text-purple-700"
-                            : isDark
-                            ? "bg-white/5 border-white/5 text-slate-500"
+                            ? "bg-purple-100 border-purple-300 text-purple-700"
                             : "bg-slate-100 border-slate-200 text-slate-500"
                         }`}
                       >

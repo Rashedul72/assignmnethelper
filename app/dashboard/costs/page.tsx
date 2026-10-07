@@ -22,13 +22,10 @@ import { Badge } from "../../components/ui/Badge";
 import { StatCard } from "../../components/ui/StatCard";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { useToast } from "../../components/ui/ToastContext";
-import { useTheme } from "../../components/ui/ThemeContext";
 import { fetchWithAuth } from "../../lib/api";
 
 export default function CostsPage() {
   const { showToast } = useToast();
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   const [costs, setCosts] = useState<any[]>([]);
   const [assignments, setAssignments] = useState<any[]>([]);
@@ -248,18 +245,16 @@ export default function CostsPage() {
         <div className="flex items-center space-x-2.5">
           <div
             className={`p-1.5 rounded-lg border shrink-0 ${
-              isDark
-                ? "bg-purple-950/60 border-purple-800/60 text-purple-400"
-                : "bg-purple-50 border-purple-200 text-purple-600"
+              "bg-purple-50 border-purple-200 text-purple-600"
             }`}
           >
             <FileText size={14} />
           </div>
           <div>
-            <div className={`font-semibold text-xs ${isDark ? "text-slate-100" : "text-slate-900"}`}>
+            <div className={`font-semibold text-xs ${"text-slate-900"}`}>
               {row.assignment?.title || row.assignment?.course_code || "Assignment Record"}
             </div>
-            <div className={`text-[11px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+            <div className={`text-[11px] font-mono ${"text-slate-500"}`}>
               Ref: {row.assignment?.reference || "N/A"}
             </div>
           </div>
@@ -282,7 +277,7 @@ export default function CostsPage() {
       header: "Amount (BDT)",
       sortable: true,
       render: (row: any) => (
-        <span className="font-semibold text-xs text-emerald-600 dark:text-emerald-400 font-mono">
+        <span className="font-semibold text-xs text-emerald-600 font-mono">
           BDT {Number(row.price || 0).toLocaleString()}
         </span>
       ),
@@ -319,14 +314,14 @@ export default function CostsPage() {
         <div className="flex items-center justify-end space-x-1.5">
           <button
             onClick={() => handleOpenEditModal(row)}
-            className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+            className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors"
             title="Edit Cost"
           >
             <Pencil size={14} />
           </button>
           <button
             onClick={() => handleOpenDeleteModal(row)}
-            className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+            className="p-1.5 rounded-lg border border-slate-200 text-rose-600 hover:bg-rose-50 transition-colors"
             title="Delete Record"
           >
             <Trash2 size={14} />
@@ -336,12 +331,10 @@ export default function CostsPage() {
     },
   ];
 
-  const inputClass = isDark
-    ? "w-full bg-[#0c082b] border border-white/10 rounded-xl py-2 px-3.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm"
-    : "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
+  const inputClass = "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
 
   const labelClass = `block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-    isDark ? "text-slate-400" : "text-slate-600"
+    "text-slate-600"
   }`;
 
   return (
@@ -420,7 +413,7 @@ export default function CostsPage() {
           <>
             <button
               onClick={() => setIsCreateModalOpen(false)}
-              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition-colors"
             >
               Cancel
             </button>
@@ -445,9 +438,7 @@ export default function CostsPage() {
               <div
                 onClick={() => setCreateAssignmentDropdownOpen(!createAssignmentDropdownOpen)}
                 className={`w-full p-2.5 rounded-xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
-                  isDark
-                    ? "bg-[#0c082b] border-white/10 text-slate-100 hover:border-purple-500/50"
-                    : "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
+                  "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
                 }`}
               >
                 {(() => {
@@ -455,14 +446,14 @@ export default function CostsPage() {
                   if (selected) {
                     return (
                       <div className="flex items-center space-x-2 truncate min-w-0">
-                        <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 font-semibold shrink-0">
+                        <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 text-purple-700 font-semibold shrink-0">
                           {selected.reference}
                         </span>
-                        <span className="font-bold text-slate-900 dark:text-white truncate">
+                        <span className="font-bold text-slate-900 truncate">
                           {selected.course_code || selected.title || "Assignment"}
                         </span>
                         {selected.client?.name && (
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate shrink">
+                          <span className="text-[11px] text-slate-500 truncate shrink">
                             • {selected.client.name} ({selected.client.student_id})
                           </span>
                         )}
@@ -487,9 +478,7 @@ export default function CostsPage() {
               {createAssignmentDropdownOpen && (
                 <div
                   className={`absolute z-50 left-0 right-0 mt-1 rounded-xl border shadow-2xl p-2.5 space-y-2 ${
-                    isDark
-                      ? "bg-[#0b0826] border-white/15 text-slate-100"
-                      : "bg-white border-slate-200 text-slate-900"
+                    "bg-white border-slate-200 text-slate-900"
                   }`}
                 >
                   {/* Live Search Input Box */}
@@ -502,16 +491,14 @@ export default function CostsPage() {
                       value={createAssignmentSearch}
                       onChange={(e) => setCreateAssignmentSearch(e.target.value)}
                       className={`w-full pl-8 pr-8 py-2 rounded-lg border text-xs outline-none transition-colors ${
-                        isDark
-                          ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                          : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
+                        "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
                       }`}
                     />
                     {createAssignmentSearch && (
                       <button
                         type="button"
                         onClick={() => setCreateAssignmentSearch("")}
-                        className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                        className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 "
                       >
                         <X size={14} />
                       </button>
@@ -535,7 +522,7 @@ export default function CostsPage() {
 
                       if (filtered.length === 0) {
                         return (
-                          <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                          <div className="p-4 text-center text-xs text-slate-500 ">
                             No assignments found matching "{createAssignmentSearch}"
                           </div>
                         );
@@ -552,23 +539,19 @@ export default function CostsPage() {
                             }}
                             className={`p-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors text-xs ${
                               isSelected
-                                ? isDark
-                                  ? "bg-purple-900/50 text-purple-200 font-semibold border border-purple-700/50"
-                                  : "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
-                                : isDark
-                                ? "hover:bg-white/5 text-slate-200"
+                                ? "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
                                 : "hover:bg-slate-100 text-slate-800"
                             }`}
                           >
                             <div className="flex flex-col min-w-0 pr-2">
                               <div className="flex items-center space-x-2">
-                                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-semibold shrink-0">
+                                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-semibold shrink-0">
                                   {a.reference}
                                 </span>
                                 <span className="font-bold truncate">{a.course_code || a.title}</span>
                               </div>
                               {a.client?.name && (
-                                <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                                <span className="text-[10px] text-slate-500 truncate mt-0.5">
                                   Client: {a.client.name} ({a.client.student_id})
                                 </span>
                               )}
@@ -576,7 +559,7 @@ export default function CostsPage() {
                             {isSelected && (
                               <CheckCircle2
                                 size={16}
-                                className="text-purple-600 dark:text-purple-400 shrink-0 ml-2"
+                                className="text-purple-600 shrink-0 ml-2"
                               />
                             )}
                           </div>
@@ -608,8 +591,8 @@ export default function CostsPage() {
               onChange={(e) => setFormData({ ...formData, status: e.target.value })}
               className={inputClass}
             >
-              <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING</option>
-              <option value="PAID" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PAID</option>
+              <option value="PENDING" className="bg-white text-slate-900 ">PENDING</option>
+              <option value="PAID" className="bg-white text-slate-900 ">PAID</option>
             </select>
           </div>
 
@@ -651,7 +634,7 @@ export default function CostsPage() {
           <>
             <button
               onClick={() => setIsEditModalOpen(false)}
-              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition-colors"
             >
               Cancel
             </button>
@@ -676,9 +659,7 @@ export default function CostsPage() {
               <div
                 onClick={() => setEditAssignmentDropdownOpen(!editAssignmentDropdownOpen)}
                 className={`w-full p-2.5 rounded-xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
-                  isDark
-                    ? "bg-[#0c082b] border-white/10 text-slate-100 hover:border-purple-500/50"
-                    : "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
+                  "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
                 }`}
               >
                 {(() => {
@@ -686,14 +667,14 @@ export default function CostsPage() {
                   if (selected) {
                     return (
                       <div className="flex items-center space-x-2 truncate min-w-0">
-                        <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 font-semibold shrink-0">
+                        <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 text-purple-700 font-semibold shrink-0">
                           {selected.reference}
                         </span>
-                        <span className="font-bold text-slate-900 dark:text-white truncate">
+                        <span className="font-bold text-slate-900 truncate">
                           {selected.course_code || selected.title || "Assignment"}
                         </span>
                         {selected.client?.name && (
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate shrink">
+                          <span className="text-[11px] text-slate-500 truncate shrink">
                             • {selected.client.name} ({selected.client.student_id})
                           </span>
                         )}
@@ -718,9 +699,7 @@ export default function CostsPage() {
               {editAssignmentDropdownOpen && (
                 <div
                   className={`absolute z-50 left-0 right-0 mt-1 rounded-xl border shadow-2xl p-2.5 space-y-2 ${
-                    isDark
-                      ? "bg-[#0b0826] border-white/15 text-slate-100"
-                      : "bg-white border-slate-200 text-slate-900"
+                    "bg-white border-slate-200 text-slate-900"
                   }`}
                 >
                   {/* Live Search Input Box */}
@@ -733,16 +712,14 @@ export default function CostsPage() {
                       value={editAssignmentSearch}
                       onChange={(e) => setEditAssignmentSearch(e.target.value)}
                       className={`w-full pl-8 pr-8 py-2 rounded-lg border text-xs outline-none transition-colors ${
-                        isDark
-                          ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                          : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
+                        "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
                       }`}
                     />
                     {editAssignmentSearch && (
                       <button
                         type="button"
                         onClick={() => setEditAssignmentSearch("")}
-                        className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                        className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 "
                       >
                         <X size={14} />
                       </button>
@@ -766,7 +743,7 @@ export default function CostsPage() {
 
                       if (filtered.length === 0) {
                         return (
-                          <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                          <div className="p-4 text-center text-xs text-slate-500 ">
                             No assignments found matching "{editAssignmentSearch}"
                           </div>
                         );
@@ -783,23 +760,19 @@ export default function CostsPage() {
                             }}
                             className={`p-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors text-xs ${
                               isSelected
-                                ? isDark
-                                  ? "bg-purple-900/50 text-purple-200 font-semibold border border-purple-700/50"
-                                  : "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
-                                : isDark
-                                ? "hover:bg-white/5 text-slate-200"
+                                ? "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
                                 : "hover:bg-slate-100 text-slate-800"
                             }`}
                           >
                             <div className="flex flex-col min-w-0 pr-2">
                               <div className="flex items-center space-x-2">
-                                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-semibold shrink-0">
+                                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-semibold shrink-0">
                                   {a.reference}
                                 </span>
                                 <span className="font-bold truncate">{a.course_code || a.title}</span>
                               </div>
                               {a.client?.name && (
-                                <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                                <span className="text-[10px] text-slate-500 truncate mt-0.5">
                                   Client: {a.client.name} ({a.client.student_id})
                                 </span>
                               )}
@@ -807,7 +780,7 @@ export default function CostsPage() {
                             {isSelected && (
                               <CheckCircle2
                                 size={16}
-                                className="text-purple-600 dark:text-purple-400 shrink-0 ml-2"
+                                className="text-purple-600 shrink-0 ml-2"
                               />
                             )}
                           </div>
@@ -827,8 +800,8 @@ export default function CostsPage() {
               onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
               className={inputClass}
             >
-              <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING</option>
-              <option value="PAID" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PAID</option>
+              <option value="PENDING" className="bg-white text-slate-900 ">PENDING</option>
+              <option value="PAID" className="bg-white text-slate-900 ">PAID</option>
             </select>
           </div>
 

@@ -111,15 +111,9 @@ export default function FieldsSection() {
     <section
       id="fields"
       aria-labelledby="fields-heading"
-      className="section-shell scroll-mt-24 section-dark relative overflow-hidden isolate"
+      className="section-shell scroll-mt-24 bg-white"
     >
-      {/* Background glow flares */}
-      <div
-        aria-hidden="true"
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] rounded-full bg-purple-600/15 blur-[150px] pointer-events-none -z-10"
-      />
-
-      <div className="content-shell relative z-10">
+      <div className="content-shell">
         {/* Section Header */}
         <motion.div
           className="text-center mb-10 md:mb-12"
@@ -127,33 +121,33 @@ export default function FieldsSection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
           transition={{ duration: 0.6 }}
         >
-          <span className="section-eyebrow section-eyebrow-dark">
-            <Sparkles className="w-3.5 h-3.5 text-purple-300" />
+          <span className="section-eyebrow">
+            <Sparkles className="w-3.5 h-3.5" />
             Academic Disciplines
           </span>
-          <h2 id="fields-heading" className="section-title text-white">
+          <h2 id="fields-heading" className="section-title">
             Specialized Coverage Across All Major Fields
           </h2>
-          <p className="section-subtitle text-slate-200 mt-4">
+          <p className="section-subtitle mt-4">
             From technical programming and engineering assignments to comprehensive
             business case studies and postgraduate theses, we match you with verified domain experts.
           </p>
         </motion.div>
 
         {/* Dynamic Infinite Marquee Ribbon */}
-        <div className="subject-marquee-container border-y border-white/10 py-3.5 mb-12 bg-white/[0.03] backdrop-blur-md">
-          <div className="subject-marquee-track gap-10 text-xs sm:text-sm font-semibold text-slate-200">
+        <div className="subject-marquee-container border-y border-[#e6e2ea] py-3.5 mb-12 bg-[#f6f5f3]">
+          <div className="subject-marquee-track gap-10 text-xs sm:text-sm font-semibold text-[#5e5668]">
             {TICKER_ITEMS.map((field, index) => (
               <span
                 key={`${field.code}-${index}`}
-                className="flex items-center gap-3 px-3 py-1 rounded-full bg-white/[0.05] border border-white/10 whitespace-nowrap"
+                className="flex items-center gap-3 px-3 py-1 rounded-full bg-white border border-[#e6e2ea] whitespace-nowrap"
               >
-                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                <span className="text-white font-bold tracking-wide">
+                <span className="w-2 h-2 rounded-full bg-[#620273]" />
+                <span className="text-[#620273] font-bold tracking-wide">
                   {field.code}
                 </span>
-                <span className="text-purple-300">•</span>
-                <span className="text-slate-200">{field.name}</span>
+                <span className="text-[#c4b0cc]">•</span>
+                <span>{field.name}</span>
               </span>
             ))}
           </div>
@@ -172,28 +166,24 @@ export default function FieldsSection() {
             return (
               <motion.article
                 key={field.code}
-                className="modern-dark-card p-6 flex flex-col justify-between group relative overflow-hidden"
+                className="modern-light-card p-6 flex flex-col justify-between group"
                 variants={itemVariants}
-                whileHover={{ y: -6 }}
               >
-                {/* Subtle top glowing line */}
-                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-purple-500 via-fuchsia-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
                 <div>
                   <div className="flex items-center justify-between gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300 group-hover:bg-gradient-to-br group-hover:from-purple-600 group-hover:to-fuchsia-600 group-hover:text-white transition-all duration-300 shadow-md">
-                      <Icon className="w-6 h-6" />
+                    <div className="w-11 h-11 rounded-xl bg-[#f6eef8] border border-[#ead7ef] flex items-center justify-center text-[#620273]">
+                      <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-xl font-extrabold text-white tracking-tight bg-white/[0.08] px-3 py-1 rounded-xl border border-white/15">
+                    <span className="text-sm font-bold text-[#620273] tracking-tight bg-[#f6eef8] px-2.5 py-1 rounded-lg border border-[#ead7ef]">
                       {field.code}
                     </span>
                   </div>
 
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-purple-300 block mb-1">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#620273] block mb-1">
                     {field.category}
                   </span>
 
-                  <h3 className="text-base sm:text-lg font-bold text-white mb-3 group-hover:text-purple-200 transition-colors leading-snug">
+                  <h3 className="text-base font-semibold text-[#1c1524] mb-3 leading-snug">
                     {field.name}
                   </h3>
 
@@ -202,7 +192,7 @@ export default function FieldsSection() {
                     {field.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[11px] text-slate-300 bg-white/[0.05] border border-white/10 px-2 py-0.5 rounded-md"
+                        className="text-[11px] text-[#5e5668] bg-[#f6f5f3] border border-[#e6e2ea] px-2 py-0.5 rounded-md"
                       >
                         {tag}
                       </span>
@@ -216,7 +206,7 @@ export default function FieldsSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Get help for ${field.code} assignment on WhatsApp`}
-                  className="w-full py-2.5 px-3 rounded-xl bg-white/[0.06] hover:bg-gradient-to-r hover:from-purple-600 hover:to-fuchsia-600 border border-white/10 hover:border-purple-400/40 text-xs font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200"
+                  className="w-full min-h-11 py-2.5 px-3 rounded-lg bg-white hover:bg-[#620273] border border-[#e6e2ea] hover:border-[#620273] text-xs font-semibold text-[#1c1524] hover:text-white flex items-center justify-center gap-2 transition-colors duration-200"
                 >
                   <FaWhatsapp className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Get {field.code} Help</span>

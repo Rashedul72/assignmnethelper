@@ -16,13 +16,10 @@ import { ConfirmDialog } from "../../components/ui/ConfirmDialog";
 import { Badge } from "../../components/ui/Badge";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { useToast } from "../../components/ui/ToastContext";
-import { useTheme } from "../../components/ui/ThemeContext";
 import { fetchWithAuth } from "../../lib/api";
 
 export default function WritersPage() {
   const { showToast } = useToast();
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   const [writers, setWriters] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -82,8 +79,8 @@ export default function WritersPage() {
     e.preventDefault();
     setSaving(true);
     const url = selectedWriter
-      ? `/admin/writers/${selectedWriter.id}`
-      : `/admin/writers`;
+      ? `/dashboard/writers/${selectedWriter.id}`
+      : `/dashboard/writers`;
     const method = selectedWriter ? "PUT" : "POST";
 
     try {
@@ -170,18 +167,16 @@ export default function WritersPage() {
         <div className="flex items-center space-x-2.5">
           <div
             className={`w-8 h-8 rounded-full border flex items-center justify-center font-bold text-xs shrink-0 ${
-              isDark
-                ? "bg-pink-950/60 border-pink-800/60 text-pink-300"
-                : "bg-pink-100 border-pink-200 text-pink-700"
+              "bg-pink-100 border-pink-200 text-pink-700"
             }`}
           >
             {row.name ? row.name[0].toUpperCase() : "W"}
           </div>
           <div>
-            <div className={`font-semibold text-xs ${isDark ? "text-slate-100" : "text-slate-900"}`}>
+            <div className={`font-semibold text-xs ${"text-slate-900"}`}>
               {row.name}
             </div>
-            <div className={`text-[11px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+            <div className={`text-[11px] font-mono ${"text-slate-500"}`}>
               {row.user?.email || "No Login Email"}
             </div>
           </div>
@@ -229,14 +224,14 @@ export default function WritersPage() {
             <>
               <button
                 onClick={() => handleOpenModal(row)}
-                className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors"
                 title="Edit Writer"
               >
                 <Pencil size={14} />
               </button>
               <button
                 onClick={() => confirmDelete(row)}
-                className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                className="p-1.5 rounded-lg border border-slate-200 text-rose-600 hover:bg-rose-50 transition-colors"
                 title="Deactivate Writer"
               >
                 <Trash2 size={14} />
@@ -245,7 +240,7 @@ export default function WritersPage() {
           ) : (
             <button
               onClick={() => handleRestore(row)}
-              className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors flex items-center space-x-1 text-xs"
+              className="p-1.5 rounded-lg border border-slate-200 text-emerald-600 hover:bg-emerald-50 transition-colors flex items-center space-x-1 text-xs"
               title="Restore Writer"
             >
               <RotateCcw size={14} />
@@ -257,12 +252,10 @@ export default function WritersPage() {
     },
   ];
 
-  const inputClass = isDark
-    ? "w-full bg-[#0c082b] border border-white/10 rounded-xl py-2 px-3.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm"
-    : "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
+  const inputClass = "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
 
   const labelClass = `block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-    isDark ? "text-slate-400" : "text-slate-600"
+    "text-slate-600"
   }`;
 
   return (
@@ -319,7 +312,7 @@ export default function WritersPage() {
           <>
             <button
               onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition-colors"
             >
               Cancel
             </button>

@@ -147,19 +147,9 @@ export default function ServicesSection() {
     <section
       id="services"
       aria-labelledby="services-heading"
-      className="section-shell scroll-mt-24 section-dark relative overflow-hidden isolate"
+      className="section-shell scroll-mt-24 bg-[#f6f5f3]"
     >
-      {/* Background radial glows */}
-      <div
-        aria-hidden="true"
-        className="absolute top-1/4 right-0 w-[35rem] h-[35rem] rounded-full bg-purple-600/15 blur-[140px] pointer-events-none -z-10"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute bottom-10 left-0 w-[30rem] h-[30rem] rounded-full bg-indigo-600/15 blur-[130px] pointer-events-none -z-10"
-      />
-
-      <div className="content-shell relative z-10">
+      <div className="content-shell">
         {/* Section Header */}
         <motion.div
           className="text-center mb-10 md:mb-12"
@@ -167,14 +157,14 @@ export default function ServicesSection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
           transition={{ duration: 0.6 }}
         >
-          <span className="section-eyebrow section-eyebrow-dark">
-            <Sparkles className="w-3.5 h-3.5 text-purple-300" />
+          <span className="section-eyebrow">
+            <Sparkles className="w-3.5 h-3.5" />
             Comprehensive Solutions
           </span>
-          <h2 id="services-heading" className="section-title text-white">
+          <h2 id="services-heading" className="section-title">
             End-to-End Academic Writing Services
           </h2>
-          <p className="section-subtitle text-slate-200 mt-4">
+          <p className="section-subtitle mt-4">
             Custom-tailored academic writing, research support, and proofreading
             crafted to the highest international standards.
           </p>
@@ -186,10 +176,10 @@ export default function ServicesSection() {
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+              className={`px-4 py-2 min-h-11 rounded-full text-xs sm:text-sm font-semibold transition-colors duration-200 cursor-pointer ${
                 activeCategory === cat.id
-                  ? "bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white shadow-[0_4px_20px_rgba(147,51,234,0.4)] border border-purple-400/40"
-                  : "bg-white/[0.05] text-slate-300 hover:text-white hover:bg-white/10 border border-white/10"
+                  ? "bg-[#620273] text-white border border-[#620273]"
+                  : "bg-white text-[#5e5668] hover:text-[#1c1524] hover:border-[#d8c4df] border border-[#e6e2ea]"
               }`}
             >
               {cat.label}
@@ -210,35 +200,31 @@ export default function ServicesSection() {
             return (
               <motion.article
                 key={service.name}
-                className="modern-dark-card p-6 sm:p-7 flex flex-col justify-between group relative overflow-hidden"
+                className="modern-light-card p-6 flex flex-col justify-between"
                 variants={itemVariants}
-                whileHover={{ y: -5 }}
               >
-                {/* Top glow accent */}
-                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
                 <div>
                   <div className="flex items-center gap-3.5 mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300 group-hover:bg-gradient-to-br group-hover:from-purple-600 group-hover:to-fuchsia-600 group-hover:text-white transition-all duration-300 shadow-sm shrink-0">
-                      <Icon className="w-6 h-6" />
+                    <div className="w-11 h-11 rounded-xl bg-[#f6eef8] border border-[#ead7ef] flex items-center justify-center text-[#620273] shrink-0">
+                      <Icon className="w-5 h-5" />
                     </div>
-                    <h3 className="font-bold text-lg text-white group-hover:text-purple-200 transition-colors">
+                    <h3 className="font-semibold text-lg text-[#1c1524]">
                       {service.name}
                     </h3>
                   </div>
 
-                  <p className="text-slate-300 text-sm leading-relaxed mb-5">
+                  <p className="text-[#5e5668] text-sm leading-relaxed mb-5">
                     {service.desc}
                   </p>
 
                   {/* Feature Checkpoints */}
-                  <div className="space-y-2 mb-6 pt-4 border-t border-white/10">
+                  <div className="space-y-2 mb-6 pt-4 border-t border-[#eeeaf1]">
                     {service.features.map((feat) => (
                       <div
                         key={feat}
-                        className="flex items-center gap-2 text-xs text-slate-300"
+                        className="flex items-center gap-2 text-xs text-[#5e5668]"
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                         <span>{feat}</span>
                       </div>
                     ))}
@@ -253,7 +239,7 @@ export default function ServicesSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Order ${service.name} on WhatsApp`}
-                  className="w-full py-2.5 px-4 rounded-xl bg-white/[0.07] hover:bg-gradient-to-r hover:from-purple-600 hover:to-fuchsia-600 border border-white/10 hover:border-purple-400/40 text-xs sm:text-sm font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200"
+                  className="w-full min-h-11 py-2.5 px-4 rounded-lg bg-white hover:bg-[#620273] border border-[#e6e2ea] hover:border-[#620273] text-sm font-semibold text-[#1c1524] hover:text-white flex items-center justify-center gap-2 transition-colors duration-200"
                 >
                   <FaWhatsapp className="w-4 h-4 text-emerald-400" />
                   <span>Order {service.name}</span>
@@ -275,16 +261,16 @@ export default function ServicesSection() {
             return (
               <div
                 key={f.title}
-                className="bg-white/[0.04] border border-white/10 rounded-2xl p-5 sm:p-6 flex items-start gap-4 hover:bg-white/[0.07] transition-all"
+                className="bg-white border border-[#e6e2ea] rounded-xl p-5 flex items-start gap-4"
               >
-                <div className="w-11 h-11 rounded-xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center shrink-0 text-purple-300">
+                <div className="w-11 h-11 rounded-xl bg-[#f6eef8] border border-[#ead7ef] flex items-center justify-center shrink-0 text-[#620273]">
                   <Icon className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-white text-sm sm:text-base mb-1">
+                  <h4 className="font-semibold text-[#1c1524] text-sm sm:text-base mb-1">
                     {f.title}
                   </h4>
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  <p className="text-sm text-[#5e5668] leading-relaxed">
                     {f.desc}
                   </p>
                 </div>

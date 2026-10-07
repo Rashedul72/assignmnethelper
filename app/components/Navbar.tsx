@@ -128,10 +128,8 @@ export default function Navbar() {
   return (
     <nav
       aria-label="Main Navigation"
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-[#06021f]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_10px_35px_rgba(3,1,18,0.6)] py-2.5"
-          : "bg-gradient-to-b from-[#06021f]/95 via-[#06021f]/80 to-transparent backdrop-blur-sm py-4 md:py-5"
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-[#e6e2ea] ${
+        isScrolled ? "shadow-sm py-2.5" : "py-3.5 md:py-4"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -161,7 +159,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav Items */}
-          <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 bg-white/[0.04] p-1.5 rounded-full border border-white/10 backdrop-blur-md">
+          <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 bg-[#f6f5f3] p-1 rounded-full border border-[#e6e2ea]">
             {NAV_ITEMS.map((item) => {
               const isActive = activeSection === item.id;
               return (
@@ -169,10 +167,10 @@ export default function Navbar() {
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
                   aria-current={isActive ? "page" : undefined}
-                  className={`relative px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
+                  className={`relative px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#620273] ${
                     isActive
-                      ? "text-white bg-gradient-to-r from-[#620273] to-[#9333ea] shadow-[0_4px_16px_rgba(147,51,234,0.4)]"
-                      : "text-slate-200 hover:text-white hover:bg-white/10"
+                      ? "text-white bg-[#620273]"
+                      : "text-[#5e5668] hover:text-[#1c1524] hover:bg-white"
                   }`}
                 >
                   {item.label}
@@ -207,24 +205,24 @@ export default function Navbar() {
 
               {/* Dropdown Menu */}
               {showContactDropdown && (
-                <div className="absolute right-0 mt-2 w-72 bg-[#0b0528] border border-purple-500/30 rounded-2xl p-2.5 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-purple-300 border-b border-white/10 mb-1.5">
+                <div className="absolute right-0 mt-2 w-72 bg-white border border-[#e6e2ea] rounded-xl p-2 shadow-[0_12px_32px_-12px_rgba(28,21,36,0.25)] z-50">
+                  <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#620273] border-b border-[#eeeaf1] mb-1.5">
                     Select Your Region
                   </div>
                   <a
                     href="https://wa.me/8801896094070"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors group"
+                    className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[#f6f5f3] transition-colors group"
                   >
-                    <div className="w-9 h-9 rounded-lg bg-purple-600/30 border border-purple-400/30 flex items-center justify-center shrink-0">
-                      <Globe className="w-4 h-4 text-purple-300 group-hover:scale-110 transition-transform" />
+                    <div className="w-9 h-9 rounded-lg bg-[#f6eef8] border border-[#ead7ef] flex items-center justify-center shrink-0">
+                      <Globe className="w-4 h-4 text-[#620273]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-semibold text-white">
+                      <div className="text-sm font-semibold text-[#1c1524]">
                         International Students
                       </div>
-                      <div className="text-xs text-purple-200/80 flex items-center gap-1.5">
+                      <div className="text-xs text-[#5e5668] flex items-center gap-1.5">
                         <FaWhatsapp className="w-3.5 h-3.5 text-emerald-400" />
                         <span>+880 1896-094070</span>
                       </div>
@@ -235,9 +233,9 @@ export default function Navbar() {
                     href="https://wa.me/8801857290212"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/10 transition-colors group mt-1"
+                    className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[#f6f5f3] transition-colors group mt-1"
                   >
-                    <div className="w-9 h-9 rounded-lg bg-emerald-600/30 border border-emerald-400/30 flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0">
                       <span className="relative w-4 h-3 rounded-xs overflow-hidden">
                         <span className="absolute inset-0 bg-[#006A4E]" />
                         <span className="absolute inset-0 flex items-center justify-center">
@@ -246,10 +244,10 @@ export default function Navbar() {
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-semibold text-white">
+                      <div className="text-sm font-semibold text-[#1c1524]">
                         Bangladesh Students
                       </div>
-                      <div className="text-xs text-emerald-200/80 flex items-center gap-1.5">
+                      <div className="text-xs text-[#5e5668] flex items-center gap-1.5">
                         <FaWhatsapp className="w-3.5 h-3.5 text-emerald-400" />
                         <span>+880 1857-290212</span>
                       </div>
@@ -267,14 +265,14 @@ export default function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Direct WhatsApp chat"
-              className="p-2 rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-600/30"
+              className="p-2.5 min-h-11 min-w-11 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 inline-flex items-center justify-center"
             >
               <FaWhatsapp className="w-5 h-5" />
             </a>
 
             <button
               type="button"
-              className="p-2.5 rounded-xl bg-white/10 border border-white/15 text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 transition-colors"
+              className="p-2.5 min-h-11 min-w-11 rounded-xl bg-white border border-[#e6e2ea] text-[#1c1524] hover:bg-[#f6f5f3] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#620273] transition-colors inline-flex items-center justify-center"
               onClick={() => setIsOpen((prev) => !prev)}
               aria-label={
                 isOpen ? "Close navigation menu" : "Open navigation menu"
@@ -297,11 +295,11 @@ export default function Navbar() {
         id="mobile-nav"
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
           isOpen
-            ? "max-h-[34rem] opacity-100 border-b border-white/15 shadow-2xl"
+            ? "max-h-[34rem] opacity-100 border-b border-[#e6e2ea] shadow-sm"
             : "max-h-0 opacity-0 pointer-events-none"
         }`}
       >
-        <div className="bg-[#0b0528]/98 backdrop-blur-2xl px-5 pt-3 pb-6 space-y-3">
+        <div className="bg-white px-5 pt-3 pb-6 space-y-3">
           <div className="grid grid-cols-2 gap-2">
             {NAV_ITEMS.map((item) => {
               const isActive = activeSection === item.id;
@@ -311,13 +309,13 @@ export default function Navbar() {
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
                   aria-current={isActive ? "page" : undefined}
-                  className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-left text-sm font-medium transition-all ${
+                  className={`flex items-center gap-2.5 px-3.5 py-2.5 min-h-11 rounded-xl text-left text-sm font-medium transition-colors ${
                     isActive
-                      ? "text-white bg-gradient-to-r from-[#620273] to-[#9333ea] font-bold shadow-md"
-                      : "text-slate-200 bg-white/[0.04] hover:bg-white/10 hover:text-white"
+                      ? "text-white bg-[#620273] font-semibold"
+                      : "text-[#1c1524] bg-[#f6f5f3] hover:bg-[#f6eef8]"
                   }`}
                 >
-                  <Icon className="w-4 h-4 shrink-0 text-purple-300" />
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-[#620273]"}`} />
                   <span className="truncate">{item.label}</span>
                 </button>
               );
@@ -325,8 +323,8 @@ export default function Navbar() {
           </div>
 
           {/* Mobile CTA WhatsApp Buttons */}
-          <div className="pt-2 border-t border-white/10 space-y-2">
-            <div className="text-xs font-bold uppercase tracking-wider text-purple-300 px-1">
+          <div className="pt-2 border-t border-[#eeeaf1] space-y-2">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#620273] px-1">
               Connect on WhatsApp (24/7 Fast Response)
             </div>
 

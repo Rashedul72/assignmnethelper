@@ -20,13 +20,10 @@ import { Badge } from "../../components/ui/Badge";
 import { StatCard } from "../../components/ui/StatCard";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { useToast } from "../../components/ui/ToastContext";
-import { useTheme } from "../../components/ui/ThemeContext";
 import { fetchWithAuth } from "../../lib/api";
 
 export default function WriterEarningsPage() {
   const { showToast } = useToast();
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   const [userRole, setUserRole] = useState<string>("ADMIN");
   const [loading, setLoading] = useState(true);
@@ -121,7 +118,7 @@ export default function WriterEarningsPage() {
       render: (row) => (
         <span
           className={`font-mono text-xs font-semibold ${
-            isDark ? "text-purple-300" : "text-purple-700"
+            "text-purple-700"
           }`}
         >
           {row.reference}
@@ -135,18 +132,16 @@ export default function WriterEarningsPage() {
         <div className="flex items-center space-x-2">
           <div
             className={`w-6 h-6 rounded-md border flex items-center justify-center shrink-0 ${
-              isDark
-                ? "bg-purple-950/60 border-purple-800/60 text-purple-400"
-                : "bg-purple-50 border-purple-200 text-purple-700"
+              "bg-purple-50 border-purple-200 text-purple-700"
             }`}
           >
             <User size={13} />
           </div>
           <div>
-            <div className={`font-semibold text-xs ${isDark ? "text-slate-100" : "text-slate-900"}`}>
+            <div className={`font-semibold text-xs ${"text-slate-900"}`}>
               {row.client?.name || "N/A"}
             </div>
-            <div className={`text-[10px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+            <div className={`text-[10px] font-mono ${"text-slate-500"}`}>
               ID: {row.client?.student_id || "N/A"}
             </div>
           </div>
@@ -158,10 +153,10 @@ export default function WriterEarningsPage() {
       header: "Course & Title",
       render: (row) => (
         <div>
-          <div className={`font-medium text-xs ${isDark ? "text-slate-200" : "text-slate-800"}`}>
+          <div className={`font-medium text-xs ${"text-slate-800"}`}>
             {row.title || row.course_code}
           </div>
-          <div className={`text-[11px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+          <div className={`text-[11px] font-mono ${"text-slate-500"}`}>
             {row.course_code} • Assign #{row.assignment_no}
           </div>
         </div>
@@ -172,7 +167,7 @@ export default function WriterEarningsPage() {
       header: "Due Date",
       render: (row) =>
         row.due_at ? (
-          <div className="flex items-center space-x-1.5 text-xs text-slate-600 dark:text-slate-300">
+          <div className="flex items-center space-x-1.5 text-xs text-slate-600 ">
             <Calendar size={13} className="text-amber-500" />
             <span>{new Date(row.due_at).toLocaleDateString()}</span>
           </div>
@@ -211,7 +206,7 @@ export default function WriterEarningsPage() {
       header: "Earned Commission",
       align: "right",
       render: (row) => (
-        <div className="font-bold text-xs text-emerald-600 dark:text-emerald-400 font-mono">
+        <div className="font-bold text-xs text-emerald-600 font-mono">
           BDT {Number(row.writer_commission_amount || 0).toLocaleString()}
         </div>
       ),
@@ -227,7 +222,7 @@ export default function WriterEarningsPage() {
         actions={
           userRole === "ADMIN" ? (
             <div className="flex items-center space-x-2">
-              <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0">
+              <label className="text-xs font-semibold text-slate-600 shrink-0">
                 Filter Writer:
               </label>
 
@@ -236,20 +231,18 @@ export default function WriterEarningsPage() {
                 <div
                   onClick={() => setWriterDropdownOpen(!writerDropdownOpen)}
                   className={`w-full px-3 py-2 rounded-xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
-                    isDark
-                      ? "bg-[#0c082b] border-white/10 text-slate-100 hover:border-purple-500/50"
-                      : "bg-white border-slate-200 text-slate-900 hover:border-purple-400"
+                    "bg-white border-slate-200 text-slate-900 hover:border-purple-400"
                   }`}
                 >
                   {(() => {
                     if (!selectedWriterId) {
-                      return <span className="font-semibold text-purple-600 dark:text-purple-400">-- All Writers --</span>;
+                      return <span className="font-semibold text-purple-600 ">-- All Writers --</span>;
                     }
                     const selectedWriter = writers.find((w) => w.id === selectedWriterId);
                     if (selectedWriter) {
                       return (
                         <div className="flex items-center space-x-1.5 truncate">
-                          <span className="font-bold text-slate-900 dark:text-white truncate">
+                          <span className="font-bold text-slate-900 truncate">
                             {selectedWriter.name}
                           </span>
                           <span className="text-[11px] text-slate-400 truncate">
@@ -272,9 +265,7 @@ export default function WriterEarningsPage() {
                 {writerDropdownOpen && (
                   <div
                     className={`absolute z-50 right-0 mt-1 w-72 rounded-xl border shadow-2xl p-2.5 space-y-2 ${
-                      isDark
-                        ? "bg-[#0b0826] border-white/15 text-slate-100"
-                        : "bg-white border-slate-200 text-slate-900"
+                      "bg-white border-slate-200 text-slate-900"
                     }`}
                   >
                     {/* Live Search Input Box */}
@@ -287,16 +278,14 @@ export default function WriterEarningsPage() {
                         value={writerSearch}
                         onChange={(e) => setWriterSearch(e.target.value)}
                         className={`w-full pl-8 pr-8 py-2 rounded-lg border text-xs outline-none transition-colors ${
-                          isDark
-                            ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                            : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
+                          "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
                         }`}
                       />
                       {writerSearch && (
                         <button
                           type="button"
                           onClick={() => setWriterSearch("")}
-                          className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                          className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 "
                         >
                           <X size={14} />
                         </button>
@@ -313,17 +302,13 @@ export default function WriterEarningsPage() {
                         }}
                         className={`p-2 rounded-lg cursor-pointer flex items-center justify-between transition-colors text-xs ${
                           selectedWriterId === ""
-                            ? isDark
-                              ? "bg-purple-900/50 text-purple-200 font-semibold border border-purple-700/50"
-                              : "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
-                            : isDark
-                            ? "hover:bg-white/5 text-slate-200"
+                            ? "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
                             : "hover:bg-slate-100 text-slate-800"
                         }`}
                       >
-                        <span className="font-bold text-purple-600 dark:text-purple-400">-- All Writers --</span>
+                        <span className="font-bold text-purple-600 ">-- All Writers --</span>
                         {selectedWriterId === "" && (
-                          <CheckCircle2 size={15} className="text-purple-600 dark:text-purple-400 shrink-0 ml-1" />
+                          <CheckCircle2 size={15} className="text-purple-600 shrink-0 ml-1" />
                         )}
                       </div>
 
@@ -340,7 +325,7 @@ export default function WriterEarningsPage() {
 
                         if (filtered.length === 0) {
                           return (
-                            <div className="p-3 text-center text-xs text-slate-500 dark:text-slate-400">
+                            <div className="p-3 text-center text-xs text-slate-500 ">
                               No writers matching "{writerSearch}"
                             </div>
                           );
@@ -357,24 +342,20 @@ export default function WriterEarningsPage() {
                               }}
                               className={`p-2 rounded-lg cursor-pointer flex items-center justify-between transition-colors text-xs ${
                                 isSelected
-                                  ? isDark
-                                    ? "bg-purple-900/50 text-purple-200 font-semibold border border-purple-700/50"
-                                    : "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
-                                  : isDark
-                                  ? "hover:bg-white/5 text-slate-200"
+                                  ? "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
                                   : "hover:bg-slate-100 text-slate-800"
                               }`}
                             >
                               <div className="flex flex-col min-w-0 pr-2">
                                 <span className="font-bold truncate">{w.name}</span>
-                                <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                                <span className="text-[10px] text-slate-500 ">
                                   {w.phone_number}
                                 </span>
                               </div>
                               {isSelected && (
                                 <CheckCircle2
                                   size={15}
-                                  className="text-purple-600 dark:text-purple-400 shrink-0 ml-1"
+                                  className="text-purple-600 shrink-0 ml-1"
                                 />
                               )}
                             </div>
@@ -425,7 +406,7 @@ export default function WriterEarningsPage() {
       </div>
 
       {/* Assignments & Earnings Table Section */}
-      <div className="p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c082b]/50 backdrop-blur-md space-y-4">
+      <div className="p-5 rounded-2xl border border-slate-200/80 bg-white/70 backdrop-blur-md space-y-4">
         {/* Table Search & Filters */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="relative w-full sm:w-72">
@@ -436,9 +417,7 @@ export default function WriterEarningsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs outline-none transition-colors ${
-                isDark
-                  ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                  : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
+                "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
               }`}
             />
           </div>
@@ -449,14 +428,12 @@ export default function WriterEarningsPage() {
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className={`px-3 py-2 rounded-xl border text-xs font-medium outline-none transition-colors cursor-pointer ${
-                isDark
-                  ? "bg-[#0c082b] border-white/10 text-slate-200 focus:border-purple-500"
-                  : "bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500"
+                "bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500"
               }`}
             >
-              <option value="ALL" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">All Commission Statuses</option>
-              <option value="PAID" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PAID Only</option>
-              <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING Only</option>
+              <option value="ALL" className="bg-white text-slate-900 ">All Commission Statuses</option>
+              <option value="PAID" className="bg-white text-slate-900 ">PAID Only</option>
+              <option value="PENDING" className="bg-white text-slate-900 ">PENDING Only</option>
             </select>
           </div>
         </div>

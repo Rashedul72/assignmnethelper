@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useTheme } from "./ThemeContext";
 
 export type BadgeVariant =
   | "success"
@@ -21,20 +20,6 @@ export interface BadgeProps {
 }
 
 export function Badge({ children, variant = "neutral", size = "sm", dot = true }: BadgeProps) {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
-
-  const darkStyles = {
-    success: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]",
-    danger: "bg-rose-500/10 text-rose-400 border-rose-500/20 shadow-[0_0_10px_rgba(244,63,94,0.1)]",
-    warning: "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)]",
-    info: "bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.1)]",
-    purple: "bg-purple-500/10 text-purple-400 border-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.1)]",
-    pink: "bg-pink-500/10 text-pink-400 border-pink-500/20 shadow-[0_0_10px_rgba(236,72,153,0.1)]",
-    cyan: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20 shadow-[0_0_10px_rgba(6,182,212,0.1)]",
-    neutral: "bg-white/5 text-gray-300 border-white/10",
-  }[variant];
-
   const lightStyles = {
     success: "bg-emerald-50 text-emerald-700 border-emerald-200",
     danger: "bg-rose-50 text-rose-700 border-rose-200",
@@ -57,7 +42,7 @@ export function Badge({ children, variant = "neutral", size = "sm", dot = true }
     neutral: "bg-slate-400",
   }[variant];
 
-  const variantStyles = isDark ? darkStyles : lightStyles;
+  const variantStyles = lightStyles;
   const sizeStyles = size === "sm" ? "px-2.5 py-0.5 text-xs" : "px-3 py-1 text-sm";
 
   return (

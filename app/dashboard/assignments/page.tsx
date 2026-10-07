@@ -22,13 +22,10 @@ import { Modal } from "../../components/ui/Modal";
 import { Badge } from "../../components/ui/Badge";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { useToast } from "../../components/ui/ToastContext";
-import { useTheme } from "../../components/ui/ThemeContext";
 import { fetchWithAuth } from "../../lib/api";
 
 export default function AssignmentsPage() {
   const { showToast } = useToast();
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   const [userRole, setUserRole] = useState<string>("ADMIN");
   const [assignments, setAssignments] = useState<any[]>([]);
@@ -298,7 +295,7 @@ export default function AssignmentsPage() {
     setSaving(true);
     try {
       const res = await fetchWithAuth(
-        `/admin/assignments/${editFormData.id}`,
+        `/dashboard/assignments/${editFormData.id}`,
         {
           method: "PUT",
           headers: {
@@ -354,7 +351,7 @@ export default function AssignmentsPage() {
       render: (row) => (
         <span
           className={`font-mono text-xs font-semibold ${
-            isDark ? "text-purple-300" : "text-purple-700"
+            "text-purple-700"
           }`}
         >
           {row.reference}
@@ -369,18 +366,16 @@ export default function AssignmentsPage() {
         <div className="flex items-center space-x-2.5">
           <div
             className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 ${
-              isDark
-                ? "bg-purple-950/60 border-purple-800/60 text-purple-400"
-                : "bg-purple-50 border-purple-200 text-purple-700"
+              "bg-purple-50 border-purple-200 text-purple-700"
             }`}
           >
             <User size={14} />
           </div>
           <div>
-            <div className={`font-semibold text-xs ${isDark ? "text-slate-100" : "text-slate-900"}`}>
+            <div className={`font-semibold text-xs ${"text-slate-900"}`}>
               {row.client?.name || "Unknown"}
             </div>
-            <div className={`text-[11px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+            <div className={`text-[11px] font-mono ${"text-slate-500"}`}>
               ID: {row.client?.student_id || "N/A"}
             </div>
           </div>
@@ -396,14 +391,12 @@ export default function AssignmentsPage() {
           <div className="flex items-center space-x-2">
             <div
               className={`p-1 rounded-md border shrink-0 ${
-                isDark
-                  ? "bg-pink-950/60 border-pink-800/60 text-pink-400"
-                  : "bg-pink-50 border-pink-200 text-pink-700"
+                "bg-pink-50 border-pink-200 text-pink-700"
               }`}
             >
               <PenTool size={12} />
             </div>
-            <span className={`font-medium text-xs ${isDark ? "text-slate-100" : "text-slate-900"}`}>
+            <span className={`font-medium text-xs ${"text-slate-900"}`}>
               {writerName}
             </span>
           </div>
@@ -417,10 +410,10 @@ export default function AssignmentsPage() {
       header: "Course & Title",
       render: (row) => (
         <div>
-          <div className={`font-medium text-xs ${isDark ? "text-slate-200" : "text-slate-800"}`}>
+          <div className={`font-medium text-xs ${"text-slate-800"}`}>
             {row.title || row.course_code}
           </div>
-          <div className={`text-[11px] font-mono ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+          <div className={`text-[11px] font-mono ${"text-slate-500"}`}>
             {row.course_code} • Assign #{row.assignment_no}
           </div>
         </div>
@@ -434,7 +427,7 @@ export default function AssignmentsPage() {
             sortable: true,
             render: (row: any) =>
               row.grand_total ? (
-                <div className="font-semibold text-xs text-emerald-600 dark:text-emerald-400">
+                <div className="font-semibold text-xs text-emerald-600 ">
                   BDT {Number(row.grand_total).toLocaleString()}
                 </div>
               ) : (
@@ -451,7 +444,7 @@ export default function AssignmentsPage() {
         row.due_at ? (
           <div
             className={`flex items-center space-x-1.5 text-xs font-medium ${
-              isDark ? "text-slate-300" : "text-slate-700"
+              "text-slate-700"
             }`}
           >
             <Calendar size={13} className="text-amber-500" />
@@ -499,8 +492,8 @@ export default function AssignmentsPage() {
                 disabled={isLocked}
                 className={`p-1.5 rounded-lg border transition-colors ${
                   isLocked
-                    ? "opacity-40 cursor-not-allowed border-slate-200 dark:border-white/10 text-slate-400"
-                    : "border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5"
+                    ? "opacity-40 cursor-not-allowed border-slate-200 text-slate-400"
+                    : "border-slate-200 text-slate-600 hover:bg-slate-100 "
                 }`}
                 title={isLocked ? "Locked (Writer Commission Paid)" : "Edit Assignment"}
               >
@@ -514,7 +507,7 @@ export default function AssignmentsPage() {
               setSelectedAssignment(row);
               setIsViewModalOpen(true);
             }}
-            className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-colors"
+            className="p-1.5 rounded-lg border border-slate-200 text-purple-600 hover:bg-purple-50 transition-colors"
             title="View Details"
           >
             <Eye size={14} />
@@ -524,12 +517,10 @@ export default function AssignmentsPage() {
     },
   ];
 
-  const inputClass = isDark
-    ? "w-full bg-[#0c082b] border border-white/10 rounded-xl py-2 px-3.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm"
-    : "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
+  const inputClass = "w-full bg-white border border-slate-200/80 rounded-xl py-2 px-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500 transition-all text-xs sm:text-sm shadow-2xs";
 
   const labelClass = `block text-xs font-semibold uppercase tracking-wider mb-1.5 ${
-    isDark ? "text-slate-400" : "text-slate-600"
+    "text-slate-600"
   }`;
 
   return (
@@ -590,7 +581,7 @@ export default function AssignmentsPage() {
           <>
             <button
               onClick={() => setIsCreateModalOpen(false)}
-              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition-colors"
             >
               Cancel
             </button>
@@ -610,7 +601,7 @@ export default function AssignmentsPage() {
         <form onSubmit={handleCreateAssignment} className="space-y-4 max-w-2xl mx-auto">
           {/* Section 1: Client Selection */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 ">
               Student Client Information
             </h4>
 
@@ -621,9 +612,7 @@ export default function AssignmentsPage() {
                 <div
                   onClick={() => setCreateStudentDropdownOpen(!createStudentDropdownOpen)}
                   className={`w-full p-2.5 rounded-xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
-                    isDark
-                      ? "bg-[#0c082b] border-white/10 text-slate-100 hover:border-purple-500/50"
-                      : "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
+                    "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
                   }`}
                 >
                   {(() => {
@@ -631,14 +620,14 @@ export default function AssignmentsPage() {
                     if (selectedStudent) {
                       return (
                         <div className="flex items-center space-x-2 truncate min-w-0">
-                          <span className="font-bold text-slate-900 dark:text-white truncate">
+                          <span className="font-bold text-slate-900 truncate">
                             {selectedStudent.name}
                           </span>
-                          <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 font-semibold shrink-0">
+                          <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 text-purple-700 font-semibold shrink-0">
                             ID: {selectedStudent.student_id}
                           </span>
                           {selectedStudent.university && (
-                            <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate shrink">
+                            <span className="text-[11px] text-slate-500 truncate shrink">
                               • {selectedStudent.university}
                             </span>
                           )}
@@ -663,9 +652,7 @@ export default function AssignmentsPage() {
                 {createStudentDropdownOpen && (
                   <div
                     className={`absolute z-50 left-0 right-0 mt-1 rounded-xl border shadow-2xl p-2.5 space-y-2 ${
-                      isDark
-                        ? "bg-[#0b0826] border-white/15 text-slate-100"
-                        : "bg-white border-slate-200 text-slate-900"
+                      "bg-white border-slate-200 text-slate-900"
                     }`}
                   >
                     {/* Live Search Input Box */}
@@ -678,16 +665,14 @@ export default function AssignmentsPage() {
                         value={createStudentSearch}
                         onChange={(e) => setCreateStudentSearch(e.target.value)}
                         className={`w-full pl-8 pr-8 py-2 rounded-lg border text-xs outline-none transition-colors ${
-                          isDark
-                            ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                            : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
+                          "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
                         }`}
                       />
                       {createStudentSearch && (
                         <button
                           type="button"
                           onClick={() => setCreateStudentSearch("")}
-                          className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                          className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 "
                         >
                           <X size={14} />
                         </button>
@@ -709,7 +694,7 @@ export default function AssignmentsPage() {
 
                         if (filtered.length === 0) {
                           return (
-                            <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                            <div className="p-4 text-center text-xs text-slate-500 ">
                               No students found matching "{createStudentSearch}"
                             </div>
                           );
@@ -726,23 +711,19 @@ export default function AssignmentsPage() {
                               }}
                               className={`p-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors text-xs ${
                                 isSelected
-                                  ? isDark
-                                    ? "bg-purple-900/50 text-purple-200 font-semibold border border-purple-700/50"
-                                    : "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
-                                  : isDark
-                                  ? "hover:bg-white/5 text-slate-200"
+                                  ? "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
                                   : "hover:bg-slate-100 text-slate-800"
                               }`}
                             >
                               <div className="flex flex-col min-w-0 pr-2">
                                 <div className="flex items-center space-x-2">
                                   <span className="font-bold truncate">{st.name}</span>
-                                  <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-medium shrink-0">
+                                  <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-medium shrink-0">
                                     ID: {st.student_id}
                                   </span>
                                 </div>
                                 {st.university && (
-                                  <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                                  <span className="text-[10px] text-slate-500 truncate mt-0.5">
                                     {st.university}
                                   </span>
                                 )}
@@ -750,7 +731,7 @@ export default function AssignmentsPage() {
                               {isSelected && (
                                 <CheckCircle2
                                   size={16}
-                                  className="text-purple-600 dark:text-purple-400 shrink-0 ml-2"
+                                  className="text-purple-600 shrink-0 ml-2"
                                 />
                               )}
                             </div>
@@ -765,8 +746,8 @@ export default function AssignmentsPage() {
           </div>
 
           {/* Section 2: Course & Assignment Info */}
-          <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-white/[0.04]">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+          <div className="space-y-3 pt-2 border-t border-slate-100 ">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 ">
               Course Details
             </h4>
 
@@ -820,8 +801,8 @@ export default function AssignmentsPage() {
           </div>
 
           {/* Section 3: Writer & Schedule */}
-          <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-white/[0.04]">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+          <div className="space-y-3 pt-2 border-t border-slate-100 ">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 ">
               Writer & Due Date
             </h4>
 
@@ -834,9 +815,9 @@ export default function AssignmentsPage() {
                     onChange={(e) => setFormData({ ...formData, writer_id: e.target.value })}
                     className={inputClass}
                   >
-                    <option value="" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">-- Leave Unassigned --</option>
+                    <option value="" className="bg-white text-slate-900 ">-- Leave Unassigned --</option>
                     {writers.map((w) => (
-                      <option key={w.id} value={w.id} className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">
+                      <option key={w.id} value={w.id} className="bg-white text-slate-900 ">
                         {w.name} ({w.phone_number})
                       </option>
                     ))}
@@ -844,9 +825,7 @@ export default function AssignmentsPage() {
                 ) : (
                   <div
                     className={`p-2.5 rounded-xl border text-xs flex items-center justify-between font-medium ${
-                      isDark
-                        ? "bg-white/5 border-white/10 text-purple-300"
-                        : "bg-purple-50 border-purple-200 text-purple-900"
+                      "bg-purple-50 border-purple-200 text-purple-900"
                     }`}
                   >
                     <span>Auto-assigned to you (Logged in Writer)</span>
@@ -868,8 +847,8 @@ export default function AssignmentsPage() {
           </div>
 
           {/* Section 4: Billing & Word Count */}
-          <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-white/[0.04]">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+          <div className="space-y-3 pt-2 border-t border-slate-100 ">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-600 ">
               {userRole === "ADMIN" ? "Financials & Word Rate" : "Word Count Specification"}
             </h4>
 
@@ -928,7 +907,7 @@ export default function AssignmentsPage() {
           <>
             <button
               onClick={() => setIsEditModalOpen(false)}
-              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition-colors"
+              className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition-colors"
             >
               Cancel
             </button>
@@ -948,7 +927,7 @@ export default function AssignmentsPage() {
         <form onSubmit={handleUpdateAssignment} className="space-y-4 max-w-2xl mx-auto">
           {/* Student Client Information (Searchable) */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-purple-600 ">
               Student Client Information
             </h4>
 
@@ -959,9 +938,7 @@ export default function AssignmentsPage() {
                 <div
                   onClick={() => setEditStudentDropdownOpen(!editStudentDropdownOpen)}
                   className={`w-full p-2.5 rounded-xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
-                    isDark
-                      ? "bg-[#0c082b] border-white/10 text-slate-100 hover:border-purple-500/50"
-                      : "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
+                    "bg-slate-50 border-slate-200 text-slate-900 hover:border-purple-400"
                   }`}
                 >
                   {(() => {
@@ -969,14 +946,14 @@ export default function AssignmentsPage() {
                     if (selectedStudent) {
                       return (
                         <div className="flex items-center space-x-2 truncate min-w-0">
-                          <span className="font-bold text-slate-900 dark:text-white truncate">
+                          <span className="font-bold text-slate-900 truncate">
                             {selectedStudent.name}
                           </span>
-                          <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 font-semibold shrink-0">
+                          <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-purple-100 text-purple-700 font-semibold shrink-0">
                             ID: {selectedStudent.student_id}
                           </span>
                           {selectedStudent.university && (
-                            <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate shrink">
+                            <span className="text-[11px] text-slate-500 truncate shrink">
                               • {selectedStudent.university}
                             </span>
                           )}
@@ -1001,9 +978,7 @@ export default function AssignmentsPage() {
                 {editStudentDropdownOpen && (
                   <div
                     className={`absolute z-50 left-0 right-0 mt-1 rounded-xl border shadow-2xl p-2.5 space-y-2 ${
-                      isDark
-                        ? "bg-[#0b0826] border-white/15 text-slate-100"
-                        : "bg-white border-slate-200 text-slate-900"
+                      "bg-white border-slate-200 text-slate-900"
                     }`}
                   >
                     {/* Live Search Input Box */}
@@ -1016,16 +991,14 @@ export default function AssignmentsPage() {
                         value={editStudentSearch}
                         onChange={(e) => setEditStudentSearch(e.target.value)}
                         className={`w-full pl-8 pr-8 py-2 rounded-lg border text-xs outline-none transition-colors ${
-                          isDark
-                            ? "bg-white/5 border-white/10 text-white focus:border-purple-500"
-                            : "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
+                          "bg-slate-50 border-slate-200 text-slate-900 focus:border-purple-500"
                         }`}
                       />
                       {editStudentSearch && (
                         <button
                           type="button"
                           onClick={() => setEditStudentSearch("")}
-                          className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                          className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 "
                         >
                           <X size={14} />
                         </button>
@@ -1047,7 +1020,7 @@ export default function AssignmentsPage() {
 
                         if (filtered.length === 0) {
                           return (
-                            <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                            <div className="p-4 text-center text-xs text-slate-500 ">
                               No students found matching "{editStudentSearch}"
                             </div>
                           );
@@ -1064,23 +1037,19 @@ export default function AssignmentsPage() {
                               }}
                               className={`p-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors text-xs ${
                                 isSelected
-                                  ? isDark
-                                    ? "bg-purple-900/50 text-purple-200 font-semibold border border-purple-700/50"
-                                    : "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
-                                  : isDark
-                                  ? "hover:bg-white/5 text-slate-200"
+                                  ? "bg-purple-50 text-purple-900 font-semibold border border-purple-200"
                                   : "hover:bg-slate-100 text-slate-800"
                               }`}
                             >
                               <div className="flex flex-col min-w-0 pr-2">
                                 <div className="flex items-center space-x-2">
                                   <span className="font-bold truncate">{st.name}</span>
-                                  <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-medium shrink-0">
+                                  <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-medium shrink-0">
                                     ID: {st.student_id}
                                   </span>
                                 </div>
                                 {st.university && (
-                                  <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                                  <span className="text-[10px] text-slate-500 truncate mt-0.5">
                                     {st.university}
                                   </span>
                                 )}
@@ -1088,7 +1057,7 @@ export default function AssignmentsPage() {
                               {isSelected && (
                                 <CheckCircle2
                                   size={16}
-                                  className="text-purple-600 dark:text-purple-400 shrink-0 ml-2"
+                                  className="text-purple-600 shrink-0 ml-2"
                                 />
                               )}
                             </div>
@@ -1110,19 +1079,19 @@ export default function AssignmentsPage() {
               onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
               className={inputClass}
             >
-              <option value="NEW" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">NEW</option>
-              <option value="ASSIGNED" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">ASSIGNED</option>
-              <option value="IN_PROGRESS" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">IN PROGRESS</option>
-              <option value="SUBMITTED" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">SUBMITTED</option>
-              <option value="COMPLETED" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">COMPLETED</option>
-              <option value="CANCELLED" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">CANCELLED</option>
+              <option value="NEW" className="bg-white text-slate-900 ">NEW</option>
+              <option value="ASSIGNED" className="bg-white text-slate-900 ">ASSIGNED</option>
+              <option value="IN_PROGRESS" className="bg-white text-slate-900 ">IN PROGRESS</option>
+              <option value="SUBMITTED" className="bg-white text-slate-900 ">SUBMITTED</option>
+              <option value="COMPLETED" className="bg-white text-slate-900 ">COMPLETED</option>
+              <option value="CANCELLED" className="bg-white text-slate-900 ">CANCELLED</option>
             </select>
           </div>
 
           {/* Admin Specific Status Controls */}
           {userRole === "ADMIN" && (
-            <div className="p-3.5 rounded-xl border border-purple-200/60 dark:border-purple-900/40 bg-purple-50/50 dark:bg-purple-950/20 space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-300">
+            <div className="p-3.5 rounded-xl border border-purple-200/60 bg-purple-50/50 space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-purple-700 ">
                 Admin Workflow Statuses
               </h4>
 
@@ -1134,8 +1103,8 @@ export default function AssignmentsPage() {
                     onChange={(e) => setEditFormData({ ...editFormData, assigned_status: e.target.value })}
                     className={inputClass}
                   >
-                    <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING</option>
-                    <option value="SUBMITTED" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">SUBMITTED</option>
+                    <option value="PENDING" className="bg-white text-slate-900 ">PENDING</option>
+                    <option value="SUBMITTED" className="bg-white text-slate-900 ">SUBMITTED</option>
                   </select>
                 </div>
 
@@ -1146,8 +1115,8 @@ export default function AssignmentsPage() {
                     onChange={(e) => setEditFormData({ ...editFormData, payment_status: e.target.value })}
                     className={inputClass}
                   >
-                    <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING</option>
-                    <option value="PAID" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PAID</option>
+                    <option value="PENDING" className="bg-white text-slate-900 ">PENDING</option>
+                    <option value="PAID" className="bg-white text-slate-900 ">PAID</option>
                   </select>
                 </div>
 
@@ -1158,8 +1127,8 @@ export default function AssignmentsPage() {
                     onChange={(e) => setEditFormData({ ...editFormData, writer_commission_status: e.target.value })}
                     className={inputClass}
                   >
-                    <option value="PENDING" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PENDING</option>
-                    <option value="PAID" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">PAID</option>
+                    <option value="PENDING" className="bg-white text-slate-900 ">PENDING</option>
+                    <option value="PAID" className="bg-white text-slate-900 ">PAID</option>
                   </select>
                 </div>
               </div>
@@ -1179,20 +1148,20 @@ export default function AssignmentsPage() {
                     : (netBase * commValNum) / 100;
 
                 return (
-                  <div className="pt-3 border-t border-purple-200/60 dark:border-purple-900/40 space-y-3">
+                  <div className="pt-3 border-t border-purple-200/60 space-y-3">
                     <div className="flex items-center justify-between flex-wrap gap-2">
-                      <span className="text-xs font-semibold text-purple-900 dark:text-purple-200 flex items-center space-x-1">
+                      <span className="text-xs font-semibold text-purple-900 flex items-center space-x-1">
                         <DollarSign size={14} className="text-emerald-500" />
                         <span>Commission Calculation Method:</span>
                       </span>
-                      <div className="flex items-center space-x-1 bg-white dark:bg-black/40 p-1 rounded-lg border border-purple-200 dark:border-purple-800">
+                      <div className="flex items-center space-x-1 bg-white p-1 rounded-lg border border-purple-200 ">
                         <button
                           type="button"
                           onClick={() => setEditFormData({ ...editFormData, commission_type: "PERCENTAGE" })}
                           className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all ${
                             editFormData.commission_type === "PERCENTAGE"
                               ? "bg-purple-600 text-white font-bold shadow-2xs"
-                              : "text-slate-600 dark:text-slate-300 hover:text-purple-600"
+                              : "text-slate-600 hover:text-purple-600"
                           }`}
                         >
                           Percentage (%)
@@ -1203,7 +1172,7 @@ export default function AssignmentsPage() {
                           className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all ${
                             editFormData.commission_type === "FLAT"
                               ? "bg-purple-600 text-white font-bold shadow-2xs"
-                              : "text-slate-600 dark:text-slate-300 hover:text-purple-600"
+                              : "text-slate-600 hover:text-purple-600"
                           }`}
                         >
                           Flat Amount (BDT)
@@ -1231,26 +1200,26 @@ export default function AssignmentsPage() {
                       </div>
 
                       {/* Live Financial Breakdown Card */}
-                      <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-950/40 text-xs space-y-1.5 shadow-2xs">
-                        <div className="flex justify-between text-[11px] text-slate-600 dark:text-slate-400">
+                      <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-50/70 text-xs space-y-1.5 shadow-2xs">
+                        <div className="flex justify-between text-[11px] text-slate-600 ">
                           <span>Student Total:</span>
-                          <span className="font-semibold text-slate-900 dark:text-white">
+                          <span className="font-semibold text-slate-900 ">
                             BDT {grandTotalNum.toLocaleString()}
                           </span>
                         </div>
-                        <div className="flex justify-between text-[11px] text-slate-600 dark:text-slate-400">
+                        <div className="flex justify-between text-[11px] text-slate-600 ">
                           <span>Assignment Costs:</span>
-                          <span className="font-semibold text-rose-600 dark:text-rose-400">
+                          <span className="font-semibold text-rose-600 ">
                             - BDT {costsTotal.toLocaleString()}
                           </span>
                         </div>
-                        <div className="flex justify-between text-[11px] font-medium text-slate-700 dark:text-slate-300 pt-1 border-t border-emerald-200 dark:border-emerald-800/60">
+                        <div className="flex justify-between text-[11px] font-medium text-slate-700 pt-1 border-t border-emerald-200 ">
                           <span>Net Remaining Base:</span>
-                          <span className="font-bold text-slate-900 dark:text-white">
+                          <span className="font-bold text-slate-900 ">
                             BDT {netBase.toLocaleString()}
                           </span>
                         </div>
-                        <div className="flex justify-between font-bold text-emerald-700 dark:text-emerald-300 pt-1 border-t border-emerald-300 dark:border-emerald-700/60 text-xs">
+                        <div className="flex justify-between font-bold text-emerald-700 pt-1 border-t border-emerald-300 text-xs">
                           <span>
                             Writer Commission (
                             {editFormData.commission_type === "PERCENTAGE"
@@ -1258,7 +1227,7 @@ export default function AssignmentsPage() {
                               : "Flat"}
                             ):
                           </span>
-                          <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
+                          <span className="text-sm font-black text-emerald-600 ">
                             BDT {finalComm.toLocaleString()}
                           </span>
                         </div>
@@ -1322,9 +1291,9 @@ export default function AssignmentsPage() {
                 onChange={(e) => setEditFormData({ ...editFormData, writer_id: e.target.value })}
                 className={inputClass}
               >
-                <option value="" className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">-- Unassigned --</option>
+                <option value="" className="bg-white text-slate-900 ">-- Unassigned --</option>
                 {writers.map((w) => (
-                  <option key={w.id} value={w.id} className="bg-white dark:bg-[#0c082b] text-slate-900 dark:text-slate-100">
+                  <option key={w.id} value={w.id} className="bg-white text-slate-900 ">
                     {w.name} ({w.phone_number})
                   </option>
                 ))}
@@ -1343,8 +1312,8 @@ export default function AssignmentsPage() {
           </div>
 
           {/* Word Count & Billing (Word Count editable for Writers & Admins) */}
-          <div className="pt-2 border-t border-slate-100 dark:border-white/[0.04] space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+          <div className="pt-2 border-t border-slate-100 space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-600 ">
               {userRole === "ADMIN" ? "Financials & Word Rate" : "Word Count Specification"}
             </h4>
 
@@ -1410,47 +1379,47 @@ export default function AssignmentsPage() {
           }
         >
           <div className="space-y-4 text-xs">
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-white/10 space-y-2">
+            <div className="p-4 rounded-xl border border-slate-200 space-y-2">
               <div className="flex justify-between items-center">
-                <span className="font-semibold text-slate-500 dark:text-slate-400">Reference:</span>
-                <span className="font-mono font-bold text-purple-600 dark:text-purple-400">
+                <span className="font-semibold text-slate-500 ">Reference:</span>
+                <span className="font-mono font-bold text-purple-600 ">
                   {selectedAssignment.reference}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="font-semibold text-slate-500 dark:text-slate-400">Student Name:</span>
+                <span className="font-semibold text-slate-500 ">Student Name:</span>
                 <span className="font-semibold">{selectedAssignment.client?.name || "N/A"}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="font-semibold text-slate-500 dark:text-slate-400">Course Code:</span>
+                <span className="font-semibold text-slate-500 ">Course Code:</span>
                 <span>{selectedAssignment.course_code}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="font-semibold text-slate-500 dark:text-slate-400">Status:</span>
+                <span className="font-semibold text-slate-500 ">Status:</span>
                 <Badge variant="purple">{selectedAssignment.status}</Badge>
               </div>
             </div>
 
             {userRole === "ADMIN" && (
-              <div className="p-4 rounded-xl border border-purple-200/60 dark:border-purple-900/40 bg-purple-50/50 dark:bg-purple-950/20 space-y-3">
-                <h5 className="font-bold text-xs uppercase tracking-wider text-purple-700 dark:text-purple-300">
+              <div className="p-4 rounded-xl border border-purple-200/60 bg-purple-50/50 space-y-3">
+                <h5 className="font-bold text-xs uppercase tracking-wider text-purple-700 ">
                   Admin Workflow Statuses
                 </h5>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  <div className="flex justify-between items-center p-2 rounded-lg bg-white/60 dark:bg-black/30 border border-slate-200 dark:border-white/5">
-                    <span className="font-semibold text-slate-500 dark:text-slate-400">Assigned Status:</span>
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-white/60 border border-slate-200 ">
+                    <span className="font-semibold text-slate-500 ">Assigned Status:</span>
                     <Badge variant={selectedAssignment.assigned_status === "SUBMITTED" ? "success" : "warning"}>
                       {selectedAssignment.assigned_status || "PENDING"}
                     </Badge>
                   </div>
-                  <div className="flex justify-between items-center p-2 rounded-lg bg-white/60 dark:bg-black/30 border border-slate-200 dark:border-white/5">
-                    <span className="font-semibold text-slate-500 dark:text-slate-400">Payment Status:</span>
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-white/60 border border-slate-200 ">
+                    <span className="font-semibold text-slate-500 ">Payment Status:</span>
                     <Badge variant={selectedAssignment.payment_status === "PAID" ? "success" : "warning"}>
                       {selectedAssignment.payment_status || "PENDING"}
                     </Badge>
                   </div>
-                  <div className="flex justify-between items-center p-2 rounded-lg bg-white/60 dark:bg-black/30 border border-slate-200 dark:border-white/5">
-                    <span className="font-semibold text-slate-500 dark:text-slate-400">Writer Commission:</span>
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-white/60 border border-slate-200 ">
+                    <span className="font-semibold text-slate-500 ">Writer Commission:</span>
                     <Badge variant={selectedAssignment.writer_commission_status === "PAID" ? "success" : "warning"}>
                       {selectedAssignment.writer_commission_status || "PENDING"}
                     </Badge>
@@ -1470,44 +1439,44 @@ export default function AssignmentsPage() {
                   const netProfit = studentTotal - costsTotal - writerComm;
 
                   return (
-                    <div className="pt-2 border-t border-purple-200/60 dark:border-purple-900/40 space-y-2">
-                      <h5 className="font-bold text-xs uppercase tracking-wider text-emerald-700 dark:text-emerald-300 flex items-center space-x-1">
+                    <div className="pt-2 border-t border-purple-200/60 space-y-2">
+                      <h5 className="font-bold text-xs uppercase tracking-wider text-emerald-700 flex items-center space-x-1">
                         <DollarSign size={14} className="text-emerald-500" />
                         <span>Financial Summary & Net Profit</span>
                       </h5>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
-                        <div className="p-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/30">
-                          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                        <div className="p-2.5 rounded-lg border border-slate-200 bg-white/80 ">
+                          <div className="text-[10px] text-slate-500 font-medium">
                             Student Total
                           </div>
-                          <div className="font-bold text-slate-900 dark:text-white font-mono mt-0.5">
+                          <div className="font-bold text-slate-900 font-mono mt-0.5">
                             BDT {studentTotal.toLocaleString()}
                           </div>
                         </div>
 
-                        <div className="p-2.5 rounded-lg border border-rose-200 dark:border-rose-900/40 bg-rose-50/50 dark:bg-rose-950/20">
-                          <div className="text-[10px] text-rose-700 dark:text-rose-300 font-medium">
+                        <div className="p-2.5 rounded-lg border border-rose-200 bg-rose-50/50 ">
+                          <div className="text-[10px] text-rose-700 font-medium">
                             Assignment Costs
                           </div>
-                          <div className="font-bold text-rose-600 dark:text-rose-400 font-mono mt-0.5">
+                          <div className="font-bold text-rose-600 font-mono mt-0.5">
                             - BDT {costsTotal.toLocaleString()}
                           </div>
                         </div>
 
-                        <div className="p-2.5 rounded-lg border border-purple-200 dark:border-purple-900/40 bg-purple-50/50 dark:bg-purple-950/30">
-                          <div className="text-[10px] text-purple-700 dark:text-purple-300 font-medium">
+                        <div className="p-2.5 rounded-lg border border-purple-200 bg-purple-50/50 ">
+                          <div className="text-[10px] text-purple-700 font-medium">
                             Writer Commission
                           </div>
-                          <div className="font-bold text-purple-600 dark:text-purple-400 font-mono mt-0.5">
+                          <div className="font-bold text-purple-600 font-mono mt-0.5">
                             - BDT {writerComm.toLocaleString()}
                           </div>
                         </div>
 
-                        <div className="p-2.5 rounded-lg border border-emerald-400/60 bg-emerald-100/70 dark:bg-emerald-950/60 shadow-2xs">
-                          <div className="text-[10px] text-emerald-800 dark:text-emerald-300 font-bold uppercase tracking-wider">
+                        <div className="p-2.5 rounded-lg border border-emerald-400/60 bg-emerald-100/70 shadow-2xs">
+                          <div className="text-[10px] text-emerald-800 font-bold uppercase tracking-wider">
                             Net Profit Left
                           </div>
-                          <div className="font-black text-emerald-700 dark:text-emerald-300 font-mono text-sm mt-0.5">
+                          <div className="font-black text-emerald-700 font-mono text-sm mt-0.5">
                             BDT {netProfit.toLocaleString()}
                           </div>
                         </div>
@@ -1521,12 +1490,12 @@ export default function AssignmentsPage() {
             {/* Stored Commission Calculation Records Table (Admin Only) */}
             {userRole === "ADMIN" && selectedAssignment.commissionRecords && selectedAssignment.commissionRecords.length > 0 && (
               <div className="space-y-2 mt-3">
-                <h5 className="font-bold text-xs uppercase tracking-wider text-purple-700 dark:text-purple-300">
+                <h5 className="font-bold text-xs uppercase tracking-wider text-purple-700 ">
                   Writer Commission Audit Table
                 </h5>
-                <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-white/10">
+                <div className="overflow-x-auto rounded-xl border border-slate-200 ">
                   <table className="w-full text-left text-[11px]">
-                    <thead className="bg-slate-100 dark:bg-white/5 font-semibold text-slate-600 dark:text-slate-300">
+                    <thead className="bg-slate-100 font-semibold text-slate-600 ">
                       <tr>
                         <th className="p-2">Date</th>
                         <th className="p-2">Type</th>
@@ -1536,11 +1505,11 @@ export default function AssignmentsPage() {
                         <th className="p-2 text-right">Commission Amount</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+                    <tbody className="divide-y divide-slate-100 ">
                       {selectedAssignment.commissionRecords.map((rec: any) => (
-                        <tr key={rec.id} className="hover:bg-slate-50 dark:hover:bg-white/5">
+                        <tr key={rec.id} className="hover:bg-slate-50 ">
                           <td className="p-2">{new Date(rec.createdAt).toLocaleDateString()}</td>
-                          <td className="p-2 font-semibold text-purple-600 dark:text-purple-400">
+                          <td className="p-2 font-semibold text-purple-600 ">
                             {rec.calculation_type === "FLAT"
                               ? `Flat (BDT ${rec.commission_value})`
                               : `${rec.commission_value}%`}
@@ -1548,7 +1517,7 @@ export default function AssignmentsPage() {
                           <td className="p-2 font-mono">BDT {Number(rec.grand_total).toLocaleString()}</td>
                           <td className="p-2 font-mono text-rose-500">- BDT {Number(rec.total_cost).toLocaleString()}</td>
                           <td className="p-2 font-mono font-medium">BDT {Number(rec.net_base_amount).toLocaleString()}</td>
-                          <td className="p-2 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                          <td className="p-2 text-right font-bold text-emerald-600 ">
                             BDT {Number(rec.final_commission_amount).toLocaleString()}
                           </td>
                         </tr>
@@ -1562,7 +1531,7 @@ export default function AssignmentsPage() {
             {selectedAssignment.description && (
               <div>
                 <span className="font-semibold block mb-1">Description:</span>
-                <p className="p-3 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">
+                <p className="p-3 rounded-xl border border-slate-200 text-slate-600 ">
                   {selectedAssignment.description}
                 </p>
               </div>

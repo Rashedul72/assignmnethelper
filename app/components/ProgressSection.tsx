@@ -142,7 +142,7 @@ export default function ProgressSection() {
     <section
       id="how-it-works"
       aria-labelledby="progress-heading"
-      className="section-shell bg-slate-50 scroll-mt-24 relative overflow-hidden"
+      className="section-shell bg-[#f6f5f3] scroll-mt-24"
     >
       <div className="content-shell">
         {/* Section Header */}
@@ -183,7 +183,7 @@ export default function ProgressSection() {
                 key={item.label}
                 className="modern-light-card p-6 sm:p-7 flex flex-col justify-between group"
                 variants={itemVariants}
-                whileHover={{ y: -4 }}
+                whileHover={{ y: -2 }}
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -266,11 +266,11 @@ export default function ProgressSection() {
                   key={step.number}
                   className="modern-light-card p-6 flex flex-col justify-between group relative overflow-hidden bg-white"
                   variants={itemVariants}
-                  whileHover={{ y: -4 }}
+                  whileHover={{ y: -2 }}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-[#06021f] text-white flex items-center justify-center font-bold text-sm shadow-md">
+                      <div className="w-10 h-10 rounded-xl bg-[#620273] text-white flex items-center justify-center font-semibold text-sm">
                         {step.number}
                       </div>
                       <div className="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center text-[#620273]">

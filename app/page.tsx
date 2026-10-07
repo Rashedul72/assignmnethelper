@@ -15,44 +15,44 @@ import Footer from "./components/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white text-[#0f172a] selection:bg-purple-700 selection:text-white">
+    <div className="min-h-screen bg-[#f6f5f3] text-[#1c1524] selection:bg-[#ead7ef] selection:text-[#1c1524]">
       <header>
         <Navbar />
       </header>
 
       <main>
-        {/* 1. Hero (Dark) */}
+        {/* 1. Hero */}
         <HeroSection />
 
-        {/* 2. About Us (Light) */}
+        {/* 2. About Us */}
         <AboutUsSection />
 
-        {/* 3. Fields & Disciplines (Dark) */}
+        {/* 3. Fields & Disciplines */}
         <FieldsSection />
 
-        {/* 4. Services & Deliverables (Dark) */}
+        {/* 4. Services & Deliverables */}
         <ServicesSection />
 
-        {/* 5. Progress & How It Works (Light) */}
+        {/* 5. Progress & How It Works */}
         <ProgressSection />
 
-        {/* 6. Testimonials & Leadership (Light) */}
+        {/* 6. Testimonials & Leadership */}
         <TestimonialsSection />
 
-        {/* 7. FAQ (Light/Soft) */}
+        {/* 7. FAQ */}
         <FAQSection />
 
-        {/* 8. Call to Action (Dark) */}
+        {/* 8. Call to Action */}
         <CTASection />
 
-        {/* 9. Payment Methods (Light) */}
+        {/* 9. Payment Methods */}
         <PaymentMethodSection />
       </main>
 
       {/* 24/7 Floating WhatsApp Widget */}
       <FloatingWhatsApp />
 
-      {/* 10. Footer (Dark) */}
+      {/* 10. Footer */}
       <Footer />
     </div>
   );

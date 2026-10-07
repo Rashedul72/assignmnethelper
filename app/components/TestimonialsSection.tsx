@@ -149,7 +149,7 @@ export default function TestimonialsSection() {
     <section
       id="testimonials"
       aria-labelledby="testimonials-heading"
-      className="section-shell bg-gradient-to-b from-white via-slate-50 to-white scroll-mt-24 overflow-hidden"
+      className="section-shell bg-[#f6f5f3] scroll-mt-24 overflow-hidden"
     >
       <div className="content-shell">
         {/* Section Header */}
@@ -233,7 +233,7 @@ export default function TestimonialsSection() {
                 >
                   <div className="modern-light-card p-6 sm:p-7 h-[380px] sm:h-[400px] flex flex-col justify-between relative group bg-white">
                     {/* Top Accent Gradient */}
-                    <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-purple-600 to-indigo-600 opacity-80" />
+                    <div className="absolute top-0 inset-x-0 h-0.5 bg-[#620273]" />
 
                     <div>
                       <div className="flex items-center justify-between mb-4">
@@ -258,7 +258,7 @@ export default function TestimonialsSection() {
                     </div>
 
                     <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#620273] to-[#9333ea] flex items-center justify-center text-white font-bold text-sm shadow-md shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-[#620273] flex items-center justify-center text-white font-semibold text-sm shrink-0">
                         {t.name.charAt(0)}
                       </div>
                       <div className="min-w-0">
@@ -327,11 +327,11 @@ export default function TestimonialsSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.55, delay: 0.2 + i * 0.1 }}
-                whileHover={{ y: -4 }}
+                whileHover={{ y: -2 }}
               >
                 <div>
                   <div className="flex items-center gap-3.5 mb-5">
-                    <div className="w-12 h-12 rounded-2xl bg-[#06021f] text-white font-extrabold text-base flex items-center justify-center shadow-lg shadow-purple-950/20 shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-[#620273] text-white font-semibold text-base flex items-center justify-center shrink-0">
                       {f.initials}
                     </div>
                     <div>

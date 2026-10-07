@@ -30,15 +30,15 @@ export default function FloatingWhatsApp() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 15, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="mb-3 w-72 sm:w-80 bg-[#0b0528] border border-purple-500/40 rounded-3xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-2xl text-white"
+            className="mb-3 w-72 sm:w-80 bg-white border border-[#e6e2ea] rounded-2xl p-4 shadow-[0_16px_40px_-16px_rgba(28,21,36,0.28)] text-[#1c1524]"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
+            <div className="flex items-center justify-between pb-3 border-b border-[#eeeaf1] mb-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-700">
                   <FaWhatsapp className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-white">Chat on WhatsApp</h4>
+                  <h4 className="font-bold text-sm text-[#1c1524]">Chat on WhatsApp</h4>
                   <p className="text-[11px] text-emerald-400 font-medium">
                     ● Online &amp; Ready to Help
                   </p>
@@ -47,14 +47,14 @@ export default function FloatingWhatsApp() {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10"
+                className="text-[#5e5668] hover:text-[#1c1524] p-1.5 min-h-9 min-w-9 rounded-lg hover:bg-[#f6f5f3] inline-flex items-center justify-center"
                 aria-label="Close WhatsApp chat popup"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-300 mb-3 leading-relaxed">
+            <p className="text-xs text-[#5e5668] mb-3 leading-relaxed">
               Send your assignment prompt or questions. We respond within 2 minutes!
             </p>
 
@@ -99,13 +99,13 @@ export default function FloatingWhatsApp() {
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label="Open 24/7 WhatsApp help menu"
-        className="relative group bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 sm:p-4 rounded-full shadow-[0_10px_30px_rgba(16,185,129,0.4)] border-2 border-white/20 transition-all flex items-center justify-center cursor-pointer"
+        className="relative group bg-emerald-700 hover:bg-emerald-800 text-white p-3.5 sm:p-4 min-h-14 min-w-14 rounded-full shadow-md transition-colors flex items-center justify-center cursor-pointer"
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
       >
         <span className="absolute -top-1 -right-1 flex h-4 w-4">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75" />
-          <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-400 border-2 border-[#06021f]" />
+          <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-400 border-2 border-white" />
         </span>
 
         {isOpen ? (
@@ -116,7 +116,7 @@ export default function FloatingWhatsApp() {
 
         {/* Floating tooltip on hover */}
         {!isOpen && (
-          <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-[#06021f] text-white text-xs font-bold py-1.5 px-3 rounded-xl whitespace-nowrap shadow-xl border border-white/15 hidden sm:flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-white text-[#1c1524] text-xs font-semibold py-1.5 px-3 rounded-lg whitespace-nowrap shadow-md border border-[#e6e2ea] hidden sm:flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             <MessageSquareText className="w-3.5 h-3.5 text-emerald-400" />
             <span>24/7 Instant WhatsApp Help</span>
           </span>

@@ -3,7 +3,6 @@
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { useTheme } from "./ThemeContext";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -26,8 +25,6 @@ export function Modal({
   size = "md",
   icon: Icon,
 }: ModalProps) {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -70,24 +67,20 @@ export function Modal({
             exit={{ opacity: 0, scale: 0.96, y: 10 }}
             transition={{ duration: 0.2 }}
             className={`relative w-full ${sizeClasses} rounded-2xl overflow-hidden z-10 flex flex-col my-auto border shadow-xl ${
-              isDark
-                ? "bg-[#0b0826] border-white/10 text-slate-200"
-                : "bg-white border-slate-200 text-slate-800"
+              "bg-white border-slate-200 text-slate-800"
             }`}
           >
             {/* Modal Header */}
             <div
               className={`px-6 py-4 border-b flex justify-between items-center relative z-10 ${
-                isDark ? "border-white/[0.08]" : "border-slate-200/80"
+                "border-slate-200/80"
               }`}
             >
               <div className="flex items-center space-x-3">
                 {Icon && (
                   <div
                     className={`p-2 rounded-xl border ${
-                      isDark
-                        ? "bg-purple-950/60 border-purple-800/60 text-purple-400"
-                        : "bg-purple-50 border-purple-200 text-purple-600"
+                      "bg-purple-50 border-purple-200 text-purple-600"
                     }`}
                   >
                     <Icon size={18} />
@@ -96,7 +89,7 @@ export function Modal({
                 <div>
                   <h3
                     className={`text-base font-bold tracking-tight ${
-                      isDark ? "text-slate-100" : "text-slate-900"
+                      "text-slate-900"
                     }`}
                   >
                     {title}
@@ -104,7 +97,7 @@ export function Modal({
                   {subtitle && (
                     <p
                       className={`text-xs mt-0.5 ${
-                        isDark ? "text-slate-400" : "text-slate-500"
+                        "text-slate-500"
                       }`}
                     >
                       {subtitle}
@@ -115,7 +108,7 @@ export function Modal({
 
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
               >
                 <X size={18} />
               </button>
@@ -130,7 +123,7 @@ export function Modal({
             {footer && (
               <div
                 className={`px-6 py-3.5 border-t flex items-center justify-end space-x-3 ${
-                  isDark ? "border-white/[0.08] bg-[#08061f]/50" : "border-slate-200/80 bg-slate-50/50"
+                  "border-slate-200/80 bg-slate-50/50"
                 }`}
               >
                 {footer}

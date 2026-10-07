@@ -2,7 +2,6 @@
 
 import React from "react";
 import { AlertTriangle, X } from "lucide-react";
-import { useTheme } from "./ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface ConfirmDialogProps {
@@ -28,23 +27,21 @@ export function ConfirmDialog({
   onConfirm,
   onClose,
 }: ConfirmDialogProps) {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
   if (!isOpen) return null;
 
   const variantStyles = {
     danger: {
       btn: "bg-rose-600 hover:bg-rose-700 text-white shadow-xs",
-      iconBg: "bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 border-rose-200 dark:border-rose-800/60",
+      iconBg: "bg-rose-50 text-rose-600 border-rose-200 ",
     },
     warning: {
       btn: "bg-amber-600 hover:bg-amber-700 text-white shadow-xs",
-      iconBg: "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400 border-amber-200 dark:border-amber-800/60",
+      iconBg: "bg-amber-50 text-amber-600 border-amber-200 ",
     },
     info: {
       btn: "bg-purple-600 hover:bg-purple-700 text-white shadow-xs",
-      iconBg: "bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400 border-purple-200 dark:border-purple-800/60",
+      iconBg: "bg-purple-50 text-purple-600 border-purple-200 ",
     },
   }[variant];
 
@@ -66,7 +63,7 @@ export function ConfirmDialog({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           className={`relative w-full max-w-md p-6 rounded-2xl border shadow-xl z-10 ${
-            isDark ? "bg-[#0b0826] border-white/10 text-slate-100" : "bg-white border-slate-200 text-slate-900"
+            "bg-white border-slate-200 text-slate-900"
           }`}
         >
           <div className="flex items-start space-x-4">
@@ -76,14 +73,14 @@ export function ConfirmDialog({
 
             <div className="flex-1 min-w-0">
               <h3 className="text-base font-semibold">{title}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                 {message}
               </p>
             </div>
 
             <button
               onClick={onClose}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
             >
               <X size={18} />
             </button>
@@ -93,7 +90,7 @@ export function ConfirmDialog({
             <button
               onClick={onClose}
               disabled={isLoading}
-              className="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+              className="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors"
             >
               {cancelText}
             </button>
